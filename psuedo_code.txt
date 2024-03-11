@@ -1,0 +1,48 @@
+
+struct Node {
+	Cube cube;
+	int depth;
+	Node* prev;
+}
+
+vector<Cube> ida_star(Cube start) {
+	GODS_NUMBER = 20
+
+	for (depth_limit = heuristic(start); depth_limit <= GODS_NUMBER; depth_limit++) {
+		Stack s;
+		s.push(Node(start, 0, nullptr))
+
+		while (!s.empty()) {
+			Node node = s.top()
+			s.pop()
+
+			if (is_solved(node.cube)) {
+				vector<Cube> sol
+				Node* curr = &node
+
+				while (curr->depth > 0) {
+					sol.push(curr->cube)
+					curr = curr->prev
+				}
+
+				sol.push(curr->cube)
+
+				return sol
+			}
+
+			depth = node.depth
+
+			if (depth+1 <= depth_limit && node.num_neighbors() > 0) {
+
+				for (neighbor : node.cube.get_neighbors()) {
+					if (depth+1 + heuristic(neighbor) <= depth_limit)
+						s.push(Node(neighbor, depth+1, &node))
+				}
+			}
+
+		}
+	}
+
+	throw CouldntSolveError()
+}
+
