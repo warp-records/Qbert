@@ -1,9 +1,10 @@
 
 #include <cstdint>
 #include <variant>
+#include <iostream>
 
 
-enum class Line {
+enum class Row {
 	Top, Middle, Bottom
 };
 
@@ -13,22 +14,21 @@ enum class Column {
 
 enum class Direction {
 	Up, Down, Left, Right, _180
-}
+};
 
 namespace Mask {
 	enum class Column {
-		Left =   0x1C0E07 << 6*3,
-		Middle = 0x1C0E07 << 3*3,
-		Right =  0x1C0E07
-	}
+		Left =   0x070381C0,
+		Middle = 0x00E07038,
+		Right =  0x001C0E07
+	};
 
 	enum class Row {
-		Top = 0xff << 18*3,
-		Middle = 0xff << 9*3,
-		Bottom = 0xff,
-	}
+		Top = 	 0b111111111 << 6*3,
+		Middle = 0b111111111 << 3*3,
+		Bottom = 0b111111111,
+	};
 }
-
 
 
 enum Color {
@@ -47,7 +47,7 @@ enum SolvedFace {
 	OrangeFace = 0x36DB6DB,
 	RedFace = 	 0x4924924,
 	YellowFace = 0x5B6DB6D
-}
+};
 
 struct Cube {
 
@@ -57,21 +57,21 @@ uint32_t top, bottom,
 		 left, right;
 
  	Cube();
-	Cube(uint32_t   top, bottom,
-					front, back,
-					left, right);
+	Cube(uint32_t top, uint32_t bottom,
+		uint32_t front, uint32_t back,
+		uint32_t left, uint32_t right);
 
 
-	Cube rotateHoriz(Row line, Direction dir);
-	Cube rotateVert(Column line, Direction dir);
+	Cube rotHoriz(Row line, Direction dir);
+	Cube rotVert(Column line, Direction dir);
 
 	bool isSolved();
 
 private:
 	//If this becomes a bottleneck, it could possibly
 	//be sped up with a permute instruction
-	uint32_t rotFaceLeft(uint32_t face);
-	uint32_t rotFaceRight(uint32_t face);
-	uint32_t rotFace180(uint32_t face);
+	static uint32_t rotFaceLeft(uint32_t face);
+	static uint32_t rotFaceRight(uint32_t face);
+	static uint32_t rotFace180(uint32_t face);
 
 };
