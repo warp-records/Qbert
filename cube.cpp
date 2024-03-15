@@ -3,12 +3,12 @@
 
 
 Cube::Cube() {
-	top =    WhiteFace;
-	bottom = GreenFace;
-	front =  BlueFace;
-	back =   OrangeFace;
-	left =   RedFace;
-	right =  YellowFace;
+	top =    GreenFace;
+	bottom = BlueFace;
+	front =  WhiteFace;
+	back =   YellowFace;
+	left =   OrangeFace;
+	right =  RedFace;
 }
 
 uint32_t rotFaceLeft(uint32_t face);
@@ -18,12 +18,14 @@ uint32_t rotFace180(uint32_t face);
 
 Cube Cube::rotHoriz(Row line, Direction dir) {
 
+	Cube newCube = *this;
+
 	uint32_t maskType;
 	uint32_t* outwardFace;
 	
 	switch (line) {
 		case (Row::Top) : {
-			outwardFace = &top;
+			outwardFace = &newCube.top;
 			maskType =  static_cast<uint32_t>(Mask::Row::Top);
 			break;
 		}
@@ -34,7 +36,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) {
 		}
 
 		case (Row::Bottom): {
-			outwardFace = &bottom;
+			outwardFace = &newCube.bottom;
 			maskType =  static_cast<uint32_t>(Mask::Row::Bottom);
 			break;
 		}
@@ -59,64 +61,61 @@ Cube Cube::rotHoriz(Row line, Direction dir) {
 		}
 	}
 
-	uint32_t tmp = front&maskType;
-
 	switch (dir) {
 		case (Direction::Left) : {
-			front &= ~maskType;
-			front |= (right&maskType);
+			newCube.front &= ~maskType;
+			newCube.front |= (right&maskType);
 
-			right &= ~maskType;
-			right |= (back&maskType);
+			newCube.right &= ~maskType;
+			newCube.right |= (back&maskType);
 
-			back &= ~maskType;
-			back |= (left&maskType);
+			newCube.back &= ~maskType;
+			newCube.back |= (left&maskType);
 
-			left &= ~maskType;
-			left |= tmp;
+			newCube.left &= ~maskType;
+			newCube.left |= (front&maskType);
 			break;
 		}
 
 		case (Direction::Right) : {
-			front &= ~maskType;
-			front |= (left&maskType);
+			newCube.front &= ~maskType;
+			newCube.front |= (left&maskType);
 
-			left &= ~maskType;
-			left |= (back&maskType);
+			newCube.left &= ~maskType;
+			newCube.left |= (back&maskType);
 
-			back &= ~maskType;
-			back |= (right&maskType);
+			newCube.back &= ~maskType;
+			newCube.back |= (right&maskType);
 
-			right &= ~maskType;
-			right |= tmp;
+			newCube.right &= ~maskType;
+			newCube.right |= (front&maskType);
 			break;
 		}
 
 		case (Direction::_180) : {
-			front &= ~maskType;
-			front |= (back&maskType);
+			newCube.front &= ~maskType;
+			newCube.front |= (back&maskType);
 
-			back &= ~maskType;
-			back |= tmp;
+			newCube.back &= ~maskType;
+			newCube.back |= (front&maskType);
 
-			//no need for tmp
-			tmp = right&maskType;
+			newCube.right &= ~maskType;
+			newCube.right |= (left&maskType);
 
-			right &= ~maskType;
-			right |= (left&maskType);
-
-			left &= ~maskType;
-			left |= tmp;
+			newCube.left &= ~maskType;
+			newCube.left |= (front&maskType);
 			break;
 		}
 	}
 
-	return cube
+	return newCube;
 }
 
 
 
-Cube Cube::rotateVert(Column line, Direction dir) {
+Cube Cube::rotVert(Column line, Direction dir) {
+
+	Cube newCube = *this;
 
 	uint32_t maskType;
 	uint32_t* outwardFace;
@@ -124,7 +123,7 @@ Cube Cube::rotateVert(Column line, Direction dir) {
 	
 	switch (line) {
 		case (Column::Left) : {
-			outwardFace = &left;
+			outwardFace = &newCube.left;
 			//didn't know you couldn't use scoped enums as
 			//integers when I originally wrote this lol
 			maskType = static_cast<uint32_t>(Mask::Column::Left);
@@ -137,7 +136,7 @@ Cube Cube::rotateVert(Column line, Direction dir) {
 		}
 
 		case (Column::Right): {
-			outwardFace = &right;
+			outwardFace = &newCube.right;
 			maskType =  static_cast<uint32_t>(Mask::Column::Right);
 			break;
 		}
@@ -151,6 +150,7 @@ Cube Cube::rotateVert(Column line, Direction dir) {
 			}
 
 			case (Direction::Down) : {
+				//std::cout << "called"
 				*outwardFace = rotFaceRight(*outwardFace);
 				break;
 			}
@@ -162,56 +162,54 @@ Cube Cube::rotateVert(Column line, Direction dir) {
 		}
 	}
 
-	uint32_t tmp = front&maskType;
-
 	switch (dir) {
 		case (Direction::Up) : {
-			front &= ~maskType;
-			front |= (right&maskType);
+			newCube.front &= ~maskType;
+			newCube.front |= (bottom&maskType);
 
-			right &= ~maskType;
-			right |= (back&maskType);
+			newCube.top &= ~maskType;
+			newCube.top |= (front&maskType);
 
-			back &= ~maskType;
-			back |= (left&maskType);
+			newCube.back &= ~maskType;
+			newCube.back |= (top&maskType);
 
-			left &= ~maskType;
-			left |= tmp;
+			newCube.bottom &= ~maskType;
+			newCube.bottom |= (back&maskType);
 			break;
 		}
 
 		case (Direction::Down) : {
-			front &= ~maskType;
-			front |= (left&maskType);
+			newCube.front &= ~maskType;
+			newCube.front |= (top&maskType);
 
-			left &= ~maskType;
-			left |= (back&maskType);
+			newCube.bottom &= ~maskType;
+			newCube.bottom |= (front&maskType);
 
-			back &= ~maskType;
-			back |= (right&maskType);
+			newCube.back &= ~maskType;
+			newCube.back |= (bottom&maskType);
 
-			right &= ~maskType;
-			right |= tmp;
+			newCube.top &= ~maskType;
+			newCube.top |= (back&maskType);
 			break;
 		}
 
 		case (Direction::_180) : {
-			front &= ~maskType;
-			front |= (back&maskType);
+			newCube.front &= ~maskType;
+			newCube.front |= (back&maskType);
 
-			back &= ~maskType;
-			back |= tmp;
+			newCube.back &= ~maskType;
+			newCube.back |= (front&maskType);
 
-			tmp = right&maskType;
+			newCube.top &= ~maskType;
+			newCube.top |= (bottom&maskType);
 
-			right &= ~maskType;
-			right |= (left&maskType);
-
-			left &= ~maskType;
-			left |= tmp;
+			newCube.bottom &= ~maskType;
+			newCube.bottom |= (top&maskType);
 			break;
 		}
 	}
+
+	return newCube;
 }
 
 
@@ -224,6 +222,9 @@ uint32_t Cube::rotFaceLeft(uint32_t face) {
 	newFace |= (face & (0b111<<1*3)) << 2*3;
 	newFace |= (face & (0b111<<2*3)) >> 2*3;
 	newFace |= (face & (0b111<<3*3)) << 4*3;
+
+	newFace |= (face & (0b111<<4*3));
+
 	newFace |= (face & (0b111<<5*3)) >> 4*3;
 	newFace |= (face & (0b111<<6*3)) << 2*3;
 	newFace |= (face & (0b111<<7*3)) >> 2*3;
@@ -235,38 +236,44 @@ uint32_t Cube::rotFaceLeft(uint32_t face) {
 uint32_t Cube::rotFaceRight(uint32_t face) {
 	uint32_t newFace = 0x0000;
 
-	newFace |= (face & (0b111<<0*3)) << 2*3;
-	newFace |= (face & (0b111<<1*3)) << 4*3;
-	newFace |= (face & (0b111<<2*3)) << 6*3;
-	newFace |= (face & (0b111<<3*3)) << 2*3;
+	newFace |= (face & (0b111<<0*3)) << 2*3;//
+	newFace |= (face & (0b111<<1*3)) << 4*3;//
+	newFace |= (face & (0b111<<2*3)) << 6*3;//
+	newFace |= (face & (0b111<<3*3)) >> 2*3;
+
+	newFace |= (face & (0b111<<4*3));
+
 	newFace |= (face & (0b111<<5*3)) << 2*3;
-	newFace |= (face & (0b111<<6*3)) << 6*3;
-	newFace |= (face & (0b111<<7*3)) << 4*3;
+	newFace |= (face & (0b111<<6*3)) >> 6*3;
+	newFace |= (face & (0b111<<7*3)) >> 4*3;
 	newFace |= (face & (0b111<<8*3)) >> 2*3;
 
 	return newFace;
 }
 
 uint32_t Cube::rotFace180(uint32_t face) {
+	/*
 	uint32_t newFace = 0x0000;
 
 	newFace |= (face & (0b111<<0*3)) << 8*3;
 	newFace |= (face & (0b111<<1*3)) << 6*3;
 	newFace |= (face & (0b111<<2*3)) << 4*3;
 	newFace |= (face & (0b111<<3*3)) << 2*3;
+
+	newFace |= (face & (0b111<<4*3));
+
 	newFace |= (face & (0b111<<5*3)) >> 2*3;
 	newFace |= (face & (0b111<<6*3)) >> 4*3;
 	newFace |= (face & (0b111<<7*3)) << 6*3;
-	newFace |= (face & (0b111<<8*3)) >> 8*3;
+	newFace |= (face & (0b111<<8*3)) >> 8*3;*/
 
-	return newFace;
+	return rotFaceRight(rotFaceRight(face));
 }
 
 
 //bool isSolved() {}
 
-/*
-//Written by ChatGPT cause I don't feel like writing this part
+//terminal output written by ChatGPT 4
 std::ostream& operator<<(std::ostream& os, const Cube& cube) {
     std::array<char, 6> const colors {{
         'W', // White  0b000
@@ -277,40 +284,43 @@ std::ostream& operator<<(std::ostream& os, const Cube& cube) {
         'Y'  // Yellow 0b101
     }};
 
-    // A lambda function to extract and print a single row of a face
-    auto printRow = [&](uint32_t face, Line row) {
-        int shift = (row == Line::Top ? 6 : row == Line::Middle ? 3 : 0) * 3;
-        for (int col = 0; col < 3; ++col) {
-            int colorIndex = (face >> (shift + col * 3)) & 0x07;
-            os << colors[colorIndex];
-        }
+    // Lambda to extract the color character from a face value
+    auto getColorChar = [&colors](uint32_t face, int position) -> char {
+        return colors[(face >> (8*3 - position*3)) & 0x7];
     };
 
     // Print the top face
-    for (int row = 0; row < 3; ++row) {
-        os << "      "; // Spacing to align the top face
-        printRow(cube.top, static_cast<Line>(row));
-        os << '\n';
+    for (int i = 0; i < 9; i += 3) {
+        os << "    "; // Align with the middle faces
+        os << getColorChar(cube.top, i)
+           << getColorChar(cube.top, i+1)
+           << getColorChar(cube.top, i+2) << '\n';
     }
 
     // Print the middle four faces (left, front, right, back)
-    for (int row = 0; row < 3; ++row) {
-        printRow(cube.left, static_cast<Line>(row));
-        os << " ";
-        printRow(cube.front, static_cast<Line>(row));
-        os << " ";
-        printRow(cube.right, static_cast<Line>(row));
-        os << " ";
-        printRow(cube.back, static_cast<Line>(row));
-        os << '\n';
+    for (int i = 0; i < 9; i += 3) {
+        os << getColorChar(cube.left, i)
+           << getColorChar(cube.left, i+1)
+           << getColorChar(cube.left, i+2) << ' ';
+        os << getColorChar(cube.front, i)
+           << getColorChar(cube.front, i+1)
+           << getColorChar(cube.front, i+2) << ' ';
+        os << getColorChar(cube.right, i)
+           << getColorChar(cube.right, i+1)
+           << getColorChar(cube.right, i+2) << ' ';
+        os << getColorChar(cube.back, i)
+           << getColorChar(cube.back, i+1)
+           << getColorChar(cube.back, i+2) << '\n';
     }
 
     // Print the bottom face
-    for (int row = 0; row < 3; ++row) {
-        os << "      "; // Spacing to align the bottom face
-        printRow(cube.bottom, static_cast<Line>(row));
-        os << '\n';
+    for (int i = 0; i < 9; i += 3) {
+        os << "    "; // Align with the middle faces
+        os << getColorChar(cube.bottom, i)
+           << getColorChar(cube.bottom, i+1)
+           << getColorChar(cube.bottom, i+2) << '\n';
     }
 
     return os;
-}*/
+}
+

@@ -20,8 +20,12 @@ int main() {
     )" << std::endl;
 
     Cube qb;
+    //qb = qb.rotVert(Column::Left, Direction::Up);
+    qb = qb.rotVert(Column::Left, Direction::Down);
+    std::cout << qb << "\n\n";
 
-    //std::cout << qb;
+    qb = qb.rotHoriz(Row::Top, Direction::Right);
+    std::cout << qb;
 
     return 0;
 }
