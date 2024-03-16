@@ -61,17 +61,6 @@ uint32_t top, bottom,
 		uint32_t front, uint32_t back,
 		uint32_t left, uint32_t right);
 
-	/*
-	Cube(Cube const& other) {
-		top = other.top;
-		bottom = other.bottom;
-		front = other.front;
-		back = other.back;
-		left = other.left;
-		right = other.right;
-	}*/
-
-
 	Cube rotHoriz(Row line, Direction dir);
 	Cube rotVert(Column line, Direction dir);
 
