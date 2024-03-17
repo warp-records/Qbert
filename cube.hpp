@@ -5,15 +5,15 @@
 
 
 enum class Row {
-	Top, Middle, Bottom
+	Top = 0, Middle = 2, Bottom = 1
 };
 
 enum class Column {
-	Left, Middle, Right
+	Left = 0, Middle = 2, Right = 1
 };
 
 enum class Direction {
-	Up, Down, Left, Right, _180
+	Up = 0, Down = 1, _180 = 4, Left = 2, Right = 3
 };
 
 namespace Mask {

@@ -282,6 +282,7 @@ uint32_t Cube::rotFaceRight(uint32_t face) {
 	return newFace;
 }
 
+//Change later
 uint32_t Cube::rotFace180(uint32_t face) {
 	/*
 	uint32_t newFace = 0x0000;

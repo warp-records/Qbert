@@ -1,5 +1,7 @@
 #include <iostream>
 #include "cube.hpp"
+#include <chrono>
+
 
 int main() {
 
@@ -23,18 +25,26 @@ int main() {
     )" << std::endl;
 
     Cube qb;
-    //qb = qb.rotVert(Column::Left, Direction::Up);
-    qb = qb.rotVert(Column::Left, Direction::Down);
-    std::cout << qb << "\n\n";
+    //std::vector<Cube> cubeVec;
 
-    qb = qb.rotHoriz(Row::Top, Direction::Left);
-    std::cout << qb << "\n\n";
+    auto start = std::chrono::high_resolution_clock::now();
 
-    qb = qb.rotVert(Column::Left, Direction::Up);
-    std::cout << qb << "\n\n";
+    unsigned long long count = 0;
 
-    qb = qb.rotHoriz(Row::Top, Direction::Right);
-    std::cout << qb << "\n\n";
+    while (std::chrono::high_resolution_clock::now() - start < std::chrono::seconds(1)) {
 
+
+        qb = qb.rotVert(static_cast<Column>(count&1),  static_cast<Direction>(count&1));
+        //cubeVec.push_back(qb);
+        qb = qb.rotHoriz(static_cast<Row>(count&1), static_cast<Direction>(count&1+2));
+        //cubeVec.push_back(qb);
+
+        count += 2;
+    }
+
+    std::cout << count;
+
+
+    std::cout << qb << "\n\n";
     return 0;
 }
