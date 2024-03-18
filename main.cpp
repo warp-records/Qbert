@@ -25,26 +25,29 @@ int main() {
     )" << std::endl;
 
     Cube qb;
-    //std::vector<Cube> cubeVec;
+    //std::vector<Cube> cubeVec(10000000);
 
     auto start = std::chrono::high_resolution_clock::now();
 
     unsigned long long count = 0;
+    //prevent compiler from optimizing out isSolved()
+    bool optimizationBlock = 0;
 
     while (std::chrono::high_resolution_clock::now() - start < std::chrono::seconds(1)) {
+        
+        qb = qb.rotVert(static_cast<Column>(count & 1),  static_cast<Direction>(count & 1));
+        optimizationBlock ^= qb.isSolved();
 
-
-        qb = qb.rotVert(static_cast<Column>(count&1),  static_cast<Direction>(count&1));
-        //cubeVec.push_back(qb);
-        qb = qb.rotHoriz(static_cast<Row>(count&1), static_cast<Direction>(count&1+2));
-        //cubeVec.push_back(qb);
+        qb = qb.rotHoriz(static_cast<Row>(count & 1), static_cast<Direction>((count & 1) + 2));
+        optimizationBlock ^= qb.isSolved();
 
         count += 2;
     }
 
-    std::cout << count;
+    //I CAN'T FUCKING BELIEVE HOW FAST MY CODE IS!
+    std::cout << "cubes generated: " << count << "\n\n";
 
+    std::cout << qb << std:: endl;
 
-    std::cout << qb << "\n\n";
     return 0;
 }

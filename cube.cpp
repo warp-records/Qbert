@@ -1,6 +1,8 @@
 
 #include "cube.hpp"
 
+int Cube::hits = 0;
+
 
 Cube::Cube() {
 	top =    GreenFace;
@@ -26,18 +28,18 @@ Cube Cube::rotHoriz(Row line, Direction dir) {
 	switch (line) {
 		case (Row::Top) : {
 			outwardFace = &newCube.top;
-			maskType =  static_cast<uint32_t>(Mask::Row::Top);
+			maskType =  Mask::Row::Top;
 			break;
 		}
 
 		case (Row::Middle): {
-			maskType =  static_cast<uint32_t>(Mask::Row::Middle);
+			maskType =  Mask::Row::Middle;
 			break;
 		}
 
 		case (Row::Bottom): {
 			outwardFace = &newCube.bottom;
-			maskType =  static_cast<uint32_t>(Mask::Row::Bottom);
+			maskType =  Mask::Row::Bottom;
 			break;
 		}
 	}
@@ -123,7 +125,7 @@ Cube Cube::rotVert(Column line, Direction dir) {
 	//((bottom&maskType)<<6) >> backOrMaskOffset
 
 
-	//backNotMask = static_cast<uint32_t>(Mask::Column::Left);
+	//backNotMask = Mask::Column::Left);
 	//backOrMask = (front&maskType) >> 6;
 
 	//Back column rotations require special masks
@@ -139,19 +141,19 @@ Cube Cube::rotVert(Column line, Direction dir) {
 			//didn't know you couldn't use scoped enums as
 			//integers when I originally wrote this lol
 			outwardFace = &newCube.left;
-			maskType = static_cast<uint32_t>(Mask::Column::Left);
+			maskType = Mask::Column::Left;
 
 			break;
 		}
 
 		case (Column::Middle): {
-			maskType =  static_cast<uint32_t>(Mask::Column::Middle);
+			maskType =  Mask::Column::Middle;
 			break;
 		}
 
 		case (Column::Right): {
 			outwardFace = &newCube.right;
-			maskType =  static_cast<uint32_t>(Mask::Column::Right);
+			maskType =  Mask::Column::Right;
 
 			break;
 		}
@@ -177,13 +179,13 @@ Cube Cube::rotVert(Column line, Direction dir) {
 	}
 
 	//Invert columns and rows before and after processing
-	newCube.back =   ((newCube.back&static_cast<uint32_t>(Mask::Row::Bottom)) << 3*3*2)
-					| ((newCube.back&static_cast<uint32_t>(Mask::Row::Middle))       )
-					| ((newCube.back&static_cast<uint32_t>(Mask::Row::Top))    >> 3*3*2);
+	newCube.back =   ((newCube.back&Mask::Row::Bottom) << 3*3*2)
+					| ((newCube.back&Mask::Row::Middle)       )
+					| ((newCube.back&Mask::Row::Top)    >> 3*3*2);
 
-	newCube.back =    ((newCube.back&static_cast<uint32_t>(Mask::Column::Right)) << 3*2)
-			    	| ((newCube.back&static_cast<uint32_t>(Mask::Column::Middle))      )
-					| ((newCube.back&static_cast<uint32_t>(Mask::Column::Left))  >> 3*2);
+	newCube.back =    ((newCube.back&Mask::Column::Right) << 3*2)
+			    	| ((newCube.back&Mask::Column::Middle)      )
+					| ((newCube.back&Mask::Column::Left)  >> 3*2);
 
 	switch (dir) {
 		case (Direction::Up) : {
@@ -232,13 +234,13 @@ Cube Cube::rotVert(Column line, Direction dir) {
 		}
 	}
 
-	newCube.back =    ((newCube.back&static_cast<uint32_t>(Mask::Row::Bottom)) << 3*3*2)
-					| ((newCube.back&static_cast<uint32_t>(Mask::Row::Middle))       )
-					| ((newCube.back&static_cast<uint32_t>(Mask::Row::Top))    >> 3*3*2);
+	newCube.back =    ((newCube.back&Mask::Row::Bottom) << 3*3*2)
+					| ((newCube.back&Mask::Row::Middle)       )
+					| ((newCube.back&Mask::Row::Top)    >> 3*3*2);
 
-	newCube.back =    ((newCube.back&static_cast<uint32_t>(Mask::Column::Right)) << 3*2)
-			    	| ((newCube.back&static_cast<uint32_t>(Mask::Column::Middle))      )
-					| ((newCube.back&static_cast<uint32_t>(Mask::Column::Left))  >> 3*2);
+	newCube.back =    ((newCube.back&Mask::Column::Right) << 3*2)
+			    	| ((newCube.back&Mask::Column::Middle)      )
+					| ((newCube.back&Mask::Column::Left)  >> 3*2);
 
 	return newCube;
 }
@@ -303,7 +305,31 @@ uint32_t Cube::rotFace180(uint32_t face) {
 }
 
 
-//bool isSolved() {}
+//Good enough (I think)
+bool Cube::strongSolvedCheck() {
+
+	std::array<uint32_t, 6> const faces {{
+		top, bottom, front, back, left, right
+	}};
+
+	std::array<uint32_t, 6> const solvedFaces {{
+		WhiteFace, GreenFace, BlueFace,
+		OrangeFace, RedFace, YellowFace
+	}};
+
+	for (auto solvedFace : solvedFaces) {
+		bool foundFlag = false;
+
+		for (auto face : faces) {
+			foundFlag = solvedFace==face || foundFlag;
+		}
+
+		if (!foundFlag)
+			return false;
+	}
+
+	return true;
+}
 
 //terminal output written by ChatGPT 4
 std::ostream& operator<<(std::ostream& os, const Cube& cube) {
