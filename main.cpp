@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <chrono>
 #include <algorithm>
-#include "agl.hpp"
+#include "alg.hpp"
 
 
 int main() {
@@ -31,8 +31,36 @@ int main() {
     )" << std::endl;
 
     MiniCube qb;
-    //std::vector<Cube> cubeVec;
 
+    std::vector<uint8_t> pdb = pdbGen(qb, 41392);
+
+
+    /*
+    for (int i = 0; i < 100; i++) {
+        std::cout << "Cube #"<<i<<":\t" << (int) pdb[i] << std::endl;
+    }*/
+    std::cout << qb;
+    std::cout << "Moves needed to solve: " << (int) pdb[qb.getIdx()] << "\n\n";
+
+    qb = qb.rotHoriz(Row::Bottom, Direction::_180);
+    std::cout << qb;
+    std::cout << "Moves needed to solve: " << (int) pdb[qb.getIdx()] << "\n\n";
+    
+    qb = qb.rotHoriz(Row::Bottom, Direction::Left);
+    std::cout << qb;
+    std::cout << "Moves needed to solve: " << (int) pdb[qb.getIdx()] << "\n\n";
+
+    qb = qb.rotHoriz(Row::Bottom, Direction::Left);
+    std::cout << qb;
+    std::cout << "Moves needed to solve: " << (int) pdb[qb.getIdx()] << "\n\n";
+    //std::cout << "Max number of moves needed to solve: " << (int) *std::max_element(pdb.begin(), pdb.end()) << std::endl;
+    return 0;
+}
+
+    /*
+    MiniCube qb;
+    //std::vector<Cube> cubeVec;
+    
     std::unordered_map<uint32_t, MiniCube> cubeMap;
 
     unsigned long long collisions = 0;
@@ -64,12 +92,7 @@ int main() {
 
     std::cout << "collisions: " << collisions << std::endl;
     std::cout << "cubes generated: " << count << std::endl;
-    std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;
-
-    //std::cout << (int) pdbGen()[1];
-
-    return 0;
-}
+    std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;*/
 
 
 /*

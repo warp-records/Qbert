@@ -20,6 +20,8 @@ uint16_t rotFace180(uint16_t face);
 
 
 MiniCube MiniCube::rotHoriz(Row line, Direction dir) const {
+	if (dir==Direction::_180)
+		return rotHoriz(line, Direction::Left).rotHoriz(line, Direction::Left);
 
 	MiniCube newCube = *this;
 
@@ -111,6 +113,9 @@ MiniCube MiniCube::rotHoriz(Row line, Direction dir) const {
 
 
 MiniCube MiniCube::rotVert(Column line, Direction dir) const {
+	//180 degree rotations are broken
+	if (dir==Direction::_180)
+		return rotVert(line, Direction::Up).rotVert(line, Direction::Up);
 
 	MiniCube newCube = *this;
 

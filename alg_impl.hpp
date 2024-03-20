@@ -1,32 +1,45 @@
 
 #pragma once
 
-#include "alg.hpp"
 #include <queue>
 #include <vector>
+#include <iostream>
+#include <algorithm>
 
+template<class T> struct Node {
+	T elem;
+	uint8_t depth;
+};
+
+//std::unordered_set();
 
 template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
 	std::queue<Node<T>> q;
-	//this single line is literally all korf's fabled pdb is
+	//this single line is literally the entirety of korf's fabled pdb
 	std::vector<uint8_t> pdb(permuts);
 
-	q.push(Node{start, 0});
-	//pdb[start.elem.getIdx()] = tue;
+	q.push(Node<T>{start, 0});
 
 	while (!q.empty()) {
-		Node current = q.back();
+
+		Node current = q.front();
 		q.pop();
 
-		for (T neighbor : node.elem.getNeighbors()) {
+		for (T neighbor : current.elem.getNeighbors()) {
 			uint32_t idx = neighbor.getIdx();
 
 			if (!pdb[idx]) {
-				q.push(Node{neighbor, current.depth+1});
+				q.push(Node<T>{neighbor, static_cast<uint8_t>(current.depth + 1)});
 				pdb[idx] = current.depth+1;
 			}
 		}
 	}
 
+	pdb[start.getIdx()] = 0;
+	
+	std::cout << i << std::endl;
+	std::cout << "maxDepth: " << (int) maxDepth << std::endl;
+	std::cout << "start idx solve length: " << (int) pdb[start.getIdx()] << std::endl;
+	
 	return pdb;
 }

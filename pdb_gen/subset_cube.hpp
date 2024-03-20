@@ -44,12 +44,23 @@ uint16_t top, bottom,
 	MiniCube rotHoriz(Row line, Direction dir) const;
 	MiniCube rotVert(Column line, Direction dir) const;
 
-	
+	/*
 	std::array<MiniCube, 6> getNeighbors() {
 		return {{
 			rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::Right),
-			rotVert(Column::Left, Direction::Up), rotVert(Row::Left, Direction::Down),
+			rotVert(Column::Left, Direction::Up), rotVert(Column::Left, Direction::Down),
 			rotHoriz(Row::Top, Direction::_180), rotVert(Column::Left, Direction::_180)
+		}};
+	}*/
+
+	std::array<MiniCube, 12> getNeighbors() {
+		return {{
+			rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::Right),
+			rotHoriz(Row::Bottom, Direction::Left), rotHoriz(Row::Bottom, Direction::Right),
+			rotHoriz(Row::Top, Direction::_180), rotHoriz(Row::Bottom, Direction::_180), 
+			rotVert(Column::Left, Direction::Up), rotVert(Column::Left, Direction::Down),
+			rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down),
+			rotVert(Column::Left, Direction::_180), rotVert(Column::Right, Direction::_180)
 		}};
 	}
 

@@ -1,9 +1,6 @@
 
 #pragma once
+#include "alg_impl.hpp"
+#include <vector>
 
-template<class T> struct Node {
-	T elem;
-	int depth;
-}
-
-template<typename T> pdbGen(T start, int const permutats);
+template<typename T> std::vector<uint8_t> pdbGen(T start, int const permutats);
