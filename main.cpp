@@ -34,11 +34,12 @@ int main() {
 
     std::vector<uint8_t> pdb = pdbGen(qb, 41392);
 
-
+    std::cout << std::count(pdb.begin(), pdb.end(), 0);
     /*
     for (int i = 0; i < 100; i++) {
         std::cout << "Cube #"<<i<<":\t" << (int) pdb[i] << std::endl;
     }*/
+    /*
     std::cout << qb;
     std::cout << "Moves needed to solve: " << (int) pdb[qb.getIdx()] << "\n\n";
 
@@ -52,7 +53,7 @@ int main() {
 
     qb = qb.rotHoriz(Row::Bottom, Direction::Left);
     std::cout << qb;
-    std::cout << "Moves needed to solve: " << (int) pdb[qb.getIdx()] << "\n\n";
+    std::cout << "Moves needed to solve: " << (int) pdb[qb.getIdx()] << "\n\n";*/
     //std::cout << "Max number of moves needed to solve: " << (int) *std::max_element(pdb.begin(), pdb.end()) << std::endl;
     return 0;
 }
