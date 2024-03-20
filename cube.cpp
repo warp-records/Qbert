@@ -5,12 +5,13 @@ int Cube::hits = 0;
 
 
 Cube::Cube() {
-	top =    GreenFace;
-	bottom = BlueFace;
 	front =  WhiteFace;
-	back =   YellowFace;
-	left =   OrangeFace;
-	right =  RedFace;
+	top =    GreenFace;
+	left =   BlueFace;
+
+	back =   OrangeFace;
+	bottom = RedFace;
+	right =  YellowFace;
 }
 
 uint32_t rotFaceLeft(uint32_t face);

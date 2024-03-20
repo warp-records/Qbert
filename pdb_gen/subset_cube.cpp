@@ -1,14 +1,17 @@
 
 #include "subset_cube.hpp"
 #include <cstdint>
+#include <cassert>
+#include <bit>
 
 MiniCube::MiniCube() {
-	top =    GreenFace;
-	bottom = BlueFace;
 	front =  WhiteFace;
-	back =   YellowFace;
-	left =   OrangeFace;
-	right =  RedFace;
+	top =    GreenFace;
+	left =   BlueFace;
+
+	back =   OrangeFace;
+	bottom = RedFace;
+	right =  YellowFace;
 }
 
 uint16_t rotFaceLeft(uint16_t face);
@@ -16,7 +19,7 @@ uint16_t rotFaceRight(uint16_t face);
 uint16_t rotFace180(uint16_t face);
 
 
-MiniCube MiniCube::rotHoriz(Row line, Direction dir) {
+MiniCube MiniCube::rotHoriz(Row line, Direction dir) const {
 
 	MiniCube newCube = *this;
 
@@ -107,7 +110,7 @@ MiniCube MiniCube::rotHoriz(Row line, Direction dir) {
 
 
 
-MiniCube MiniCube::rotVert(Column line, Direction dir) {
+MiniCube MiniCube::rotVert(Column line, Direction dir) const {
 
 	MiniCube newCube = *this;
 
@@ -240,6 +243,65 @@ uint16_t MiniCube::rotFace180(uint16_t face) {
 }
 
 
+uint8_t MiniCube::getCubieID(bool x, bool y, bool z) const {
+
+	//It's complicated but I pinkie promise it works
+
+	uint16_t xColor = x==0 ? left : right;
+	xColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
+	xColor &= ((x^z)==0 ? MiniMask::Column::Right : MiniMask::Column::Left);
+
+	xColor >>= (y==0 ? 0 : 3*2);
+	xColor >>= ((x^z)==0 ? 0 : 3);
+
+	//xColor >>= std::countr_zero(xColor);
+
+	uint16_t yColor = y==0 ? bottom : top;
+	yColor &= (x==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
+	yColor &= ((y^z)==0 ? MiniMask::Row::Top : MiniMask::Row::Bottom);
+
+	yColor >>= (x==0 ? 3 : 0);
+	yColor >>= ((x^z)==0 ? 3*2 : 0);
+
+	//yColor >>= std::countr_zero(yColor);
+
+	uint16_t zColor = z==0 ? front : back;
+	zColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
+	zColor &= ((z^x)==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
+
+	zColor >>= (y==0 ? 0 : 3*2);
+	zColor >>= ((z^x)==0 ? 3 : 0);
+	//zColor >>= std::countr_zero(zColor);
+
+
+	//assert(xColor <= 0b111 && yColor <= 0b111 && zColor <= 0b111);
+
+	return xColor^yColor^zColor;
+}
+
+/*
+uint8_t MiniCube::getCubieID(bool x, bool y, bool z) const {
+
+	//It's complicated but I pinkie promise it works
+
+	uint16_t xColor = x==0 ? left : right;
+	xColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
+	xColor &= (x^z==0 ? MiniMask::Column::Right : MiniMask::Column::Left);
+
+	uint16_t yColor = y==0 ? bottom : top;
+	yColor &= (x==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
+	yColor &= (y^z==0 ? MiniMask::Row::Top : MiniMask::Row::Bottom);
+
+	uint16_t zColor = z==0 ? front : back;
+	zColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
+	zColor &= (z^x==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
+
+	assert(xColor <= 0b111 && yColor <= 0b111 && zColor <= 0b111);
+
+	return xColor^yColor^zColor;
+}*/
+
+
 //terminal output written by ChatGPT 4
 std::ostream& operator<<(std::ostream& os, const MiniCube& cube) {
     std::array<char, 6> const colors {{
@@ -285,3 +347,31 @@ std::ostream& operator<<(std::ostream& os, const MiniCube& cube) {
     return os;
 }
 
+
+
+
+
+//Strong compare, for debugging
+bool operator==(MiniCube const& lhs, MiniCube const& rhs) {
+	MiniCube lhsPerm = lhs;
+
+	for (int j = 0; j < 4; j++) {
+		for (int i = 0; i < 4; i++) {
+			bool equalFaces = lhsPerm.top==rhs.top && lhsPerm.bottom==rhs.bottom &&
+								lhsPerm.left==rhs.left && lhsPerm.right==rhs.right &&
+								lhsPerm.front==rhs.front && lhsPerm.back==rhs.back;
+			if (equalFaces)
+				return true;
+
+			lhsPerm = lhsPerm.rotHoriz(Row::Top, Direction::Left);
+			lhsPerm = lhsPerm.rotHoriz(Row::Bottom, Direction::Left);
+		}
+
+		lhsPerm = lhsPerm.rotVert(Column::Left, Direction::Down);
+		lhsPerm = lhsPerm.rotVert(Column::Right, Direction::Down);
+	}
+}
+
+bool operator!=(MiniCube const& lhs, MiniCube const& rhs) {
+	return !(lhs==rhs);
+}

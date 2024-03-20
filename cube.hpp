@@ -27,21 +27,7 @@ enum Color {
 	Yellow = 0b101
 };
 
-/*
-struct Mask {
-	enum class Column : uint32_t {
-		Left =   0x070381C0,
-		Middle = 0x00E07038,
-		Right =  0x001C0E07
-	};
-
-	enum class Row : uint32_t {
-		Top = 	 0b111111111 << 6*3,
-		Middle = 0b111111111 << 3*3,
-		Bottom = 0b111111111,
-	}; 
-};*/
-
+//These represent rows and columns on a square, not a cube
 namespace Mask {
 	namespace Column {
 		uint32_t constexpr Left =   0x070381C0;
