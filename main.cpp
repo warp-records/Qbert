@@ -31,9 +31,45 @@ int main() {
 
     MiniCube qb;
     //std::vector<Cube> cubeVec;
-    
+
+    std::unordered_map<uint32_t, MiniCube> cubeMap;
+
+    unsigned long long collisions = 0;
+    unsigned count = 0;
+
     auto start = std::chrono::high_resolution_clock::now();
 
+    while (std::chrono::high_resolution_clock::now() - start < std::chrono::milliseconds(1500)) {
+        
+        qb = qb.rotVert(static_cast<Column>(rand() & 1),  static_cast<Direction>(rand() & 1));
+        uint32_t hash = qb.getIdx();
+        //Cube hash already exists but it doesn't match this cube
+        if (cubeMap.find(hash)!=cubeMap.end() && cubeMap.find(hash)->second != qb) {
+            collisions++;
+        }
+        cubeMap.insert({hash, qb});
+
+        qb = qb.rotHoriz(static_cast<Row>(rand() & 1), static_cast<Direction>((rand() & 1) + 2));
+        hash = qb.getIdx();
+         if (cubeMap.find(hash)!=cubeMap.end() && cubeMap.find(hash)->second != qb) {
+            collisions++;
+        }
+
+        cubeMap.insert({hash, qb});
+
+
+        count += 2;
+    }
+
+    std::cout << "collisions: " << collisions << std::endl;
+    std::cout << "cubes generated: " << count << std::endl;
+    std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;
+
+    return 0;
+}
+
+
+/*
     unsigned uniqueCubes = 0;
     unsigned minHash = UINT_MAX;
     unsigned maxHash = 0;
@@ -43,7 +79,8 @@ int main() {
     unsigned long long count = 0;
     //prevent compiler from optimizing out isSolved()
     //uint16_t optimizationBlock = 0;
-
+    
+     auto start = std::chrono::high_resolution_clock::now();
     
     while (std::chrono::high_resolution_clock::now() - start < std::chrono::milliseconds(1700)) {
         
@@ -64,8 +101,6 @@ int main() {
         maxHash = std::max(hash, maxHash);
         minHash = std::min(hash, minHash);
 
-
-
         count += 2;
 
     }
@@ -76,34 +111,4 @@ int main() {
     std::cout << "min hash idx:" << minHash << std::endl;
     std::cout << "max hash idx: " << maxHash << std::endl;
     std::cout << qb << std:: endl;
-
-    return 0;
-}
-
-/*
-    std::unordered_map<uint32_t, MiniCube> cubeMap;
-
-    unsigned long long collisions = 0;
-
-    while (std::chrono::high_resolution_clock::now() - start < std::chrono::seconds(1)) {
-        
-        qb = qb.rotVert(static_cast<Column>(count & 1),  static_cast<Direction>(count & 1));
-        uint32_t hash = qb.getIdx();
-        //Cube hash already exists but it doesn't match this cube
-        if (cubeMap.find(hash)!=cubeMap.end() && cubeMap.find(hash)->second != qb) {
-            collisions++;
-        }
-        cubeMap.insert({hash, qb});
-        //optimizationBlock ^= qb.getIdx();
-
-        qb = qb.rotHoriz(static_cast<Row>(count & 1), static_cast<Direction>((count & 1) + 2));
-        hash = qb.getIdx();
-         if (cubeMap.find(hash)!=cubeMap.end() && cubeMap.find(hash)->second != qb) {
-            collisions++;
-        }
-
-        cubeMap.insert({hash, qb});
-        //optimizationBlock ^= qb.getIdx();
-        count += 2;
-    }
 */

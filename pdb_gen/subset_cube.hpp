@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <iostream>
 #include <cassert>
+#include <unordered_set>
 
 namespace MiniMask {
 	namespace Column {
@@ -45,10 +46,11 @@ uint16_t top, bottom,
 
 	//Unique integer generated from cube used as an index into the PDB
 	//yields the same value for different orientations of the same cube
+
+	//For some reason this works even though some IDs are used
+	//multiple times
 	uint32_t getIdx() const {
-		//bool usedIds[8] {
-		//	0, 0, 0, 0, 0, 0, 0, 0
-		//};
+		//bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
 		//Starting from 1!
 		uint16_t const facts[7] {
 			1, 2, 6, 24, 120, 720, 5040
@@ -64,8 +66,6 @@ uint16_t top, bottom,
 			//usedIds[getCubieID(i & 0b001, i & 0b010, i & 0b100)] = true;
 		}
 
-
-
 		return idx;
 	}
 
@@ -78,8 +78,6 @@ private:
 
 	//Get the unique identifier for each cube:
 	//the colors of each face from that XOR'd together
-
-	//Or at least, that works with the current arrangement
 	uint8_t getCubieID(bool x, bool y, bool z) const;
 
 };

@@ -243,38 +243,35 @@ uint16_t MiniCube::rotFace180(uint16_t face) {
 }
 
 
+//It's complicated but I pinkie promise it works
 uint8_t MiniCube::getCubieID(bool x, bool y, bool z) const {
-
-	//It's complicated but I pinkie promise it works
 
 	uint16_t xColor = x==0 ? left : right;
 	xColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
-	xColor &= ((x^z)==0 ? MiniMask::Column::Right : MiniMask::Column::Left);
-
 	xColor >>= (y==0 ? 0 : 3*2);
+
+	xColor &= ((x^z)==0 ? MiniMask::Column::Right : MiniMask::Column::Left);
 	xColor >>= ((x^z)==0 ? 0 : 3);
 
-	//xColor >>= std::countr_zero(xColor);
 
 	uint16_t yColor = y==0 ? bottom : top;
 	yColor &= (x==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
-	yColor &= ((y^z)==0 ? MiniMask::Row::Top : MiniMask::Row::Bottom);
-
 	yColor >>= (x==0 ? 3 : 0);
-	yColor >>= ((x^z)==0 ? 3*2 : 0);
 
-	//yColor >>= std::countr_zero(yColor);
+	yColor &= ((y^z)==0 ? MiniMask::Row::Top : MiniMask::Row::Bottom);
+	yColor >>= ((y^z)==0 ? 3*2 : 0);
+
 
 	uint16_t zColor = z==0 ? front : back;
 	zColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
-	zColor &= ((z^x)==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
-
 	zColor >>= (y==0 ? 0 : 3*2);
+
+	zColor &= ((z^x)==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
 	zColor >>= ((z^x)==0 ? 3 : 0);
-	//zColor >>= std::countr_zero(zColor);
 
-
+	//assert(std::popcount(xColor) <= 3 && std::popcount(yColor) <= 3 && std::popcount(zColor) <= 3);
 	//assert(xColor <= 0b111 && yColor <= 0b111 && zColor <= 0b111);
+
 
 	return xColor^yColor^zColor;
 }
@@ -351,7 +348,7 @@ std::ostream& operator<<(std::ostream& os, const MiniCube& cube) {
 
 
 
-//Strong compare, for debugging
+//Naive compare implementation, for debugging
 bool operator==(MiniCube const& lhs, MiniCube const& rhs) {
 	MiniCube lhsPerm = lhs;
 
