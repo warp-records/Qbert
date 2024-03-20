@@ -276,28 +276,6 @@ uint8_t MiniCube::getCubieID(bool x, bool y, bool z) const {
 	return xColor^yColor^zColor;
 }
 
-/*
-uint8_t MiniCube::getCubieID(bool x, bool y, bool z) const {
-
-	//It's complicated but I pinkie promise it works
-
-	uint16_t xColor = x==0 ? left : right;
-	xColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
-	xColor &= (x^z==0 ? MiniMask::Column::Right : MiniMask::Column::Left);
-
-	uint16_t yColor = y==0 ? bottom : top;
-	yColor &= (x==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
-	yColor &= (y^z==0 ? MiniMask::Row::Top : MiniMask::Row::Bottom);
-
-	uint16_t zColor = z==0 ? front : back;
-	zColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
-	zColor &= (z^x==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
-
-	assert(xColor <= 0b111 && yColor <= 0b111 && zColor <= 0b111);
-
-	return xColor^yColor^zColor;
-}*/
-
 
 //terminal output written by ChatGPT 4
 std::ostream& operator<<(std::ostream& os, const MiniCube& cube) {

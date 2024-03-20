@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <chrono>
 #include <algorithm>
+#include "agl.hpp"
 
 
 int main() {
@@ -64,6 +65,8 @@ int main() {
     std::cout << "collisions: " << collisions << std::endl;
     std::cout << "cubes generated: " << count << std::endl;
     std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;
+
+    //std::cout << (int) pdbGen()[1];
 
     return 0;
 }

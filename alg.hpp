@@ -1,9 +1,9 @@
 
 #pragma once
 
-template<class U> struct BFSNode {
-	U val;
+template<class T> struct Node {
+	T elem;
 	int depth;
 }
 
-template<typename T> pdbGen(T start, int permutations);
+template<typename T> pdbGen(T start, int const permutats);

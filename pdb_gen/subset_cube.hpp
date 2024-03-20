@@ -44,6 +44,15 @@ uint16_t top, bottom,
 	MiniCube rotHoriz(Row line, Direction dir) const;
 	MiniCube rotVert(Column line, Direction dir) const;
 
+	
+	std::array<MiniCube, 6> getNeighbors() {
+		return {{
+			rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::Right),
+			rotVert(Column::Left, Direction::Up), rotVert(Row::Left, Direction::Down),
+			rotHoriz(Row::Top, Direction::_180), rotVert(Column::Left, Direction::_180)
+		}};
+	}
+
 	//Unique integer generated from cube used as an index into the PDB
 	//yields the same value for different orientations of the same cube
 
