@@ -19,7 +19,7 @@ uint32_t rotFaceRight(uint32_t face);
 uint32_t rotFace180(uint32_t face);
 
 
-Cube Cube::rotHoriz(Row line, Direction dir) {
+Cube Cube::rotHoriz(Row line, Direction dir) const {
 
 	Cube newCube = *this;
 
@@ -117,7 +117,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) {
 
 
 
-Cube Cube::rotVert(Column line, Direction dir) {
+Cube Cube::rotVert(Column line, Direction dir) const {
 
 	Cube newCube = *this;
 
@@ -307,7 +307,7 @@ uint32_t Cube::rotFace180(uint32_t face) {
 
 
 //Good enough (I think)
-bool Cube::strongSolvedCheck() {
+bool Cube::strongSolvedCheck() const {
 
 	std::array<uint32_t, 6> const faces {{
 		top, bottom, front, back, left, right

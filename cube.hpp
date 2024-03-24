@@ -18,6 +18,11 @@ enum class Direction {
 	Up = 0, Down = 1, _180 = 4, Left = 2, Right = 3
 };
 
+//Only used for changing orientation; Back and Front are irrelevant for implementation
+enum class Perspective {
+	Left, Right
+};
+
 enum Color {
 	White =  0b000,
 	Green =  0b001,
@@ -65,12 +70,12 @@ uint32_t top, bottom,
 		uint32_t front, uint32_t back,
 		uint32_t left, uint32_t right);
 
-	Cube rotHoriz(Row line, Direction dir);
-	Cube rotVert(Column line, Direction dir);
+	Cube rotHoriz(Row line, Direction dir) const;
+	Cube rotVert(Column line, Direction dir) const;
 
-	bool strongSolvedCheck();
+	bool strongSolvedCheck() const;
 
-	bool isSolved() {
+	bool isSolved() const {
 
 		uint16_t constexpr SOLVED_HASH = 
 							WhiteFace ^ GreenFace ^ 

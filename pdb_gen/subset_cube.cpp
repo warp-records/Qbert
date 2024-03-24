@@ -281,6 +281,38 @@ uint8_t MiniCube::getCubieID(bool x, bool y, bool z) const {
 	return xColor^yColor^zColor;
 }
 
+std::array<MiniCube, 18> MiniCube::getNeighbors() const {
+
+	MiniCube leftviewCube = changePerspective(Perspective::Left);
+	std::array<MiniCube, 6> xAxisRots {{
+		leftviewCube.rotVert(Column::Left, Direction::Up), leftviewCube.rotVert(Column::Left, Direction::Down),
+		leftviewCube.rotVert(Column::Right, Direction::Up), leftviewCube.rotVert(Column::Right, Direction::Down),
+		leftviewCube.rotVert(Column::Left, Direction::_180), leftviewCube.rotVert(Column::Right, Direction::_180)
+	}};
+	std::for_each(xAxisRots.begin(), xAxisRots.end(), [](MiniCube& qb) { qb = qb.changePerspective(Perspective::Right); });
+
+
+	std::array<MiniCube, 6> yAxisRots {{
+		rotVert(Column::Left, Direction::Up), rotVert(Column::Left, Direction::Down),
+		rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down),
+		rotVert(Column::Left, Direction::_180), rotVert(Column::Right, Direction::_180)
+	}};
+
+
+	std::array<MiniCube, 6> zAxisRots {{
+		rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::Right),
+		rotHoriz(Row::Bottom, Direction::Left), rotHoriz(Row::Bottom, Direction::Right),
+		rotHoriz(Row::Top, Direction::_180), rotHoriz(Row::Bottom, Direction::_180), 
+	}};
+
+	std::array<MiniCube, 18> final;
+	std::copy(xAxisRots.begin(), xAxisRots.begin(), final.begin());
+	std::copy(yAxisRots.begin(), yAxisRots.begin(), final.begin()+xAxisRots.size());
+	std::copy(zAxisRots.begin(), zAxisRots.begin(), final.begin()+xAxisRots.size()+yAxisRots.size());
+
+	return final;
+}
+
 
 //terminal output written by ChatGPT 4
 std::ostream& operator<<(std::ostream& os, const MiniCube& cube) {
@@ -350,8 +382,11 @@ bool operator==(MiniCube const& lhs, MiniCube const& rhs) {
 		lhsPerm = lhsPerm.rotVert(Column::Left, Direction::Down);
 		lhsPerm = lhsPerm.rotVert(Column::Right, Direction::Down);
 	}
+
+	return false;
 }
 
 bool operator!=(MiniCube const& lhs, MiniCube const& rhs) {
 	return !(lhs==rhs);
 }
+

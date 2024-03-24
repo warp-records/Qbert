@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cassert>
 #include <unordered_set>
+#include <algorithm>
 
 namespace MiniMask {
 	namespace Column {
@@ -44,25 +45,36 @@ uint16_t top, bottom,
 	MiniCube rotHoriz(Row line, Direction dir) const;
 	MiniCube rotVert(Column line, Direction dir) const;
 
-	/*
-	std::array<MiniCube, 6> getNeighbors() {
-		return {{
-			rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::Right),
-			rotVert(Column::Left, Direction::Up), rotVert(Column::Left, Direction::Down),
-			rotHoriz(Row::Top, Direction::_180), rotVert(Column::Left, Direction::_180)
-		}};
-	}*/
+	//Left side view for rotations around the x axis
+	MiniCube changePerspective(Perspective per) const {
+		MiniCube qb = *this;
 
-	std::array<MiniCube, 12> getNeighbors() {
-		return {{
-			rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::Right),
-			rotHoriz(Row::Bottom, Direction::Left), rotHoriz(Row::Bottom, Direction::Right),
-			rotHoriz(Row::Top, Direction::_180), rotHoriz(Row::Bottom, Direction::_180), 
-			rotVert(Column::Left, Direction::Up), rotVert(Column::Left, Direction::Down),
-			rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down),
-			rotVert(Column::Left, Direction::_180), rotVert(Column::Right, Direction::_180)
-		}};
+		switch (per) {
+
+		case (Perspective::Left) : {
+			qb.front = left;
+			qb.right = front;
+			qb.back = right;
+			qb.left = back;
+			break;
+		}
+
+		case (Perspective::Right) : {
+			qb.front = right;
+			qb.left = front;
+			qb.back = left;
+			qb.right = back;
+			break;
+		}
+
+		}
+
+		return qb;
 	}
+
+	MiniCube& operator=(const MiniCube& other) = default;
+
+	std::array<MiniCube, 18> getNeighbors() const;
 
 	//Unique integer generated from cube used as an index into the PDB
 	//yields the same value for different orientations of the same cube
@@ -78,6 +90,7 @@ uint16_t top, bottom,
 
 		uint32_t idx = 0;
 
+		//look into how this fuckin works
 		//Last cube is already known given the first 7
 		for (int i = 0; i < 7; i++) {
 			idx += facts[i]*getCubieID(i & 0b001, i & 0b010, i & 0b100);

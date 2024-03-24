@@ -17,14 +17,11 @@ template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
 	std::queue<Node<T>> q;
 	//this single line is literally the entirety of korf's fabled pdb
 	std::vector<uint8_t> pdb(permuts);
+	std::vector<bool> explored(permuts);
 
 	q.push(Node<T>{start, 0});
 
-	int i = 0;
-	int maxDepth = 0;
-
 	while (!q.empty()) {
-		i++;
 
 		Node current = q.front();
 		q.pop();
@@ -32,20 +29,15 @@ template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
 		for (T neighbor : current.elem.getNeighbors()) {
 			uint32_t idx = neighbor.getIdx();
 
-			if (!pdb[idx]) {
+			if (!explored[idx]) {
 				q.push(Node<T>{neighbor, static_cast<uint8_t>(current.depth + 1)});
-				pdb[idx] = current.depth+1;
-
-				maxDepth = std::max(current.depth+1, maxDepth);
+				pdb[idx] = static_cast<uint8_t>(current.depth+1);
+				explored[idx] = true;
 			}
 		}
 	}
 
 	pdb[start.getIdx()] = 0;
-	
-	std::cout << i << std::endl;
-	std::cout << "maxDepth: " << (int) maxDepth << std::endl;
-	std::cout << "start idx solve length: " << (int) pdb[start.getIdx()] << std::endl;
 	
 	return pdb;
 }
