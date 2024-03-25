@@ -93,7 +93,7 @@ uint16_t top, bottom,
 		//look into how this fuckin works
 		//Last cube is already known given the first 7
 		for (int i = 0; i < 7; i++) {
-			idx += facts[i]*getCubieID(i & 0b001, i & 0b010, i & 0b100);
+			idx += facts[i]*getCubieID(i&0b001, (i&0b010)>>1, (i&0b100)>>2);
 
 			//assert(usedIds[getCubieID(i & 0b001, i & 0b010, i & 0b100)] == false);
 			//usedIds[getCubieID(i & 0b001, i & 0b010, i & 0b100)] = true;
@@ -101,6 +101,10 @@ uint16_t top, bottom,
 
 		return idx;
 	}
+
+	//Only public for debugging
+	uint8_t getCubieID(bool x, bool y, bool z) const;
+
 
 private:
 	//If this becomes a bottleneck, it could possibly
@@ -111,7 +115,7 @@ private:
 
 	//Get the unique identifier for each cube:
 	//the colors of each face from that XOR'd together
-	uint8_t getCubieID(bool x, bool y, bool z) const;
+	//uint8_t getCubieID(bool x, bool y, bool z) const;
 
 };
 

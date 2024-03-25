@@ -17,7 +17,6 @@ template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
 	std::queue<Node<T>> q;
 	//this single line is literally the entirety of korf's fabled pdb
 	std::vector<uint8_t> pdb(permuts);
-	std::vector<bool> explored(permuts);
 
 	q.push(Node<T>{start, 0});
 
@@ -29,10 +28,9 @@ template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
 		for (T neighbor : current.elem.getNeighbors()) {
 			uint32_t idx = neighbor.getIdx();
 
-			if (!explored[idx]) {
+			if (!pdb[idx]) {
 				q.push(Node<T>{neighbor, static_cast<uint8_t>(current.depth + 1)});
 				pdb[idx] = static_cast<uint8_t>(current.depth+1);
-				explored[idx] = true;
 			}
 		}
 	}

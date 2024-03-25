@@ -247,39 +247,34 @@ uint16_t MiniCube::rotFace180(uint16_t face) {
 	return newFace;
 }
 
+//pretty sure we don't need this part
+//xFace &= x==0 ? MiniMask::Column::Right : MiniMask::Column::Left;
 
 //It's complicated but I pinkie promise it works
 uint8_t MiniCube::getCubieID(bool x, bool y, bool z) const {
+    uint16_t xFace = x==0 ? left : right;
+    //checked
+    xFace >>= (x^z)==0 ? 0*3 : 1*3;
+    xFace >>= y==0 ?     2*3 : 0*3;
+    xFace &= 0b111;
 
-	uint16_t xColor = x==0 ? left : right;
-	xColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
-	xColor >>= (y==0 ? 0 : 3*2);
+    uint16_t yFace = y==0 ? top : bottom;
+    //checked
+    yFace >>= x==0 ?     1*3 : 0*3;
+    yFace >>= (y^z)==0 ? 0*3 : 2*3;
+    yFace &= 0b111;
 
-	xColor &= ((x^z)==0 ? MiniMask::Column::Right : MiniMask::Column::Left);
-	xColor >>= ((x^z)==0 ? 0 : 3);
-
-
-	uint16_t yColor = y==0 ? bottom : top;
-	yColor &= (x==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
-	yColor >>= (x==0 ? 3 : 0);
-
-	yColor &= ((y^z)==0 ? MiniMask::Row::Top : MiniMask::Row::Bottom);
-	yColor >>= ((y^z)==0 ? 3*2 : 0);
-
-
-	uint16_t zColor = z==0 ? front : back;
-	zColor &= (y==0 ? MiniMask::Row::Bottom : MiniMask::Row::Top);
-	zColor >>= (y==0 ? 0 : 3*2);
-
-	zColor &= ((z^x)==0 ? MiniMask::Column::Left : MiniMask::Column::Right);
-	zColor >>= ((z^x)==0 ? 3 : 0);
-
-	//assert(std::popcount(xColor) <= 3 && std::popcount(yColor) <= 3 && std::popcount(zColor) <= 3);
-	//assert(xColor <= 0b111 && yColor <= 0b111 && zColor <= 0b111);
+    uint16_t zFace = z==0 ? front : back;
+    //check
+    //I think we actually ignore z here since the back is inverted!
+    zFace >>= (x^z)==0 ?     1*3 : 0*3;
+    zFace >>= y==0 ?     2*3 : 0*3;
+    zFace &= 0b111;
 
 
-	return xColor^yColor^zColor;
+	return xFace^yFace^zFace;
 }
+
 
 std::array<MiniCube, 18> MiniCube::getNeighbors() const {
 

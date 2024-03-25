@@ -34,10 +34,75 @@ int main() {
 
     std::vector<uint8_t> pdb = pdbGen(qb, 41392);
 
-        /*
-    MiniCube qb;
+    
+    std::cout << "Cubie ID for:\n" << std::endl;
+
+    for (int i = 0; i < 8; i++) {
+        std::cout << "(" << (i&0b001) << ", " << ((i&0b010)>>1) << ", "  << ((i&0b100)>>2) << "): ";
+        std::cout << (int) qb.getCubieID(i&0b001, (i&0b010)>>1, (i&0b100)>>2) << std::endl;
+    }
+
+    for (int i = 0; i < 100; i++) {
+        qb = qb.rotVert(Column::Left, Direction::Down);
+        qb = qb.rotHoriz(Row::Top, Direction::Left);
+    }
+
+    std::cout << qb << std::endl;
+
+    std::cout << "Cubie IDs after scramble: " << std::endl;
+
+    for (int i = 0; i < 8; i++) {
+        std::cout << "(" << (i&0b001) << ", " << ((i&0b010)>>1) << ", "  << ((i&0b100)>>2) << "): ";
+        std::cout << (int) qb.getCubieID(i&0b001, (i&0b010)>>1, (i&0b100)>>2) << std::endl;
+    }
+
+    std::cout << "Cube:\n" << qb;
+
+    /*
+    std::cout << "\nCube faces at:\n" << std::endl;
+
+    std::array<char, 6> const colors {{
+        'W', // White  0b000
+        'G', // Green  0b001
+        'B', // Blue   0b010
+        'O', // Orange 0b011
+        'R', // Red    0b100
+        'Y'  // Yellow 0b101
+    }};
+
+    for (int i = 0; i < 8; i++) {
+        bool x = i&0b001;
+        bool y = i&0b010;
+        bool z = i&0b100;
+
+        uint16_t xFace = x==0 ? qb.left : qb.right;
+        //checked
+        xFace >>= (x^z)==0 ? 0*3 : 1*3;
+        xFace >>= y==0 ?     2*3 : 0*3;
+        xFace &= 0b111;
+
+        uint16_t yFace = y==0 ? qb.top : qb.bottom;
+        //checked
+        yFace >>= x==0 ?     1*3 : 0*3;
+        yFace >>= (y^z)==0 ? 0*3 : 2*3;
+        yFace &= 0b111;
+
+        uint16_t zFace = z==0 ? qb.front : qb.back;
+        //check
+        //I think we actually ignore z here since the back is inverted!
+        zFace >>= (x^z)==0 ?     1*3 : 0*3;
+        zFace >>= y==0 ?     2*3 : 0*3;
+        zFace &= 0b111;
+
+
+        std::cout << "(" << (i&0b001) << ", " << ((i&0b010)>>1) << ", "  << ((i&0b100)>>2) << "):\n";
+        std::cout << "\tX face: " << colors.at(xFace) << "\n\tY face: " << colors.at(yFace) << 
+            "\n\tZ face: " << colors.at(zFace) << "\n\n";
+    }*/
+    
     //std::vector<Cube> cubeVec;
     
+    /*
     std::unordered_map<uint32_t, MiniCube> cubeMap;
 
     unsigned long long collisions = 0;
@@ -102,8 +167,7 @@ int main() {
     qb2 = qb2.rotHoriz(Row::Bottom, Direction::_180);
     std::cout << (qb2 == qb ? "equal" : "not equal") << std::endl;*/
 
-
-    
+    /*
     std::cout << "Cubes that can be solved in [x] moves: [n]\n\n";;
     for (int i = 0; i <= 11; i++) {
         std::cout << i << ": " << std::count(pdb.begin(), pdb.end(), i) << "\n";
@@ -112,8 +176,7 @@ int main() {
     for (int i = 0; i < 100; i++) {
         std::cout << "Cube #"<<i<<":\t" << (int) pdb[i] << std::endl;
     }
-    
-    
+    */
 
     return 0;
 }
