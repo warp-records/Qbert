@@ -32,7 +32,9 @@ int main() {
 
     MiniCube qb;
 
-    std::vector<uint8_t> pdb = pdbGen(qb, 41392);
+    std::vector<uint8_t> pdb = pdbGen(qb, 3859548);
+
+    //std::cout << pdb.size() << std::endl;
 
         /*
     MiniCube qb;

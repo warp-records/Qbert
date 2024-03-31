@@ -42,6 +42,7 @@ uint16_t top, bottom,
 		uint16_t front, uint16_t back,
 		uint16_t left, uint16_t right);
 
+	//Normalized so top left front cube is never moved
 	MiniCube rotHoriz(Row line, Direction dir) const;
 	MiniCube rotVert(Column line, Direction dir) const;
 
@@ -83,9 +84,9 @@ uint16_t top, bottom,
 	//multiple times
 	uint32_t getIdx() const {
 		//bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
-		//Starting from 1!
-		uint16_t const facts[7] {
-			1, 2, 6, 24, 120, 720, 5040
+		//2!*3^1 ... 7!*3^5
+		uint32_t const offsets[6] {
+			6, 54, 648, 9720, 174960, 3674160
 		};
 
 		uint32_t idx = 0;
@@ -93,7 +94,7 @@ uint16_t top, bottom,
 		//look into how this fuckin works
 		//Last cube is already known given the first 7
 		for (int i = 0; i < 7; i++) {
-			idx += facts[i]*getCubieID(i & 0b001, i & 0b010, i & 0b100);
+			idx += offsets[i] * getCubieID(i&0b001, (i&0b010)>>1, (i&0b100)>>2);
 
 			//assert(usedIds[getCubieID(i & 0b001, i & 0b010, i & 0b100)] == false);
 			//usedIds[getCubieID(i & 0b001, i & 0b010, i & 0b100)] = true;
@@ -102,7 +103,12 @@ uint16_t top, bottom,
 		return idx;
 	}
 
+	//Only public for debugging
+	uint8_t getCubieID(bool x, bool y, bool z) const;
+
+
 private:
+
 	//If this becomes a bottleneck, it could possibly
 	//be sped up with a permute instruction
 	static uint16_t rotFaceLeft(uint16_t face);
@@ -111,7 +117,7 @@ private:
 
 	//Get the unique identifier for each cube:
 	//the colors of each face from that XOR'd together
-	uint8_t getCubieID(bool x, bool y, bool z) const;
+	//uint8_t getCubieID(bool x, bool y, bool z) const;
 
 };
 
