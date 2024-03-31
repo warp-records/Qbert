@@ -21,6 +21,13 @@ uint32_t rotFace180(uint32_t face);
 
 Cube Cube::rotHoriz(Row line, Direction dir) const {
 
+
+	//Don't feel like properly coding normalization
+	if (line == Row::Top) {
+		Direction opposite = dir==Direction::Left ? Direction::Right : Direction::Left;
+		return rotHoriz(Row::Middle, opposite).rotHoriz(Row::Bottom, opposite);
+	}
+
 	Cube newCube = *this;
 
 	uint32_t maskType;
@@ -118,6 +125,12 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 
 
 Cube Cube::rotVert(Column line, Direction dir) const {
+
+	if (line == Column::Left) {
+		Direction opposite = dir==Direction::Up ? Direction::Down : Direction::Up;
+		return rotVert(Column::Middle, opposite).rotVert(Column::Right, opposite);
+	}
+
 
 	Cube newCube = *this;
 

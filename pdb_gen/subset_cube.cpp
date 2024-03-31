@@ -20,8 +20,14 @@ uint16_t rotFace180(uint16_t face);
 
 
 MiniCube MiniCube::rotHoriz(Row line, Direction dir) const {
-	if (dir==Direction::_180)
+
+	//180 degree rotations are broken
+	if (dir == Direction::_180)
 		return rotHoriz(line, Direction::Left).rotHoriz(line, Direction::Left);
+
+	//Ensure cube is normalized, don't feel like patching code lol
+	if (line == Row::Top)
+		return rotHoriz(Row::Bottom, dir==Direction::Left ? Direction::Right : Direction::Left);
 
 	MiniCube newCube = *this;
 
@@ -113,9 +119,14 @@ MiniCube MiniCube::rotHoriz(Row line, Direction dir) const {
 
 
 MiniCube MiniCube::rotVert(Column line, Direction dir) const {
+
 	//180 degree rotations are broken
-	if (dir==Direction::_180)
+	if (dir == Direction::_180)
 		return rotVert(line, Direction::Up).rotVert(line, Direction::Up);
+
+
+	if (line == Column::Left)
+		return rotVert(Column::Right, dir==Direction::Up ? Direction::Down : Direction::Up);
 
 	MiniCube newCube = *this;
 
@@ -247,44 +258,17 @@ uint16_t MiniCube::rotFace180(uint16_t face) {
 	return newFace;
 }
 
-//pretty sure we don't need this part
-//xFace &= x==0 ? MiniMask::Column::Right : MiniMask::Column::Left;
-
-//It's complicated but I pinkie promise it works
-uint8_t MiniCube::getCubieID(bool x, bool y, bool z) const {
-    uint16_t xFace = x==0 ? left : right;
-    //checked
-    xFace >>= (x^z)==0 ? 0*3 : 1*3;
-    xFace >>= y==0 ?     2*3 : 0*3;
-    xFace &= 0b111;
-
-    uint16_t yFace = y==0 ? top : bottom;
-    //checked
-    yFace >>= x==0 ?     1*3 : 0*3;
-    yFace >>= (y^z)==0 ? 0*3 : 2*3;
-    yFace &= 0b111;
-
-    uint16_t zFace = z==0 ? front : back;
-    //check
-    //I think we actually ignore z here since the back is inverted!
-    zFace >>= (x^z)==0 ?     1*3 : 0*3;
-    zFace >>= y==0 ?     2*3 : 0*3;
-    zFace &= 0b111;
-
-
-	return xFace^yFace^zFace;
-}
-
 
 std::array<MiniCube, 18> MiniCube::getNeighbors() const {
 
-	MiniCube leftviewCube = changePerspective(Perspective::Left);
+	//Right view must be used for cube to be normalized
+	MiniCube sideViewCube = changePerspective(Perspective::Right);
 	std::array<MiniCube, 6> xAxisRots {{
-		leftviewCube.rotVert(Column::Left, Direction::Up), leftviewCube.rotVert(Column::Left, Direction::Down),
-		leftviewCube.rotVert(Column::Right, Direction::Up), leftviewCube.rotVert(Column::Right, Direction::Down),
-		leftviewCube.rotVert(Column::Left, Direction::_180), leftviewCube.rotVert(Column::Right, Direction::_180)
+		sideViewCube.rotVert(Column::Left, Direction::Up), sideViewCube.rotVert(Column::Left, Direction::Down),
+		sideViewCube.rotVert(Column::Right, Direction::Up), sideViewCube.rotVert(Column::Right, Direction::Down),
+		sideViewCube.rotVert(Column::Left, Direction::_180), sideViewCube.rotVert(Column::Right, Direction::_180)
 	}};
-	std::for_each(xAxisRots.begin(), xAxisRots.end(), [](MiniCube& qb) { qb = qb.changePerspective(Perspective::Right); });
+	std::for_each(xAxisRots.begin(), xAxisRots.end(), [](MiniCube& qb) { qb = qb.changePerspective(Perspective::Left); });
 
 
 	std::array<MiniCube, 6> yAxisRots {{

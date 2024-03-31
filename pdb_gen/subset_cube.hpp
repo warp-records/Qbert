@@ -42,6 +42,7 @@ uint16_t top, bottom,
 		uint16_t front, uint16_t back,
 		uint16_t left, uint16_t right);
 
+	//Normalized so top left front cube is never moved
 	MiniCube rotHoriz(Row line, Direction dir) const;
 	MiniCube rotVert(Column line, Direction dir) const;
 
@@ -103,10 +104,13 @@ uint16_t top, bottom,
 	}
 
 	//Only public for debugging
-	uint8_t getCubieID(bool x, bool y, bool z) const;
+	uint8_t getCubieID(bool x, bool y, bool z) const {
+		return 0;
+	};
 
 
 private:
+
 	//If this becomes a bottleneck, it could possibly
 	//be sped up with a permute instruction
 	static uint16_t rotFaceLeft(uint16_t face);
