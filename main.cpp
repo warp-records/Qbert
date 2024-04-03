@@ -31,15 +31,12 @@ int main() {
     )" << std::endl;
 
     MiniCube qb;
+    MiniCube qb2;
 
-    std::vector<uint8_t> pdb = pdbGen(qb, 3859548);
+    std::vector<uint8_t> pdb = pdbGen(qb, 11022480);
 
     //std::cout << pdb.size() << std::endl;
 
-        /*
-    MiniCube qb;
-    //std::vector<Cube> cubeVec;
-    
     std::unordered_map<uint32_t, MiniCube> cubeMap;
 
     unsigned long long collisions = 0;
@@ -47,23 +44,17 @@ int main() {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    while (std::chrono::high_resolution_clock::now() - start < std::chrono::milliseconds(1500)) {
+    while (std::chrono::high_resolution_clock::now() - start < std::chrono::milliseconds(500)) {
         
         qb = qb.rotVert(static_cast<Column>(rand() & 1),  static_cast<Direction>(rand() & 1));
-        uint32_t hash = qb.getIdx();
-        //Cube hash already exists but it doesn't match this cube
-        if (cubeMap.find(hash)!=cubeMap.end() && cubeMap.find(hash)->second != qb) {
-            collisions++;
-        }
-        cubeMap.insert({hash, qb});
-
         qb = qb.rotHoriz(static_cast<Row>(rand() & 1), static_cast<Direction>((rand() & 1) + 2));
-        hash = qb.getIdx();
-         if (cubeMap.find(hash)!=cubeMap.end() && cubeMap.find(hash)->second != qb) {
+
+        qb2 = qb2.rotVert(static_cast<Column>(rand() & 1),  static_cast<Direction>(rand() & 1));
+        qb2 = qb2.rotHoriz(static_cast<Row>(rand() & 1), static_cast<Direction>((rand() & 1) + 2));
+
+        if (qb.getIdx() == qb2.getIdx() && qb != qb2) {
             collisions++;
         }
-
-        cubeMap.insert({hash, qb});
 
 
         count += 2;
@@ -71,7 +62,9 @@ int main() {
 
     std::cout << "collisions: " << collisions << std::endl;
     std::cout << "cubes generated: " << count << std::endl;
-    std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;*/
+
+    std::cout << "Cubes with same index (" << qb.getIdx() << "):\n\n" << qb << "\n" << qb2 << std::endl;
+    //std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;
 
     /*
     std::cout << "Cube:\n" << qb << "\n\nIndex: " << qb.getIdx() << "\n";
@@ -105,7 +98,7 @@ int main() {
     std::cout << (qb2 == qb ? "equal" : "not equal") << std::endl;*/
 
 
-    
+    /*    
     std::cout << "Cubes that can be solved in [x] moves: [n]\n\n";;
     for (int i = 0; i <= 11; i++) {
         std::cout << i << ": " << std::count(pdb.begin(), pdb.end(), i) << "\n";
@@ -113,7 +106,7 @@ int main() {
     
     for (int i = 0; i < 100; i++) {
         std::cout << "Cube #"<<i<<":\t" << (int) pdb[i] << std::endl;
-    }
+    }*/
     
     
 
