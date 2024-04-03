@@ -14,11 +14,14 @@ template<class T> struct Node {
 //std::unordered_set();
 
 template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
+	
 	std::queue<Node<T>> q;
 	//this single line is literally the entirety of korf's fabled pdb
 	std::vector<uint8_t> pdb(permuts);
 
 	q.push(Node<T>{start, 0});
+
+	int maxDepth = 0;
 
 	while (!q.empty()) {
 

@@ -258,6 +258,37 @@ uint16_t MiniCube::rotFace180(uint16_t face) {
 	return newFace;
 }
 
+MiniCube::CubieInfo MiniCube::getCubieInfo(bool x, bool y, bool z) const {
+    uint16_t xFace = x==0 ? left : right;
+    //checked
+    xFace >>= (x^z)==0 ? 0*3 : 1*3;
+    xFace >>= y==0 ?     2*3 : 0*3;
+    xFace &= 0b111;
+
+    uint16_t yFace = y==0 ? top : bottom;
+    //checked
+    yFace >>= x==0 ?     1*3 : 0*3;
+    yFace >>= (y^z)==0 ? 0*3 : 2*3;
+    yFace &= 0b111;
+
+    uint16_t zFace = z==0 ? front : back;
+    //check
+    //I think we actually ignore z here since the back is inverted!
+    zFace >>= (x^z)==0 ?     1*3 : 0*3;
+    zFace >>= y==0 ?     2*3 : 0*3;
+    zFace &= 0b111;
+
+    //implement ordering here
+
+    uint8_t id = xFace^yFace^zFace;
+
+    //I think this'll work
+    uint8_t orientation = 0;
+    orientation += xFace > yFace;
+    orientation += yFace > zFace;
+
+	return CubieInfo{id, orientation};
+}
 
 std::array<MiniCube, 18> MiniCube::getNeighbors() const {
 
@@ -343,6 +374,7 @@ std::ostream& operator<<(std::ostream& os, const MiniCube& cube) {
 
 
 //Naive compare implementation, for debugging
+/*
 bool operator==(MiniCube const& lhs, MiniCube const& rhs) {
 	MiniCube lhsPerm = lhs;
 
@@ -363,7 +395,13 @@ bool operator==(MiniCube const& lhs, MiniCube const& rhs) {
 	}
 
 	return false;
-}
+}*/
+
+bool operator==(MiniCube const& lhs, MiniCube const& rhs) {
+	return lhs.top==rhs.top && lhs.bottom==rhs.bottom &&
+								lhs.left==rhs.left && lhs.right==rhs.right &&
+								lhs.front==rhs.front && lhs.back==rhs.back;
+};
 
 bool operator!=(MiniCube const& lhs, MiniCube const& rhs) {
 	return !(lhs==rhs);
