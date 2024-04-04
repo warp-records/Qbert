@@ -296,6 +296,7 @@ std::array<MiniCube, 9> MiniCube::getNeighbors() const {
 
 	//Right view must be used for cube to be normalized
 	MiniCube sideViewCube = changePerspective(Perspective::Right);
+
 	std::array<MiniCube, 3> xAxisRots {{
 		//sideViewCube.rotVert(Column::Left, Direction::Up), sideViewCube.rotVert(Column::Left, Direction::Down),
 		sideViewCube.rotVert(Column::Right, Direction::Up), sideViewCube.rotVert(Column::Right, Direction::Down),
@@ -327,7 +328,7 @@ std::array<MiniCube, 9> MiniCube::getNeighbors() const {
 
 
 uint32_t MiniCube::getIdx() const {
-	bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+	//bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
 	//7!*3^5 ... 2!*3^1
 
 	//HELPFHDSAFADSHNFSDK

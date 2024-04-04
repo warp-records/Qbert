@@ -34,10 +34,20 @@ int main() {
 
     std::vector<uint8_t> pdb = pdbGen(qb, 11022480);
 
+    /*
+    std::cout << qb << "\n";
+
+    qb = qb.changePerspective(Perspective::Right);
+    std::cout << qb << std::endl;
+
+    qb = qb.changePerspective(Perspective::Left);
+    std::cout << qb << std::endl;*/
+
     
+    /*
     for (MiniCube neighbor : qb.getNeighbors()) {
         std::cout << neighbor << std::endl;
-    }
+    }*/
 
     
     

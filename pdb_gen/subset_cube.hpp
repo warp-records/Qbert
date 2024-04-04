@@ -57,6 +57,9 @@ uint16_t top, bottom,
 			qb.right = front;
 			qb.back = right;
 			qb.left = back;
+
+			qb.top = rotFaceLeft(top);
+			qb.bottom = rotFaceRight(bottom);
 			break;
 		}
 
@@ -65,6 +68,9 @@ uint16_t top, bottom,
 			qb.left = front;
 			qb.back = left;
 			qb.right = back;
+
+			qb.top = rotFaceRight(top);
+			qb.bottom = rotFaceLeft(bottom);
 			break;
 		}
 
