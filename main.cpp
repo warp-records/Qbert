@@ -31,6 +31,7 @@ int main() {
     )" << std::endl;
 
     
+    /*
     MiniCube qb;
     
     
@@ -53,7 +54,7 @@ int main() {
     for (int i = 0; i < 8; i++) {
         std::cout << "(" << (i&0b001) << ", " << ((i&0b010)>>1) << ", "  << ((i&0b100)>>2) << "): ";
         std::cout << (int) qb.getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2).id << std::endl;
-    }
+    }*/
 
     /*
     MiniCube qb;
@@ -74,43 +75,63 @@ int main() {
 
 
 
-    /*
+    
     MiniCube qb;
-    MiniCube qb2;
+    //MiniCube qb2;
 
     //std::vector<uint8_t> pdb = pdbGen(qb, 11022480);
 
     //std::cout << pdb.size() << std::endl;
 
     
-    std::unordered_map<uint32_t, MiniCube> cubeMap;
+    std::unordered_map<uint64_t, MiniCube> cubeMap;
 
     unsigned long long collisions = 0;
     unsigned count = 0;
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    while (std::chrono::high_resolution_clock::now() - start < std::chrono::milliseconds(500)) {
+    while (std::chrono::high_resolution_clock::now() - start < std::chrono::milliseconds(5000)) {
         
         qb = qb.rotVert(static_cast<Column>(rand() & 1),  static_cast<Direction>(rand() & 1));
         qb = qb.rotHoriz(static_cast<Row>(rand() & 1), static_cast<Direction>((rand() & 1) + 2));
 
-        qb2 = qb2.rotVert(static_cast<Column>(rand() & 1),  static_cast<Direction>(rand() & 1));
-        qb2 = qb2.rotHoriz(static_cast<Row>(rand() & 1), static_cast<Direction>((rand() & 1) + 2));
 
+        if (cubeMap.contains(qb.getIdx()) && cubeMap.at(qb.getIdx()) != qb) {
+            assert(false);
+        }
+        cubeMap.insert({qb.getIdx(), qb});
+
+
+        /*
         if (qb.getIdx() == qb2.getIdx() && qb != qb2) {
             collisions++;
-        }
+            //assert(false);
+            for (int i = 0; i < 8; i++) {
+                std::cout << "(" << (i&0b001) << ", " << ((i&0b010)>>1) << ", "  << ((i&0b100)>>2) << "): ";
+                std::cout << (int) qb.getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2).id << std::endl;
+            }
+
+            std::cout << "\n\n\n";
+            for (int i = 0; i < 8; i++) {
+                std::cout << "(" << (i&0b001) << ", " << ((i&0b010)>>1) << ", "  << ((i&0b100)>>2) << "): ";
+                std::cout << (int) qb2.getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2).id << std::endl;
+            }
+
+            std::cout << "Cubes with same index (" << qb.getIdx() << "):\n\n" << qb << "\n" << qb2 << std::endl;
+
+            break;
+        }*/
 
 
-        count += 2;
+        count += 1;
     }
 
     std::cout << "collisions: " << collisions << std::endl;
     std::cout << "cubes generated: " << count << std::endl;
 
-    std::cout << "Cubes with same index (" << qb.getIdx() << "):\n\n" << qb << "\n" << qb2 << std::endl;
-    //std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;*/
+    std::cout << "IT WORKKSSS!!" << std::endl;
+    //std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;
     
     return 0;
 }

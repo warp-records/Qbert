@@ -11,4 +11,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(Rubix main.cpp cube.cpp pdb_gen/subset_cube.cpp)
 
 # Set optimization level to Os
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")

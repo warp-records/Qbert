@@ -344,7 +344,7 @@ uint32_t MiniCube::getIdx() const {
 	//Index of all cubibes that HAVEN'T been visited
 	//First order of business is fixing this shit
 	uint8_t index[8] {
-		0, 1, 2, 3, 4, 5, 6, 7
+		0, 1, 2, 0, 3, 4, 5, 6
 	};
 
 	uint64_t idx = 0;
@@ -365,7 +365,7 @@ uint32_t MiniCube::getIdx() const {
 		usedIds[info.id] = true;*/
 
 		idx += factorial[i]*index[info.id]*powerOf3[i] +
-				factorial[i]*powerOf3[(i > 0 ? i-1 : 0)]*info.orientation;
+				factorial[i]*powerOf3[std::max(i-1, 0)]*info.orientation;
 
 		for (int j = 0; j < 8; j++) {
 			index[j] = index[j] > index[info.id] ? index[j]-1 : index[j];
