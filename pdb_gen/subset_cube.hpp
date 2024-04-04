@@ -82,64 +82,7 @@ uint16_t top, bottom,
 
 	//For some reason this works even though some IDs are used
 	//multiple times
-	uint32_t getIdx() const {
-		bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
-		//7!*3^5 ... 2!*3^1
-
-		//HELPFHDSAFADSHNFSDK
-
-		//Maybe try a simpler implementation
-		uint32_t const factorial[8] {
-			0, 1, 2, 6, 24, 120, 720, 5040
-		};
-
-		uint32_t const powerOf3[7] {
-			1, 3, 9, 27, 81, 243, 2187
-		};
-
-		//Index of all cubibes that HAVEN'T been visited
-		uint8_t index[8] {
-			0, 1, 2, 3, 4, 5, 6, 7
-		};
-
-		uint64_t idx = 0;
-
-		//Last cube is already known given cube numbers 1-6
-
-		//PLEASE PLEASE PLEASE FUCKINGGG WORK
-		for (int i = 6; i > 0; i--) {
-			//For this to work, each Cubie ID must max out to the number left
-			auto info = getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2);
-
-			//assert(usedIds[info.id] == false);
-			/*
-			if (usedIds[info.id]) {
-				std::cerr << "Repeat ID: " << std::bitset<8>(info.id) << std::endl;
-				assert(false);
-			}
-			usedIds[info.id] = true;*/
-
-			idx += factorial[i]*index[info.id]*powerOf3[i-1] +
-					factorial[i-1]*powerOf3[i-2]*info.orientation;
-
-			for (int j = 0; j < 8; j++) {
-				index[j] = index[j] > index[info.id] ? index[j]-1 : index[j];
-				//assert(index[j]-i <= 1);
-			}
-
-
-			/*
-			for (int j = 0; j < 8; j++) {
-				indices[j] = indices[j] > i ? indices[j]-1 : indices[j];
-				assert(indices[j] <= i);
-			}*/
-
-			//assert(usedIds[getCubieID(i & 0b001, i & 0b010, i & 0b100)] == false);
-			//usedIds[getCubieID(i & 0b001, i & 0b010, i & 0b100)] = true;
-		}
-
-		return idx;
-	}
+	uint32_t getIdx() const;
 
 
 			//auto info = getCubieInfo((i+1)&0b001, ((i+1)&0b010)>>1, ((i+1)&0b100)>>2);

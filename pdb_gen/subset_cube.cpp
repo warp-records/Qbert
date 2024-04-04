@@ -50,12 +50,12 @@ MiniCube MiniCube::rotHoriz(Row line, Direction dir) const {
 
 	switch (dir) {
 		case (Direction::Left) : {
-			*outwardFace = rotFaceRight(*outwardFace);
+			*outwardFace = line==Row::Top ? rotFaceRight(*outwardFace) : rotFaceLeft(*outwardFace);
 			break;
 		}
 
 		case (Direction::Right) : {
-			*outwardFace = rotFaceLeft(*outwardFace);
+			*outwardFace = line==Row::Top ? rotFaceLeft(*outwardFace) : rotFaceRight(*outwardFace);
 			break;
 		}
 
@@ -152,12 +152,12 @@ MiniCube MiniCube::rotVert(Column line, Direction dir) const {
 
 	switch (dir) {
 		case (Direction::Up) : {
-			*outwardFace = rotFaceLeft(*outwardFace);
+			*outwardFace = line==Column::Left ? rotFaceLeft(*outwardFace) : rotFaceRight(*outwardFace);
 			break;
 		}
 
 		case (Direction::Down) : {
-			*outwardFace = rotFaceRight(*outwardFace);
+			*outwardFace = line==Column::Left ? rotFaceRight(*outwardFace) : rotFaceLeft(*outwardFace);
 			break;
 		}
 
@@ -284,8 +284,10 @@ MiniCube::CubieInfo MiniCube::getCubieInfo(bool x, bool y, bool z) const {
 
     //I think this'll work
     uint8_t orientation = 0;
-    orientation += xFace > yFace;
-    orientation += yFace > zFace;
+	if (xFace > yFace && xFace > zFace) orientation = 0; // Assuming xFace is greatest
+	else if (yFace > xFace && yFace > zFace) orientation = 1; // Assuming yFace is greatest
+	else orientation = 2; // Assuming zFace is greatest or equal (fallback)
+
 
 	return CubieInfo{id, orientation};
 }
@@ -322,6 +324,58 @@ std::array<MiniCube, 18> MiniCube::getNeighbors() const {
 
 	return final;
 }
+
+
+uint32_t MiniCube::getIdx() const {
+	bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+	//7!*3^5 ... 2!*3^1
+
+	//HELPFHDSAFADSHNFSDK
+
+	//Maybe try a simpler implementation
+	uint32_t const factorial[8] {
+		0, 1, 2, 6, 24, 120, 720, 5040
+	};
+
+	uint32_t const powerOf3[7] {
+		1, 3, 9, 27, 81, 243, 2187
+	};
+
+	//Index of all cubibes that HAVEN'T been visited
+	//First order of business is fixing this shit
+	uint8_t index[8] {
+		0, 1, 2, 3, 4, 5, 6, 7
+	};
+
+	uint64_t idx = 0;
+
+	//Last cube is already known given cube numbers 1-6
+
+	//PLEASE PLEASE PLEASE FUCKINGGG WORK
+	for (int i = 6; i >= 0; i--) {
+		//For this to work, each Cubie ID must max out to the number left
+		auto info = getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2);
+
+		//assert(usedIds[info.id] == false);
+		/*
+		if (usedIds[info.id]) {
+			std::cerr << "Repeat ID: " << std::bitset<8>(info.id) << std::endl;
+			assert(false);
+		}
+		usedIds[info.id] = true;*/
+
+		idx += factorial[i]*index[info.id]*powerOf3[i] +
+				factorial[i]*powerOf3[(i > 0 ? i-1 : 0)]*info.orientation;
+
+		for (int j = 0; j < 8; j++) {
+			index[j] = index[j] > index[info.id] ? index[j]-1 : index[j];
+			//assert(index[j]-i <= 1);
+		}
+	}
+
+	return idx;
+}
+
 
 
 //terminal output written by ChatGPT 4
@@ -368,8 +422,6 @@ std::ostream& operator<<(std::ostream& os, const MiniCube& cube) {
 
     return os;
 }
-
-
 
 
 

@@ -30,13 +30,59 @@ int main() {
 
     )" << std::endl;
 
+    
+    MiniCube qb;
+    
+    
+    std::cout << qb << "\nCubie IDs:" << std::endl;
+
+    for (int i = 0; i < 8; i++) {
+        std::cout << "(" << (i&0b001) << ", " << ((i&0b010)>>1) << ", "  << ((i&0b100)>>2) << "): ";
+        std::cout << (int) qb.getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2).id << std::endl;
+    }
+
+    srand(time(NULL));
+
+    for (int i = 0; i < rand()%1000; i++) {
+        qb = qb.rotVert(Column::Right, Direction::Down);
+        qb = qb.rotHoriz(Row::Top, Direction::Left);
+    }
+
+    std::cout << "\n" << qb << "\nCubie IDs after scramble:\n" << std::endl;
+
+    for (int i = 0; i < 8; i++) {
+        std::cout << "(" << (i&0b001) << ", " << ((i&0b010)>>1) << ", "  << ((i&0b100)>>2) << "): ";
+        std::cout << (int) qb.getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2).id << std::endl;
+    }
+
+    /*
+    MiniCube qb;
+
+    std::cout << qb << "\n";
+
+    qb = qb.rotVert(Column::Left, Direction::Down);
+    std::cout << qb << "\n";
+
+    qb = qb.rotHoriz(Row::Top, Direction::Left);
+    std::cout << qb << "\n";
+
+    qb = qb.rotVert(Column::Right, Direction::Up);
+    std::cout << qb << "\n";
+
+    qb = qb.rotHoriz(Row::Bottom, Direction::Left);
+    std::cout << qb << "\n";*/
+
+
+
+    /*
     MiniCube qb;
     MiniCube qb2;
 
-    std::vector<uint8_t> pdb = pdbGen(qb, 11022480);
+    //std::vector<uint8_t> pdb = pdbGen(qb, 11022480);
 
     //std::cout << pdb.size() << std::endl;
 
+    
     std::unordered_map<uint32_t, MiniCube> cubeMap;
 
     unsigned long long collisions = 0;
@@ -64,7 +110,7 @@ int main() {
     std::cout << "cubes generated: " << count << std::endl;
 
     std::cout << "Cubes with same index (" << qb.getIdx() << "):\n\n" << qb << "\n" << qb2 << std::endl;
-    //std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;
+    //std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;*/
     
     return 0;
 }
