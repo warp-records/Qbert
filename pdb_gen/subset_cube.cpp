@@ -353,24 +353,15 @@ uint32_t MiniCube::getIdx() const {
 	//Last cube is already known given cube numbers 1-6
 
 	//PLEASE PLEASE PLEASE FUCKINGGG WORK
-	for (int i = 6; i >= 0; i--) {
+	for (int i = 6; i > 0; i--) {
 		//For this to work, each Cubie ID must max out to the number left
 		auto info = getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2);
 
-		//assert(usedIds[info.id] == false);
-		/*
-		if (usedIds[info.id]) {
-			std::cerr << "Repeat ID: " << std::bitset<8>(info.id) << std::endl;
-			assert(false);
-		}
-		usedIds[info.id] = true;*/
-
 		idx += factorial[i]*index[info.id]*powerOf3[i] +
-				factorial[i]*powerOf3[std::max(i-1, 0)]*info.orientation;
+				factorial[i]*powerOf3[i-1]*info.orientation;
 
 		for (int j = 0; j < 8; j++) {
 			index[j] = index[j] > index[info.id] ? index[j]-1 : index[j];
-			//assert(index[j]-i <= 1);
 		}
 	}
 

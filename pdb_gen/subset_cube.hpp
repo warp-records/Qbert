@@ -90,11 +90,6 @@ uint16_t top, bottom,
 	//multiple times
 	uint32_t getIdx() const;
 
-
-			//auto info = getCubieInfo((i+1)&0b001, ((i+1)&0b010)>>1, ((i+1)&0b100)>>2);
-
-			//idx += factorials[i]*powersOf3[i+1]*indices[info.id] + powersOf3[i]*info.orientation;
-
 	//Only public for debugging
 	struct CubieInfo {
 		uint8_t id;
