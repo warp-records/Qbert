@@ -29,7 +29,22 @@ int main() {
     |___|___|___|/
 
     )" << std::endl;
+    
+    MiniCube qb;
 
+    std::vector<uint8_t> pdb = pdbGen(qb, 11022480);
+
+    
+    for (MiniCube neighbor : qb.getNeighbors()) {
+        std::cout << neighbor << std::endl;
+    }
+
+    
+    
+    std::cout << "Cubes that can be solved in [x] moves: [n]\n\n";;
+    for (int i = 0; i <= 11; i++) {
+        std::cout << i << ": " << std::count(pdb.begin(), pdb.end(), i) << "\n";
+    }
     
     /*
     MiniCube qb;
@@ -73,17 +88,11 @@ int main() {
     qb = qb.rotHoriz(Row::Bottom, Direction::Left);
     std::cout << qb << "\n";*/
 
-
-
-    
-    MiniCube qb;
-    //MiniCube qb2;
-
     //std::vector<uint8_t> pdb = pdbGen(qb, 11022480);
 
     //std::cout << pdb.size() << std::endl;
 
-    
+    /*
     std::unordered_map<uint64_t, MiniCube> cubeMap;
 
     unsigned long long collisions = 0;
@@ -103,7 +112,7 @@ int main() {
         cubeMap.insert({qb.getIdx(), qb});
 
 
-        /*
+        
         if (qb.getIdx() == qb2.getIdx() && qb != qb2) {
             collisions++;
             //assert(false);
@@ -121,7 +130,7 @@ int main() {
             std::cout << "Cubes with same index (" << qb.getIdx() << "):\n\n" << qb << "\n" << qb2 << std::endl;
 
             break;
-        }*/
+        }
 
 
         count += 1;
@@ -131,7 +140,7 @@ int main() {
     std::cout << "cubes generated: " << count << std::endl;
 
     std::cout << "IT WORKKSSS!!" << std::endl;
-    //std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;
+    //std::cout << "number of unique cubes: " << cubeMap.size() << std::endl;*/
     
     return 0;
 }

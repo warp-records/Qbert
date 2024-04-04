@@ -292,35 +292,35 @@ MiniCube::CubieInfo MiniCube::getCubieInfo(bool x, bool y, bool z) const {
 	return CubieInfo{id, orientation};
 }
 
-std::array<MiniCube, 18> MiniCube::getNeighbors() const {
+std::array<MiniCube, 9> MiniCube::getNeighbors() const {
 
 	//Right view must be used for cube to be normalized
 	MiniCube sideViewCube = changePerspective(Perspective::Right);
-	std::array<MiniCube, 6> xAxisRots {{
-		sideViewCube.rotVert(Column::Left, Direction::Up), sideViewCube.rotVert(Column::Left, Direction::Down),
+	std::array<MiniCube, 3> xAxisRots {{
+		//sideViewCube.rotVert(Column::Left, Direction::Up), sideViewCube.rotVert(Column::Left, Direction::Down),
 		sideViewCube.rotVert(Column::Right, Direction::Up), sideViewCube.rotVert(Column::Right, Direction::Down),
-		sideViewCube.rotVert(Column::Left, Direction::_180), sideViewCube.rotVert(Column::Right, Direction::_180)
+		/*sideViewCube.rotVert(Column::Left, Direction::_180), */sideViewCube.rotVert(Column::Right, Direction::_180)
 	}};
 	std::for_each(xAxisRots.begin(), xAxisRots.end(), [](MiniCube& qb) { qb = qb.changePerspective(Perspective::Left); });
 
 
-	std::array<MiniCube, 6> yAxisRots {{
-		rotVert(Column::Left, Direction::Up), rotVert(Column::Left, Direction::Down),
+	std::array<MiniCube, 3> yAxisRots {{
+		//rotVert(Column::Left, Direction::Up), rotVert(Column::Left, Direction::Down),
 		rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down),
-		rotVert(Column::Left, Direction::_180), rotVert(Column::Right, Direction::_180)
+		/*rotVert(Column::Left, Direction::_180), */rotVert(Column::Right, Direction::_180)
 	}};
 
 
-	std::array<MiniCube, 6> zAxisRots {{
-		rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::Right),
+	std::array<MiniCube, 3> zAxisRots {{
+		//rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::Right),
 		rotHoriz(Row::Bottom, Direction::Left), rotHoriz(Row::Bottom, Direction::Right),
-		rotHoriz(Row::Top, Direction::_180), rotHoriz(Row::Bottom, Direction::_180), 
+		/*rotHoriz(Row::Top, Direction::_180), */rotHoriz(Row::Bottom, Direction::_180), 
 	}};
 
-	std::array<MiniCube, 18> final;
-	std::copy(xAxisRots.begin(), xAxisRots.begin(), final.begin());
-	std::copy(yAxisRots.begin(), yAxisRots.begin(), final.begin()+xAxisRots.size());
-	std::copy(zAxisRots.begin(), zAxisRots.begin(), final.begin()+xAxisRots.size()+yAxisRots.size());
+	std::array<MiniCube, 9> final;
+	std::copy(xAxisRots.begin(), xAxisRots.end(), final.begin());
+	std::copy(yAxisRots.begin(), yAxisRots.end(), final.begin()+xAxisRots.size());
+	std::copy(zAxisRots.begin(), zAxisRots.end(), final.begin()+xAxisRots.size()+yAxisRots.size());
 
 	return final;
 }
@@ -347,7 +347,7 @@ uint32_t MiniCube::getIdx() const {
 		0, 1, 2, 0, 3, 4, 5, 6
 	};
 
-	uint64_t idx = 0;
+	uint32_t idx = 0;
 
 	//Last cube is already known given cube numbers 1-6
 

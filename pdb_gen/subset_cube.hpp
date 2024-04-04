@@ -75,7 +75,7 @@ uint16_t top, bottom,
 
 	MiniCube& operator=(const MiniCube& other) = default;
 
-	std::array<MiniCube, 18> getNeighbors() const;
+	std::array<MiniCube, 9> getNeighbors() const;
 
 	//Unique integer generated from cube used as an index into the PDB
 	//yields the same value for different orientations of the same cube

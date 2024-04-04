@@ -21,7 +21,7 @@ template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
 
 	q.push(Node<T>{start, 0});
 
-	int maxDepth = 0;
+	//int maxDepth = 0;
 
 	while (!q.empty()) {
 
@@ -34,11 +34,15 @@ template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
 			if (!pdb[idx]) {
 				q.push(Node<T>{neighbor, static_cast<uint8_t>(current.depth + 1)});
 				pdb[idx] = static_cast<uint8_t>(current.depth+1);
+
+				//maxDepth = std::max(maxDepth, current.depth+1);
 			}
 		}
 	}
 
 	pdb[start.getIdx()] = 0;
+
+	//std::cout << "max depth: " << maxDepth << std::endl;
 	
 	return pdb;
 }
