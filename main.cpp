@@ -32,8 +32,8 @@ int main() {
     
     MiniCube qb;
 
-    
-    std::vector<uint8_t> pdb = pdbGen(qb, 9972719);
+
+    std::vector<uint8_t> pdb = pdbGen(qb, 3674160);
 
     /*
     std::cout << qb << "\n";
@@ -51,10 +51,19 @@ int main() {
     }*/
 
     
-    
-    std::cout << "Cubes that can be solved in [x] moves: [n]\n\n";;
-    for (int i = 0; i <= 11; i++) {
-        std::cout << i << ": " << std::count(pdb.begin(), pdb.end(), i) << "\n";
+
+    std::array<uint32_t, 12> counts{};
+
+    //std::cout << i << ": " << std::count(pdb.begin(), pdb.end(), i) << "\n";
+    for (int i = 0; i < 3674160; i++) {
+        uint8_t numMoves = (pdb[i/2]>>((i%2) ? 4 : 0))&0b1111;
+        counts[numMoves]++;
+    }
+
+    std::cout << "Cubes that can be solved in [x] moves: [n]\n\n";
+
+    for (int i = 0; i < 12; i++) {
+        std::cout << i << ": " << counts[i] << "\n";
     }
     
     /*

@@ -335,11 +335,11 @@ uint32_t MiniCube::getIdx() const {
 
 	//Maybe try a simpler implementation
 	uint32_t const factorial[8] {
-		0, 1, 2, 6, 24, 120, 720, 5040
+		1, 1, 2, 6, 24, 120, 720, 5040
 	};
 
 	uint32_t const powerOf3[7] {
-		1, 3, 9, 27, 81, 243, 2187
+		1, 3, 9, 27, 81, 243, 729
 	};
 
 	//Index of all cubibes that HAVEN'T been visited
