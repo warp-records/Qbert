@@ -6,23 +6,21 @@
 #include <iostream>
 #include <algorithm>
 
-template<class T> struct Node {
-	T elem;
-	uint8_t depth;
-};
+//class PDB;
 
-//std::unordered_set();
+template<typename T> static std::vector<uint8_t> PDB<T>::genPdb(T start, int const permuts) {
 
-//(0b1111 << ((idx%2) ? 4 : 0))
+	struct Node {
+		T elem;
+		uint8_t depth;
+	};
 
-template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
-
-    std::queue<Node<T>> q;
+    std::queue<Node> q;
 
 	//this single line is literally the entirety of korf's fabled pdb lmao
 	std::vector<uint8_t> pdb(permuts/2);
 
-	q.push(Node<T>{start, 0});
+	q.push(Node{start, 0});
 
 	while (!q.empty()) {
 
@@ -33,7 +31,7 @@ template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
 			uint32_t idx = neighbor.getIdx();
 
 			if (!(pdb[idx/2] & ((idx%2) ? 0xf0 : 0x0f))) {
-				q.push(Node<T>{neighbor, static_cast<uint8_t>(current.depth + 1)});
+				q.push(Node{neighbor, static_cast<uint8_t>(current.depth + 1)});
 
 				pdb[idx/2] |= (static_cast<uint8_t>(current.depth+1) << ((idx%2) ? 4 : 0));
 			}
@@ -41,6 +39,10 @@ template<typename T> std::vector<uint8_t> pdbGen(T start, int const permuts) {
 	}
 
 	pdb[start.getIdx()/2] &= ~((start.getIdx()%2) ? 0xf0 : 0x0f);
-	
+
 	return pdb;
+}
+
+template<typename T> int PDB<T>::getDist(int idx) const { 
+	return (data[idx/2] >> (idx%2 ? 4 : 0))&0b1111; 
 }

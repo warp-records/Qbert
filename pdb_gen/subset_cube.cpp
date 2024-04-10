@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cassert>
 #include <bit>
+#include <iostream>
 
 MiniCube::MiniCube() {
 	front =  WhiteFace;
@@ -283,11 +284,8 @@ MiniCube::CubieInfo MiniCube::getCubieInfo(bool x, bool y, bool z) const {
     uint8_t id = xFace^yFace^zFace;
 
     //I think this'll work
-    uint8_t orientation = 0;
-	if (xFace > yFace && xFace > zFace) orientation = 0; // Assuming xFace is greatest
-	else if (yFace > xFace && yFace > zFace) orientation = 1; // Assuming yFace is greatest
-	else orientation = 2; // Assuming zFace is greatest or equal (fallback)
-
+    uint8_t orientation = xFace > yFace && xFace > zFace ? orientation : 2;
+    orientation = yFace > xFace && yFace > zFace ? 1 : orientation;
 
 	return CubieInfo{id, orientation};
 }
@@ -344,8 +342,11 @@ uint32_t MiniCube::getIdx() const {
 
 	//Index of all cubibes that HAVEN'T been visited
 	//First order of business is fixing this shit
-	uint8_t index[8] {
-		0, 1, 2, 0, 3, 4, 5, 6
+
+	constexpr int PADDING = 6;
+	alignas(uint64_t) uint8_t indices[8] = {
+		0+PADDING, 1+PADDING, 2+PADDING, 0+PADDING, 
+		3+PADDING, 4+PADDING, 5+PADDING, 6+PADDING
 	};
 
 	uint32_t idx = 0;
@@ -357,16 +358,22 @@ uint32_t MiniCube::getIdx() const {
 		//For this to work, each Cubie ID must max out to the number left
 		auto info = getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2);
 
-		idx += factorial[i]*index[info.id]*powerOf3[i] +
+		idx += factorial[i]*(indices[info.id]-PADDING)*powerOf3[i] +
 				factorial[i]*powerOf3[i-1]*info.orientation;
 
-		for (int j = 0; j < 8; j++) {
-			index[j] = index[j] > index[info.id] ? index[j]-1 : index[j];
-		}
+		//I'm a genius for this
+		uint64_t packed = *reinterpret_cast<uint64_t*>(indices);
+
+		uint64_t subtractConst = (0x0101010101010101ULL << (info.id*8));
+		packed -= subtractConst;
+
+		*reinterpret_cast<uint64_t*>(indices) = packed;
 	}
 
 	return idx;
 }
+
+
 
 
 
