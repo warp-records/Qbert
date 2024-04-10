@@ -32,13 +32,13 @@ int main() {
 
     )" << std::endl;
 
-    std::cout << "Solving cube using IDDFS:" << std::endl;
+    std::cout << "Solving cube using IDA*:" << std::endl;
 
     Cube qb;
     qb = qb.rotVert(Column::Left, Direction::Up);
     qb = qb.rotHoriz(Row::Top, Direction::Left);
     qb = qb.rotVert(Column::Right, Direction::Down);
-    qb = qb.rotHoriz(Row::Bottom, Direction::Right);
+    //qb = qb.rotHoriz(Row::Bottom, Direction::Right);
     //qb = qb.rotVert(Column::Middle, Direction::Up);
     //qb = qb.rotVert(Column::Middle, Direction::Up);
 

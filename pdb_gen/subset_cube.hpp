@@ -41,6 +41,8 @@ uint16_t top, bottom,
 	MiniCube(uint16_t top, uint16_t bottom,
 		uint16_t front, uint16_t back,
 		uint16_t left, uint16_t right);
+	//Construct minicube from corner cubies
+	MiniCube(Cube const& largeCube);
 
 	//Normalized so top left front cube is never moved
 	MiniCube rotHoriz(Row line, Direction dir) const;
