@@ -28,6 +28,8 @@ std::vector<Cube> idaStar(Cube start) {
 
 		std::function<std::vector<Cube>(Node)> idaStarInner;
 		idaStarInner = [&depthLim, &idaStarInner, &heuristic](Node node) -> std::vector<Cube> {
+
+			std::cout << node.depth << std::endl;
 			
 			if (node.cube.isSolved()) {
 				std::cout << "Solution found!" << std::endl;
@@ -48,10 +50,7 @@ std::vector<Cube> idaStar(Cube start) {
 
 			for (Cube const& neighbor : node.cube.getNeighbors()) {
 				if (node.depth+1 + heuristic(neighbor) <= depthLim) {
-					auto result = idaStarInner(Node{neighbor, node.depth+1, &node});
-					
-					if (!result.empty())
-						return result;
+					return idaStarInner(Node{neighbor, node.depth+1, &node});
 				}
 			}
 

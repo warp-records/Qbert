@@ -290,6 +290,38 @@ MiniCube::CubieInfo MiniCube::getCubieInfo(bool x, bool y, bool z) const {
 	return CubieInfo{id, orientation};
 }
 
+MiniCube MiniCube::changePerspective(Perspective per) const {
+	MiniCube qb = *this;
+
+	switch (per) {
+
+	case (Perspective::Left) : {
+		qb.front = left;
+		qb.right = front;
+		qb.back = right;
+		qb.left = back;
+
+		qb.top = rotFaceLeft(top);
+		qb.bottom = rotFaceRight(bottom);
+		break;
+	}
+
+	case (Perspective::Right) : {
+		qb.front = right;
+		qb.left = front;
+		qb.back = left;
+		qb.right = back;
+
+		qb.top = rotFaceRight(top);
+		qb.bottom = rotFaceLeft(bottom);
+		break;
+	}
+
+	}
+
+	return qb;
+}
+
 std::array<MiniCube, 9> MiniCube::getNeighbors() const {
 
 	//Right view must be used for cube to be normalized

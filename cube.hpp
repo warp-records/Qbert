@@ -49,8 +49,6 @@ namespace Mask {
 
 struct Cube {
 
-	static int hits;
-
 	enum SolvedFace {
 		WhiteFace =  0x0000000,
 		GreenFace =  0x1249249,
@@ -70,15 +68,11 @@ uint32_t top, bottom,
 		uint32_t front, uint32_t back,
 		uint32_t left, uint32_t right);
 
-	std::array<Cube, 1> getNeighbors() {
-		return std::array<Cube, 1> {{*this}};
-	}
+	std::array<Cube, 18> getNeighbors() const;
 
 	//These are only Y and Z axis rotations; todo: make a function for x axis rotations specifically
 	Cube rotHoriz(Row line, Direction dir) const;
 	Cube rotVert(Column line, Direction dir) const;
-
-	bool strongSolvedCheck() const;
 
 	bool isSolved() const {
 
@@ -93,14 +87,16 @@ uint32_t top, bottom,
 								  (right^back)>>6;
 
 		if (cubeHash == SOLVED_HASH) {
-			hits++;
 			return strongSolvedCheck();
 		} else {
 			return false;
 		}
 	}
 
+	Cube changePerspective(Perspective per) const;
+
 private:
+	bool strongSolvedCheck() const;
 	//If this becomes a bottleneck, it could possibly
 	//be sped up with a permute instruction
 	static uint32_t rotFaceLeft(uint32_t face);

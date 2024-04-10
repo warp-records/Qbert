@@ -47,37 +47,7 @@ uint16_t top, bottom,
 	MiniCube rotVert(Column line, Direction dir) const;
 
 	//Left side view for rotations around the x axis
-	MiniCube changePerspective(Perspective per) const {
-		MiniCube qb = *this;
-
-		switch (per) {
-
-		case (Perspective::Left) : {
-			qb.front = left;
-			qb.right = front;
-			qb.back = right;
-			qb.left = back;
-
-			qb.top = rotFaceLeft(top);
-			qb.bottom = rotFaceRight(bottom);
-			break;
-		}
-
-		case (Perspective::Right) : {
-			qb.front = right;
-			qb.left = front;
-			qb.back = left;
-			qb.right = back;
-
-			qb.top = rotFaceRight(top);
-			qb.bottom = rotFaceLeft(bottom);
-			break;
-		}
-
-		}
-
-		return qb;
-	}
+	MiniCube changePerspective(Perspective per) const;
 
 	MiniCube& operator=(const MiniCube& other) = default;
 

@@ -1,9 +1,6 @@
 
 #include "cube.hpp"
 
-int Cube::hits = 0;
-
-
 Cube::Cube() {
 	front =  WhiteFace;
 	top =    GreenFace;
@@ -259,6 +256,72 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 	return newCube;
 }
 
+Cube Cube::changePerspective(Perspective per) const {
+	Cube qb = *this;
+
+	switch (per) {
+
+	case (Perspective::Left) : {
+		qb.front = left;
+		qb.right = front;
+		qb.back = right;
+		qb.left = back;
+
+		qb.top = rotFaceLeft(top);
+		qb.bottom = rotFaceRight(bottom);
+		break;
+	}
+
+	case (Perspective::Right) : {
+		qb.front = right;
+		qb.left = front;
+		qb.back = left;
+		qb.right = back;
+
+		qb.top = rotFaceRight(top);
+		qb.bottom = rotFaceLeft(bottom);
+		break;
+	}
+
+	}
+
+	return qb;
+}
+
+
+std::array<Cube, 18> Cube::getNeighbors() const {
+
+	//Right view must be used for cube to be normalized
+	Cube sideViewCube = changePerspective(Perspective::Right);
+
+	std::array<Cube, 6> xAxisRots {{
+		rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down), 
+		rotVert(Column::Right, Direction::_180), rotVert(Column::Middle, Direction::Up), 
+		rotVert(Column::Middle, Direction::Down), rotVert(Column::Middle, Direction::_180)
+	}};
+	std::for_each(xAxisRots.begin(), xAxisRots.end(), [](Cube& qb) { qb = qb.changePerspective(Perspective::Left); });
+
+
+	std::array<Cube, 6> yAxisRots {{
+		rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down), 
+		rotVert(Column::Right, Direction::_180), rotVert(Column::Middle, Direction::Up), 
+		rotVert(Column::Middle, Direction::Down), rotVert(Column::Middle, Direction::_180)
+	}};
+
+
+	std::array<Cube, 6> zAxisRots {{
+		rotHoriz(Row::Bottom, Direction::Left), rotHoriz(Row::Bottom, Direction::Right),
+		rotHoriz(Row::Bottom, Direction::_180), rotHoriz(Row::Middle, Direction::Left), 
+		rotHoriz(Row::Middle, Direction::Right), rotHoriz(Row::Middle, Direction::_180), 
+	}};
+
+	std::array<Cube, 18> final;
+	std::copy(xAxisRots.begin(), xAxisRots.end(), final.begin());
+	std::copy(yAxisRots.begin(), yAxisRots.end(), final.begin()+xAxisRots.size());
+	std::copy(zAxisRots.begin(), zAxisRots.end(), final.begin()+xAxisRots.size()+yAxisRots.size());
+
+	return final;
+}
 
 uint32_t Cube::rotFaceLeft(uint32_t face) {
 	uint32_t newFace = 0x0000;
