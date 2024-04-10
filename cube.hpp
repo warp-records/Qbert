@@ -70,6 +70,10 @@ uint32_t top, bottom,
 		uint32_t front, uint32_t back,
 		uint32_t left, uint32_t right);
 
+	std::array<Cube, 1> getNeighbors() {
+		return std::array<Cube, 1> {{*this}};
+	}
+
 	//These are only Y and Z axis rotations; todo: make a function for x axis rotations specifically
 	Cube rotHoriz(Row line, Direction dir) const;
 	Cube rotVert(Column line, Direction dir) const;
