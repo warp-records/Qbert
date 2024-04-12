@@ -33,34 +33,96 @@ int main() {
 
     )" << std::endl;
 
+    
     /*
     std::cout << "Neighbors:" << std::endl;
 
     for (auto neighbor : mini.getNeighbors()) {
         std::cout << neighbor << std::endl;
-    }
-
-    for (int i = 0; i < 1000000000; i++) {
-        mini = mini.getNeighbors()[rand()%9];
-        if (!(0 <= mini.getIdx() && mini.getIdx() < 3674160)) {
-            std::cerr << i << std::endl;
-            std::cerr << mini.getIdx() << std::endl;
-            assert(false);
-        }
     }*/
 
     Cube qb;
+
+    srand(time(NULL));
+    for (int i = 0; i < 1000000000; i++) {
+        qb = qb.getNeighbors()[rand()%27];
+        if (!(0 <= MiniCube(qb).getIdx() && MiniCube(qb).getIdx() < 3674160)) {
+            
+
+            std::cerr << "Normal cube:\n" << qb;
+            std::cout << "\nMini cube:\n" << MiniCube(qb) << std::endl;
+            std::cout << "Index: " << MiniCube(qb).getIdx() << std::endl;
+            assert(false);
+        }
+    }
+
+    
+    PDB database(MiniCube(), 3674160);
+    /*
+    MiniCube qb;
     qb = qb.rotVert(Column::Left, Direction::Up);
+    std::cout << (int) database.getDist(qb.getIdx()) << std::endl;
+
     qb = qb.rotHoriz(Row::Top, Direction::Left);
+    std::cout << (int) database.getDist(qb.getIdx()) << std::endl;
+
     qb = qb.rotVert(Column::Right, Direction::Down);
-    //qb = qb.rotHoriz(Row::Bottom, Direction::Right);
-    //qb = qb.rotVert(Column::Middle, Direction::Up);
-    //qb = qb.rotHoriz(Row::Middle, Direction::Left);
-    //qb = qb.rotVert(Column::Middle, Direction::Up);
+    std::cout << (int) database.getDist(qb.getIdx()) << std::endl;*/
+    /*
+    std::array<uint32_t, 12> counts{};
+    PDB database(MiniCube(), 3674160);
 
-    std::cout << qb << std::endl;
+    for (int i = 0; i < 3674160; i++) {
+        uint8_t numMoves = database.getDist(i);
+        counts[numMoves]++;
+    }
 
+    std::cout << "Cubes that can be solved in [x] moves: [n]\n\n";
+
+    for (int i = 0; i < 12; i++) {
+        std::cout << i << ": " << counts[i] << "\n";
+    }
+
+    std::cout << qb << std::endl;*/
+
+    /*
+    Cube qb;
+
+    qb = qb.rotVert(Column::Right, Direction::Down);
+    std::cout << database.getDist(MiniCube(qb).getIdx()) << std::endl;
+
+    qb = qb.rotHoriz(Row::Bottom, Direction::Right);
+    std::cout << database.getDist(MiniCube(qb).getIdx()) << std::endl;
+
+    qb = qb.rotVert(Column::Right, Direction::Up);
+    std::cout << database.getDist(MiniCube(qb).getIdx()) << std::endl;
+
+    qb = qb.rotHoriz(Row::Bottom, Direction::Right);
+    std::cout << database.getDist(MiniCube(qb).getIdx()) << std::endl;
+
+    std::cout << "Index: " << MiniCube(qb).getIdx() << std::endl;
+    std::cout << "Cube: " << qb << std::endl;
+    std::cout << "Minicube:\n" << MiniCube(qb) << std::endl;*/
+
+
+    return 0;
+
+    
+
+    
+
+    qb = qb.rotVert(Column::Middle, Direction::Up);
+    std::cout << database.getDist(MiniCube(qb).getIdx()) << std::endl;
+
+    qb = qb.rotHoriz(Row::Middle, Direction::_180);
+    std::cout << database.getDist(MiniCube(qb).getIdx()) << std::endl;
+
+
+
+
+    
     std::cout << "Solving cube using IDDFS:" << std::endl;
+
 
 
     auto sol = idaStar(qb);

@@ -17,17 +17,18 @@ std::vector<Cube> idaStar(Cube start) {
 	PDB cornerCubieDB(MiniCube(), 3674160);
 
 	auto heuristic = [&cornerCubieDB](Cube const& cube) {
-		MiniCube cornerCubies(cube);
-		return cornerCubieDB.getDist(cornerCubies.getIdx());
-		//return 0;
+		//MiniCube cornerCubies(cube);
+		//return cornerCubieDB.getDist(cornerCubies.getIdx());
+		return 0;
 	};
 
 	constexpr int SKYDADDYS_NUMBER = 20;
 
-	for (int depthLim = heuristic(start); depthLim <= SKYDADDYS_NUMBER; depthLim++) {
+	for (int depthLim = 0; depthLim <= SKYDADDYS_NUMBER; depthLim++) {
 
 		std::function<std::vector<Cube>(Node)> idaStarInner;
 		idaStarInner = [&depthLim, &idaStarInner, &heuristic](Node node) -> std::vector<Cube> {
+
 			
 			if (node.cube.isSolved()) {
 				//std::cout << "Solution found!" << std::endl;
@@ -47,6 +48,8 @@ std::vector<Cube> idaStar(Cube start) {
 			}
 
 			for (Cube const& neighbor : node.cube.getNeighbors()) {
+				//assert(node.depth+1 + heuristic(neighbor) <= SKYDADDYS_NUMBER);
+
 				if (node.depth+1 + heuristic(neighbor) <= depthLim) {
 					auto result = idaStarInner(Node{neighbor, node.depth+1, &node});
 

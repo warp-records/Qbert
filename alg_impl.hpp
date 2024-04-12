@@ -44,5 +44,5 @@ template<typename T> static std::vector<uint8_t> PDB<T>::genPdb(T start, int con
 }
 
 template<typename T> int PDB<T>::getDist(int idx) const { 
-	return (data[idx/2] << (idx%2 ? 4 : 0))&0b1111; 
+	return (data[idx/2] >> ((idx%2) ? 4 : 0))&0b1111; 
 }
