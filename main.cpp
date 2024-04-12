@@ -53,7 +53,7 @@ int main() {
     qb = qb.rotVert(Column::Left, Direction::Up);
     qb = qb.rotHoriz(Row::Top, Direction::Left);
     qb = qb.rotVert(Column::Right, Direction::Down);
-    qb = qb.rotHoriz(Row::Bottom, Direction::Right);
+    //qb = qb.rotHoriz(Row::Bottom, Direction::Right);
     //qb = qb.rotVert(Column::Middle, Direction::Up);
     //qb = qb.rotHoriz(Row::Middle, Direction::Left);
     //qb = qb.rotVert(Column::Middle, Direction::Up);
