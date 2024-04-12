@@ -14,12 +14,12 @@ std::vector<Cube> idaStar(Cube start) {
 		Node* prev;
 	};
 
-
 	PDB cornerCubieDB(MiniCube(), 3674160);
 
 	auto heuristic = [&cornerCubieDB](Cube const& cube) {
-		MiniCube cornerCubies(cube);
-		return cornerCubieDB.getDist(cornerCubies.getIdx());
+		//MiniCube cornerCubies(cube);
+		//return cornerCubieDB.getDist(cornerCubies.getIdx());
+		return 0;
 	};
 
 	constexpr int SKYDADDYS_NUMBER = 20;

@@ -289,33 +289,34 @@ Cube Cube::changePerspective(Perspective per) const {
 }
 
 
-std::array<Cube, 18> Cube::getNeighbors() const {
+std::array<Cube, 27> Cube::getNeighbors() const {
 
 	//Right view must be used for cube to be normalized
-	Cube sideViewCube = changePerspective(Perspective::Right);
+	Cube sideView = changePerspective(Perspective::Right);
 
-	std::array<Cube, 6> xAxisRots {{
-		rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down), 
-		rotVert(Column::Right, Direction::_180), rotVert(Column::Middle, Direction::Up), 
-		rotVert(Column::Middle, Direction::Down), rotVert(Column::Middle, Direction::_180)
+	std::array<Cube, 9> xAxisRots {{
+		sideView.rotVert(Column::Right, Direction::Up), sideView.rotVert(Column::Right, Direction::Down), sideView.rotVert(Column::Right, Direction::_180), 
+		sideView.rotVert(Column::Middle, Direction::Up), sideView.rotVert(Column::Middle, Direction::Down), sideView.rotVert(Column::Middle, Direction::_180),
+		sideView.rotVert(Column::Left, Direction::Up), sideView.rotVert(Column::Left, Direction::Down), sideView.rotVert(Column::Left, Direction::_180)
 	}};
 	std::for_each(xAxisRots.begin(), xAxisRots.end(), [](Cube& qb) { qb = qb.changePerspective(Perspective::Left); });
 
 
-	std::array<Cube, 6> yAxisRots {{
-		rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down), 
-		rotVert(Column::Right, Direction::_180), rotVert(Column::Middle, Direction::Up), 
-		rotVert(Column::Middle, Direction::Down), rotVert(Column::Middle, Direction::_180)
+	std::array<Cube, 9> yAxisRots {{
+		rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down), rotVert(Column::Right, Direction::_180), 
+		rotVert(Column::Middle, Direction::Up), rotVert(Column::Middle, Direction::Down), rotVert(Column::Middle, Direction::_180),
+		rotVert(Column::Left, Direction::Up), rotVert(Column::Left, Direction::Down), rotVert(Column::Left, Direction::_180)
 	}};
 
 
-	std::array<Cube, 6> zAxisRots {{
-		rotHoriz(Row::Bottom, Direction::Left), rotHoriz(Row::Bottom, Direction::Right),
-		rotHoriz(Row::Bottom, Direction::_180), rotHoriz(Row::Middle, Direction::Left), 
-		rotHoriz(Row::Middle, Direction::Right), rotHoriz(Row::Middle, Direction::_180), 
+	std::array<Cube, 9> zAxisRots {{
+		rotHoriz(Row::Bottom, Direction::Left), rotHoriz(Row::Bottom, Direction::Right), rotHoriz(Row::Bottom, Direction::_180),
+		rotHoriz(Row::Middle, Direction::Right), rotHoriz(Row::Middle, Direction::Left), rotHoriz(Row::Middle, Direction::_180), 
+		rotHoriz(Row::Top, Direction::Right), rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::_180)
+
 	}};
 
-	std::array<Cube, 18> final;
+	std::array<Cube, 27> final;
 	std::copy(xAxisRots.begin(), xAxisRots.end(), final.begin());
 	std::copy(yAxisRots.begin(), yAxisRots.end(), final.begin()+xAxisRots.size());
 	std::copy(zAxisRots.begin(), zAxisRots.end(), final.begin()+xAxisRots.size()+yAxisRots.size());

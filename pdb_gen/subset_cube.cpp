@@ -357,13 +357,20 @@ std::array<MiniCube, 9> MiniCube::getNeighbors() const {
 }
 
 
+
 MiniCube::MiniCube(Cube const& large) {
-	top = (large.top&0x7000000)>>(3*5) | (large.top&0x1C0000)>>(3*3) | (large.top&0x1C0000)>>(3*3) | (large.top&0x38)>>(3*1) | (large.top&0x7); 
-	bottom = (large.bottom&0x7000000)>>(3*5) | (large.bottom&0x1C0000)>>(3*3) | (large.bottom&0x1C0000)>>(3*3) | (large.bottom&0x38)>>(3*1) | (large.bottom&0x7); 
-	left = (large.left&0x7000000)>>(3*5) | (large.left&0x1C0000)>>(3*3) | (large.left&0x1C0000)>>(3*3) | (large.left&0x38)>>(3*1) | (large.left&0x7); 
-	right = (large.right&0x7000000)>>(3*5) | (large.right&0x1C0000)>>(3*3) | (large.right&0x1C0000)>>(3*3) | (large.right&0x38)>>(3*1) | (large.right&0x7); 
-	back = (large.back&0x7000000)>>(3*5) | (large.back&0x1C0000)>>(3*3) | (large.back&0x1C0000)>>(3*3) | (large.back&0x38)>>(3*1) | (large.back&0x7); 
-	front = (large.front&0x7000000)>>(3*5) | (large.front&0x1C0000)>>(3*3) | (large.front&0x1C0000)>>(3*3) | (large.front&0x38)>>(3*1) | (large.front&0x7); 
+	top = ((large.top&0x7000000)>>3*5) | ((large.top&0x1C0000)>>3*4) | ((large.top&0x1C0)>>3*1) | (large.top&0x7); 
+
+	bottom = ((large.bottom&0x7000000)>>3*5) | ((large.bottom&0x1C0000)>>3*4) | ((large.bottom&0x1C0)>>3*1) | (large.bottom&0x7);
+	
+	left = ((large.left&0x7000000)>>3*5) | ((large.left&0x1C0000)>>3*4) | ((large.left&0x1C0)>>3*1) | (large.left&0x7); 
+	
+	right = ((large.right&0x7000000)>>3*5) | ((large.right&0x1C0000)>>3*4) | ((large.right&0x1C0)>>3*1) | (large.right&0x7); 
+	
+	front = ((large.front&0x7000000)>>3*5) | ((large.front&0x1C0000)>>3*4) | ((large.front&0x1C0)>>3*1) | (large.front&0x7); 
+	
+	back = ((large.back&0x7000000)>>3*5) | ((large.back&0x1C0000)>>3*4) | ((large.back&0x1C0)>>3*1) | (large.back&0x7); 
+
 }
 
 

@@ -68,7 +68,7 @@ uint32_t top, bottom,
 		uint32_t front, uint32_t back,
 		uint32_t left, uint32_t right);
 
-	std::array<Cube, 18> getNeighbors() const;
+	std::array<Cube, 27> getNeighbors() const;
 
 	//These are only Y and Z axis rotations; todo: make a function for x axis rotations specifically
 	Cube rotHoriz(Row line, Direction dir) const;
@@ -77,14 +77,14 @@ uint32_t top, bottom,
 	bool isSolved() const {
 
 		uint16_t constexpr SOLVED_HASH = 
-							WhiteFace ^ GreenFace ^ 
+							(uint16_t) (WhiteFace ^ GreenFace ^ 
 							BlueFace ^ OrangeFace ^ 
-							RedFace ^ YellowFace;
+							RedFace ^ YellowFace);
 
 		//With this hash functon, collisions occur 0.8% of the time
-		uint16_t const cubeHash = (top^front) 	  ^
+		uint16_t const cubeHash = (uint16_t) ((top^front) 	  ^
 								  (bottom^left)>>3 ^
-								  (right^back)>>6;
+								  (right^back)>>6);
 
 		if (cubeHash == SOLVED_HASH) {
 			return strongSolvedCheck();
