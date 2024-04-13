@@ -102,6 +102,8 @@ private:
 	static uint32_t rotFaceLeft(uint32_t face);
 	static uint32_t rotFaceRight(uint32_t face);
 	static uint32_t rotFace180(uint32_t face);
+	static uint32_t reflectFaceXaxis(uint32_t face);
+
 
 };
 

@@ -12,4 +12,4 @@ add_executable(Rubix main.cpp cube.cpp pdb_gen/subset_cube.cpp alg.cpp)
 
 # Set optimization level to Os
 #  -fsanitize=address,undefined 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")

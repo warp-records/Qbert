@@ -17,14 +17,14 @@ std::vector<Cube> idaStar(Cube start) {
 	PDB cornerCubieDB(MiniCube(), 3674160);
 
 	auto heuristic = [&cornerCubieDB](Cube const& cube) {
-		//MiniCube cornerCubies(cube);
-		//return cornerCubieDB.getDist(cornerCubies.getIdx());
-		return 0;
+		MiniCube cornerCubies(cube);
+		return cornerCubieDB.getDist(cornerCubies.getIdx());
+		//return 0;
 	};
 
 	constexpr int SKYDADDYS_NUMBER = 20;
 
-	for (int depthLim = 0; depthLim <= SKYDADDYS_NUMBER; depthLim++) {
+	for (int depthLim = heuristic(start); depthLim <= SKYDADDYS_NUMBER; depthLim++) {
 
 		std::function<std::vector<Cube>(Node)> idaStarInner;
 		idaStarInner = [&depthLim, &idaStarInner, &heuristic](Node node) -> std::vector<Cube> {

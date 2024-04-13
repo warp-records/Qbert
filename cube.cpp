@@ -52,12 +52,12 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 	if (line != Row::Middle) {
 		switch (dir) {
 			case (Direction::Left) : {
-				*outwardFace = rotFaceRight(*outwardFace);
+				*outwardFace = line==Row::Top ? rotFaceRight(*outwardFace) : rotFaceLeft(*outwardFace);
 				break;
 			}
 
 			case (Direction::Right) : {
-				*outwardFace = rotFaceLeft(*outwardFace);
+				*outwardFace = line==Row::Top ? rotFaceLeft(*outwardFace) : rotFaceRight(*outwardFace);
 				break;
 			}
 
@@ -168,17 +168,17 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 
 			break;
 		}
-	}
+	}//f
 
 	if (line != Column::Middle) {
 		switch (dir) {
 			case (Direction::Up) : {
-				*outwardFace = rotFaceLeft(*outwardFace);
+				*outwardFace = line==Column::Left ? rotFaceLeft(*outwardFace) : rotFaceRight(*outwardFace);
 				break;
 			}
 
 			case (Direction::Down) : {
-				*outwardFace = rotFaceRight(*outwardFace);
+				*outwardFace = line==Column::Left ? rotFaceRight(*outwardFace) : rotFaceLeft(*outwardFace);
 				break;
 			}
 
@@ -256,16 +256,26 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 	return newCube;
 }
 
+
+uint32_t Cube::reflectFaceXaxis(uint32_t face) {
+	return 	(((face&Mask::Column::Right) << 3*2)
+	 	    | ((face&Mask::Column::Middle)      )
+			| ((face&Mask::Column::Left)  >> 3*2));
+}
+
 Cube Cube::changePerspective(Perspective per) const {
+
 	Cube qb = *this;
+
+	qb.back = reflectFaceXaxis(qb.back);
 
 	switch (per) {
 
 	case (Perspective::Left) : {
 		qb.front = left;
 		qb.right = front;
+		qb.left = qb.back;
 		qb.back = right;
-		qb.left = back;
 
 		qb.top = rotFaceLeft(top);
 		qb.bottom = rotFaceRight(bottom);
@@ -275,8 +285,8 @@ Cube Cube::changePerspective(Perspective per) const {
 	case (Perspective::Right) : {
 		qb.front = right;
 		qb.left = front;
+		qb.right = qb.back;
 		qb.back = left;
-		qb.right = back;
 
 		qb.top = rotFaceRight(top);
 		qb.bottom = rotFaceLeft(bottom);
@@ -284,6 +294,9 @@ Cube Cube::changePerspective(Perspective per) const {
 	}
 
 	}
+
+	qb.back = reflectFaceXaxis(qb.back);
+
 
 	return qb;
 }
@@ -383,6 +396,7 @@ uint32_t Cube::rotFace180(uint32_t face) {
 }
 
 
+
 //Good enough (I think)
 bool Cube::strongSolvedCheck() const {
 
@@ -426,6 +440,8 @@ std::ostream& operator<<(std::ostream& os, const Cube& cube) {
     	//and move right in the output code
         return colors[(face >> (8*3 - position*3)) & 0x7];
     };
+
+    os << "\n";
 
     // Print the top face
     for (int i = 0; i < 9; i += 3) {

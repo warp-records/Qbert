@@ -284,7 +284,7 @@ MiniCube::CubieInfo MiniCube::getCubieInfo(bool x, bool y, bool z) const {
     uint8_t id = xFace^yFace^zFace;
 
     //I think this'll work
-    uint8_t orientation = xFace > yFace && xFace > zFace ? orientation : 2;
+    uint8_t orientation = xFace > yFace && xFace > zFace ? 0 : 2;
     orientation = yFace > xFace && yFace > zFace ? 1 : orientation;
 
 	return CubieInfo{id, orientation};
@@ -403,6 +403,8 @@ uint32_t MiniCube::getIdx() const {
 	//Last cube is already known given cube numbers 1-6
 
 	//PLEASE PLEASE PLEASE FUCKINGGG WORK
+
+	//What the fuck this literally goes back to 6
 	for (int i = 6; i > 0; i--) {
 		//For this to work, each Cubie ID must max out to the number left
 		auto info = getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2);
@@ -411,12 +413,16 @@ uint32_t MiniCube::getIdx() const {
 				factorial[i]*powerOf3[i-1]*info.orientation;
 
 		//I'm a genius for this
+		
 		uint64_t packed = *reinterpret_cast<uint64_t*>(indices);
 		
 		uint64_t subtractConst = (0x0101010101010101ULL << (info.id*8));
 		packed -= subtractConst;
 
 		*reinterpret_cast<uint64_t*>(indices) = packed;
+		/*for (int j = info.id; j < 8; j++) {
+			indices[i]--;
+		}*/
 	}
 
 	return idx;
@@ -441,6 +447,8 @@ std::ostream& operator<<(std::ostream& os, const MiniCube& cube) {
         // Adjust bit shifting for a 2x2 cube, indexing from top left and moving right
         return colors[(face >> (3*3 - position*3)) & 0x7];
     };
+
+    os << "\n";
 
     // Print the top face
     for (int i = 0; i < 4; i += 2) {
