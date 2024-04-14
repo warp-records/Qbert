@@ -420,6 +420,7 @@ uint32_t MiniCube::getIdx() const {
 		packed -= subtractConst;
 
 		*reinterpret_cast<uint64_t*>(indices) = packed;
+		
 		/*for (int j = info.id; j < 8; j++) {
 			indices[i]--;
 		}*/

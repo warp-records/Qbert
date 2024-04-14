@@ -49,32 +49,36 @@ int main() {
         qb = qb.rotHoriz(Row::Bottom, Direction::Right);
         //std::cout << qb << "\n";
     }
-
+    /*
     std::cout << "Cube: " << qb;
     std::cout << qb.changePerspective(Perspective::Left).changePerspective(Perspective::Left).changePerspective(Perspective::Left).changePerspective(Perspective::Left);
     std::cout << "Right perspective: " << qb.changePerspective(Perspective::Right);
     std::cout << "Left perspective: " << qb.changePerspective(Perspective::Left);
 
-    std::cout << MiniCube(qb) << "\n";
+    std::cout << MiniCube(qb) << "\n";*/
     
-
-    //std::cout << "Original: " << qb << "\n\n\n";
     
-    //std::cout << "Neighbors:" << std::endl;
+    std::cout << "Original: " << qb << "\n\n\n";
 
-    
-    std::cout << "Cube before z axis rot: " << qb;
+    std::cout << "X axis back right rot: " << qb.rotXaxis(CrossSection::Back, Direction::Right);
+    std::cout << "X axis back left rot: " << qb.rotXaxis(CrossSection::Back, Direction::Left);
+    std::cout << "X axis back 180 rot: " << qb.rotXaxis(CrossSection::Back, Direction::_180);
+    std::cout << "X axis middle left rot: " << qb.rotXaxis(CrossSection::Middle, Direction::Left);
 
 
-    std::cout << "Cube after rot:";
-    std::cout << qb.getNeighbors()[0];
+    /*
+    std::cout << "Neighbors:" << std::endl;
+
+    for (int i = 0; i < 9; i++) {
+        std::cout << qb.getNeighbors()[i];
+    }*/
 
     //srand(time(NULL));
     
     /*
     //occurs at i=48 ??
     for (int i = 0; i < 10000000; i++) {
-        int nghbrIdx = (rand()%18+9);
+        int nghbrIdx = (rand()%27);
         qb = qb.getNeighbors()[nghbrIdx];
             
 
@@ -158,12 +162,12 @@ int main() {
     
     //Cube qb;
     
-
+    /*
     qb = qb.rotVert(Column::Middle, Direction::Up);
 
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::Down);
-    qb = qb.rotHoriz(Row::Bottom, Direction::Right);
+    qb = qb.rotHoriz(Row::Bottom, Direction::Right);*/
 
 
 

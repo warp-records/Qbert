@@ -14,6 +14,10 @@ enum class Column {
 	Left = 0, Middle = 2, Right = 1
 };
 
+enum class CrossSection {
+	Front = 0, Middle = 2, Back = 1
+};
+
 enum class Direction {
 	Up = 0, Down = 1, _180 = 4, Left = 2, Right = 3
 };
@@ -73,6 +77,7 @@ uint32_t top, bottom,
 	//These are only Y and Z axis rotations; todo: make a function for x axis rotations specifically
 	Cube rotHoriz(Row line, Direction dir) const;
 	Cube rotVert(Column line, Direction dir) const;
+	Cube rotXaxis(CrossSection line, Direction dir) const;
 
 	bool isSolved() const {
 

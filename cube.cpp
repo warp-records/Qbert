@@ -120,7 +120,6 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 }
 
 
-
 Cube Cube::rotVert(Column line, Direction dir) const {
 
 	if (line == Column::Left) {
@@ -252,6 +251,76 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 	newCube.back =    ((newCube.back&Mask::Column::Right) << 3*2)
 			    	| ((newCube.back&Mask::Column::Middle)      )
 					| ((newCube.back&Mask::Column::Left)  >> 3*2);
+
+	return newCube;
+}
+
+//Only coded to work with normalized cube rotations
+Cube Cube::rotXaxis(CrossSection line, Direction dir) const {
+
+	if (line == CrossSection::Front) {
+		Direction opposite = dir==Direction::Right ? Direction::Left : Direction::Right;
+		return rotXaxis(CrossSection::Middle, opposite).rotXaxis(CrossSection::Back, opposite);
+	}
+
+
+	Cube newCube = *this;
+
+	if (line == CrossSection::Back) {
+		switch (dir) {
+			case (Direction::Right) : {
+				newCube.back = rotFaceLeft(newCube.back);
+				break;
+			}
+
+			case (Direction::Left) : {
+				newCube.back = rotFaceLeft(newCube.back);
+				break;
+			}
+
+			case (Direction::_180) : {
+				newCube.back = rotFace180(newCube.back);
+				break;
+			}
+		}
+	}
+
+	uint32_t topMask = line==CrossSection::Back ? Mask::Row::Top : Mask::Row::Middle;
+	uint32_t leftMask = line==CrossSection::Back ? Mask::Column::Left : Mask::Column::Middle;
+	uint32_t bottomMask = line==CrossSection::Back ? Mask::Row::Bottom : Mask::Row::Middle;
+	uint32_t rightMask = line==CrossSection::Back ? Mask::Column::Right : Mask::Column::Middle;
+
+	newCube.top &= ~topMask;
+	newCube.right &= ~rightMask;
+	newCube.bottom &= ~bottomMask;
+	newCube.left &= ~leftMask;
+
+	//WRONG DIRECTIOBN
+	switch (dir) {
+		case (Direction::Right) : {
+			newCube.top |= rotFaceRight(left&leftMask);			
+			newCube.right |= rotFaceRight(top&topMask);
+			newCube.bottom |= rotFaceRight(right&rightMask);
+			newCube.left |= rotFaceRight(bottom&bottomMask);
+			break;
+		}
+
+		case (Direction::Left) : {
+			newCube.top |= rotFaceLeft(right&rightMask);			
+			newCube.left |= rotFaceLeft(top&topMask);
+			newCube.bottom |= rotFaceLeft(left&leftMask);
+			newCube.right |= rotFaceLeft(bottom&bottomMask);
+			break;
+		}
+
+		case (Direction::_180) : {
+			newCube.top |= rotFace180(bottom&bottomMask);			
+			newCube.bottom |= rotFace180(top&topMask);
+			newCube.left |= rotFace180(right&rightMask);
+			newCube.right |= rotFace180(left&leftMask);
+			break;
+		}
+	}
 
 	return newCube;
 }
