@@ -100,9 +100,19 @@ uint32_t top, bottom,
 
 	Cube changePerspective(Perspective per) const;
 
+
+	//DEBUG -----------------------------------
+	bool hasProperCorners() const;
 	bool isValidColorDistribution() const;
 
 private:
+
+
+	//DEBUG ---------
+	static uint32_t extractColor(uint32_t face, int position) {
+	    return (face >> (position * 3)) & 0b111;
+	}
+
 	bool strongSolvedCheck() const;
 	//If this becomes a bottleneck, it could possibly
 	//be sped up with a permute instruction

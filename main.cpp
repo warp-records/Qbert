@@ -63,25 +63,24 @@ int main() {
 
     //srand(time(NULL));
     
+    Cube qb;
     
-    //occurs at i=48 ??
     /*
-    for (int i = 0; i < 10000000; i++) {
+    for (int i = 0; i < 1000000; i++) {
         auto allNeighbors = qb.getNeighbors();
 
         //std::array<Cube, 18> selectNeighbors;
         //std::copy(allNeighbors.begin(), allNeighbors.begin()+9, selectNeighbors.begin());
         //std::copy(allNeighbors.begin()+18, allNeighbors.begin()+27, selectNeighbors.begin()+9);
 
-
         uint32_t nghbrIdx = (rand()%27);
         qb = qb.getNeighbors()[nghbrIdx];
 
-        //std::cout << "neighbor index: " << nghbrIdx;
+        //std::cout << "\nneighbor index: " << nghbrIdx;
         //std::cout << qb;
             
 
-        if (!qb.isValidColorDistribution()) {
+        if (!(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution())) {
             
             std::cout << "\n\n\nError:" << std::endl;
             std::cout << "Loop index: " << i << std::endl;
@@ -91,10 +90,10 @@ int main() {
             std::cout << "Index: " << MiniCube(qb).getIdx() << std::endl;
             assert(false);
         }
-    }
+    }*/
 
 
-
+    /*
     std::cout << "Old cube: " << qb;
     
     int nghbrIdx = rand()%27;
@@ -173,8 +172,7 @@ int main() {
     using Color::Blue;
     using Color::Orange;
 
-    Cube qb;
-
+    /*
     for (int i = 0; i < 20; i++) {
         auto allNeighbors = qb.getNeighbors();
 
@@ -186,8 +184,10 @@ int main() {
         uint32_t nghbrIdx = (rand()%27);
         qb = qb.getNeighbors()[nghbrIdx];
 
-    }
+    }*/
     
+    //Apparently I input this wrong
+    /*
     qb.front = White<<24 | Blue<<21 | Orange<<18
             | Yellow<<15 | Red<<12 | Orange<<9
             | Orange<<6 | White<<3 | Blue;
@@ -210,17 +210,26 @@ int main() {
 
     qb.right = Yellow<<24 | Blue<<21 | Yellow<<18
             | Yellow<<15 | Blue<<12 | Orange<<9
-            | White<<6 | Red<<3 | Yellow;
-
-
+            | White<<6 | Red<<3 | Yellow;*/
     /*
+    if (!(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution())) {
+        throw std::exception();
+    }*/
+
+    
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::Down);
     qb = qb.rotHoriz(Row::Bottom, Direction::Right);
     qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
-    qb = qb.rotVert(Column::Right, Direction::_180);*/
+    qb = qb.rotVert(Column::Right, Direction::_180);
+    qb = qb.rotHoriz(Row::Bottom, Direction::Left);
+    qb = qb.rotXaxis(CrossSection::Front, Direction::_180);
+    qb = qb.rotVert(Column::Left, Direction::_180);
+    qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
 
+
+    assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());
 
 
     std::cout << "Scrambled cube: " << qb;

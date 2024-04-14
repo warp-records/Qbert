@@ -413,16 +413,13 @@ uint32_t MiniCube::getIdx() const {
 				factorial[i]*powerOf3[i-1]*info.orientation;
 
 		//I'm a genius for this
-		
 		uint64_t packed = *reinterpret_cast<uint64_t*>(indices);
-		
 		uint64_t subtractConst = (0x0101010101010101ULL << (info.id*8));
 		packed -= subtractConst;
-
 		*reinterpret_cast<uint64_t*>(indices) = packed;
-		
-		/*for (int j = info.id; j < 8; j++) {
-			indices[i]--;
+		/*
+		for (int j = info.id; j < 8; j++) {
+			indices[j]--;
 		}*/
 	}
 

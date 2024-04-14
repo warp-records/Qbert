@@ -1,5 +1,6 @@
 
 #include "cube.hpp"
+#include "pdb_gen/subset_cube.hpp"
 #include <cassert>
 
 Cube::Cube() {
@@ -170,7 +171,7 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 
 			break;
 		}
-	}//f
+	}
 
 	if (line != Column::Middle) {
 		switch (dir) {
@@ -278,7 +279,7 @@ Cube Cube::rotXaxis(CrossSection line, Direction dir) const {
 			}
 
 			case (Direction::Left) : {
-				newCube.back = rotFaceLeft(newCube.back);
+				newCube.back = rotFaceRight(newCube.back);
 				break;
 			}
 
@@ -493,7 +494,29 @@ bool Cube::strongSolvedCheck() const {
 }
 
 
-//Thanks chatgpt
+
+//DEBUG CODE:
+//------------------------------------
+//Checks for repeat corners
+bool Cube::hasProperCorners() const {
+	std::array<bool, 8> foundCubieIDs {{0, 0, 0, 0, 0, 0, 0, 0 }};
+
+	MiniCube mini(*this);
+
+	for (int i = 0; i < 8; i++) {
+
+		int id = mini.getCubieInfo(i&0b100, i&0b10, i&0b001).id;
+		if (foundCubieIDs[id]) {
+			return false;
+		}
+
+		foundCubieIDs[id] = true;
+	}
+
+	return true;
+}
+
+//Thanks ChatGPT!
 bool Cube::isValidColorDistribution() const {
     std::array<int, 6> colorCounts = {0, 0, 0, 0, 0, 0}; // White, Green, Red, Yellow, Blue, Orange
 
@@ -501,8 +524,7 @@ bool Cube::isValidColorDistribution() const {
     auto countColorsOnFace = [&](uint32_t face) {
         for (int i = 0; i < 9; ++i) { // 9 stickers per face
             uint32_t color = (face >> (i * 3)) & 0b111; // Extract 3 bits per color
-            assert(color < 6); // Ensure the color index is valid
-            ++colorCounts[color];
+            colorCounts[color]++;
         }
     };
 
@@ -522,6 +544,7 @@ bool Cube::isValidColorDistribution() const {
     }
     return true;
 }
+
 
 //terminal output written by ChatGPT 4
 std::ostream& operator<<(std::ostream& os, const Cube& cube) {
