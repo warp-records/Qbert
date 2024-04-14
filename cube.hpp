@@ -30,10 +30,10 @@ enum class Perspective {
 enum Color {
 	White =  0b000,
 	Green =  0b001,
-	Blue =   0b010,
-	Orange = 0b011,
-	Red = 	 0b100,
-	Yellow = 0b101
+	Red =   0b010,
+	Yellow = 0b011,
+	Blue = 	 0b100,
+	Orange = 0b101
 };
 
 //These represent rows and columns on a square, not a cube
@@ -56,10 +56,10 @@ struct Cube {
 	enum SolvedFace {
 		WhiteFace =  0x0000000,
 		GreenFace =  0x1249249,
-		BlueFace =   0x2492492,
-		OrangeFace = 0x36DB6DB,
-		RedFace = 	 0x4924924,
-		YellowFace = 0x5B6DB6D
+		RedFace =   0x2492492,
+		YellowFace = 0x36DB6DB,
+		BlueFace = 	 0x4924924,
+		OrangeFace = 0x5B6DB6D
 	};
 
 
@@ -99,6 +99,8 @@ uint32_t top, bottom,
 	}
 
 	Cube changePerspective(Perspective per) const;
+
+	bool isValidColorDistribution() const;
 
 private:
 	bool strongSolvedCheck() const;

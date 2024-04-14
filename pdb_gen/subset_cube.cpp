@@ -8,11 +8,11 @@
 MiniCube::MiniCube() {
 	front =  WhiteFace;
 	top =    GreenFace;
-	left =   BlueFace;
+	left =   RedFace;
 
-	back =   OrangeFace;
-	bottom = RedFace;
-	right =  YellowFace;
+	back =   YellowFace;
+	bottom = BlueFace;
+	right =  OrangeFace;
 }
 
 uint16_t rotFaceLeft(uint16_t face);
@@ -105,7 +105,7 @@ MiniCube MiniCube::rotHoriz(Row line, Direction dir) const {
 			newCube.right |= (left&maskType);
 
 			newCube.left &= ~maskType;
-			newCube.left |= (front&maskType);
+			newCube.left |= (right&maskType);
 
 			newCube.back &= ~maskType;
 			newCube.back |= (front&maskType);

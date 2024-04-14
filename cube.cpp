@@ -1,14 +1,15 @@
 
 #include "cube.hpp"
+#include <cassert>
 
 Cube::Cube() {
 	front =  WhiteFace;
 	top =    GreenFace;
-	left =   BlueFace;
+	left =   RedFace;
 
-	back =   OrangeFace;
-	bottom = RedFace;
-	right =  YellowFace;
+	back =   YellowFace;
+	bottom = BlueFace;
+	right =  OrangeFace;
 }
 
 uint32_t rotFaceLeft(uint32_t face);
@@ -22,6 +23,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 	//Don't feel like properly coding normalization
 	if (line == Row::Top) {
 		Direction opposite = dir==Direction::Left ? Direction::Right : Direction::Left;
+		opposite = dir==Direction::_180 ? Direction::_180 : dir;
 		return rotHoriz(Row::Middle, opposite).rotHoriz(Row::Bottom, opposite);
 	}
 
@@ -107,7 +109,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 			newCube.right |= (left&maskType);
 
 			newCube.left &= ~maskType;
-			newCube.left |= (front&maskType);
+			newCube.left |= (right&maskType);
 
 			newCube.back &= ~maskType;
 			newCube.back |= (front&maskType);
@@ -124,6 +126,7 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 
 	if (line == Column::Left) {
 		Direction opposite = dir==Direction::Up ? Direction::Down : Direction::Up;
+		opposite = dir==Direction::_180 ? Direction::_180 : dir;
 		return rotVert(Column::Middle, opposite).rotVert(Column::Right, opposite);
 	}
 
@@ -260,6 +263,7 @@ Cube Cube::rotXaxis(CrossSection line, Direction dir) const {
 
 	if (line == CrossSection::Front) {
 		Direction opposite = dir==Direction::Right ? Direction::Left : Direction::Right;
+		opposite = dir==Direction::_180 ? Direction::_180 : opposite;
 		return rotXaxis(CrossSection::Middle, opposite).rotXaxis(CrossSection::Back, opposite);
 	}
 
@@ -373,15 +377,11 @@ Cube Cube::changePerspective(Perspective per) const {
 
 std::array<Cube, 27> Cube::getNeighbors() const {
 
-	//Right view must be used for cube to be normalized
-	Cube sideView = changePerspective(Perspective::Right);
-
 	std::array<Cube, 9> xAxisRots {{
-		sideView.rotVert(Column::Right, Direction::Up), sideView.rotVert(Column::Right, Direction::Down), sideView.rotVert(Column::Right, Direction::_180), 
-		sideView.rotVert(Column::Middle, Direction::Up), sideView.rotVert(Column::Middle, Direction::Down), sideView.rotVert(Column::Middle, Direction::_180),
-		sideView.rotVert(Column::Left, Direction::Up), sideView.rotVert(Column::Left, Direction::Down), sideView.rotVert(Column::Left, Direction::_180)
+		rotXaxis(CrossSection::Back, Direction::Right), rotXaxis(CrossSection::Back, Direction::Left), rotXaxis(CrossSection::Back, Direction::_180),
+		rotXaxis(CrossSection::Middle, Direction::Right), rotXaxis(CrossSection::Middle, Direction::Left), rotXaxis(CrossSection::Middle, Direction::_180),
+		rotXaxis(CrossSection::Front, Direction::Right), rotXaxis(CrossSection::Front, Direction::Left), rotXaxis(CrossSection::Front, Direction::_180)
 	}};
-	std::for_each(xAxisRots.begin(), xAxisRots.end(), [](Cube& qb) { qb = qb.changePerspective(Perspective::Left); });
 
 
 	std::array<Cube, 9> yAxisRots {{
@@ -492,15 +492,46 @@ bool Cube::strongSolvedCheck() const {
 	return true;
 }
 
+
+//Thanks chatgpt
+bool Cube::isValidColorDistribution() const {
+    std::array<int, 6> colorCounts = {0, 0, 0, 0, 0, 0}; // White, Green, Red, Yellow, Blue, Orange
+
+    // Helper lambda to count colors on a single face
+    auto countColorsOnFace = [&](uint32_t face) {
+        for (int i = 0; i < 9; ++i) { // 9 stickers per face
+            uint32_t color = (face >> (i * 3)) & 0b111; // Extract 3 bits per color
+            assert(color < 6); // Ensure the color index is valid
+            ++colorCounts[color];
+        }
+    };
+
+    // Count colors on each face
+    countColorsOnFace(top);
+    countColorsOnFace(bottom);
+    countColorsOnFace(front);
+    countColorsOnFace(back);
+    countColorsOnFace(left);
+    countColorsOnFace(right);
+
+    // Check for 9 stickers of each color
+    for (int count : colorCounts) {
+        if (count != 9) {
+            return false;
+        }
+    }
+    return true;
+}
+
 //terminal output written by ChatGPT 4
 std::ostream& operator<<(std::ostream& os, const Cube& cube) {
     std::array<char, 6> const colors {{
-        'W', // White  0b000
-        'G', // Green  0b001
-        'B', // Blue   0b010
-        'O', // Orange 0b011
-        'R', // Red    0b100
-        'Y'  // Yellow 0b101
+        'W',
+        'G',
+        'R',
+        'Y', 
+        'B',
+        'O'
     }};
 
     // Lambda to extract the color character from a face value

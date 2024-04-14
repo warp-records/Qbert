@@ -26,10 +26,10 @@ struct MiniCube {
 	enum SolvedFace {
 		WhiteFace =  0x000,
 		GreenFace =  0x249,
-		BlueFace =   0x492,
-		OrangeFace = 0x6DB,
-		RedFace = 	 0x924,
-		YellowFace = 0xB6D
+		RedFace =   0x492,
+		YellowFace = 0x6DB,
+		BlueFace = 	 0x924,
+		OrangeFace = 0xB6D
 	};
 
 

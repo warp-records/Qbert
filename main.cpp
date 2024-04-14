@@ -10,6 +10,7 @@
 #include <sstream>
 #include <bitset>
 #include "alg.hpp"
+#include "cube.hpp"
 
 
 int main() {
@@ -33,22 +34,9 @@ int main() {
 
     )" << std::endl;
 
-    Cube qb;
+    //std::cout << qb;
+    //std::cout << qb.rotXaxis(CrossSection::Back, )
 
-    
-    for (int i = 0; i <  100; i++) {
-        qb = qb.rotVert(Column::Middle, Direction::Up);
-        //std::cout << qb << "\n";
-
-        qb = qb.rotHoriz(Row::Middle, Direction::_180);
-        //std::cout << qb << "\n";
-
-        qb = qb.rotVert(Column::Right, Direction::Down);
-        //std::cout << qb << "\n";
-
-        qb = qb.rotHoriz(Row::Bottom, Direction::Right);
-        //std::cout << qb << "\n";
-    }
     /*
     std::cout << "Cube: " << qb;
     std::cout << qb.changePerspective(Perspective::Left).changePerspective(Perspective::Left).changePerspective(Perspective::Left).changePerspective(Perspective::Left);
@@ -57,13 +45,13 @@ int main() {
 
     std::cout << MiniCube(qb) << "\n";*/
     
-    
+    /*
     std::cout << "Original: " << qb << "\n\n\n";
 
     std::cout << "X axis back right rot: " << qb.rotXaxis(CrossSection::Back, Direction::Right);
     std::cout << "X axis back left rot: " << qb.rotXaxis(CrossSection::Back, Direction::Left);
     std::cout << "X axis back 180 rot: " << qb.rotXaxis(CrossSection::Back, Direction::_180);
-    std::cout << "X axis middle left rot: " << qb.rotXaxis(CrossSection::Middle, Direction::Left);
+    std::cout << "X axis middle left rot: " << qb.rotXaxis(CrossSection::Middle, Direction::Left);*/
 
 
     /*
@@ -75,15 +63,27 @@ int main() {
 
     //srand(time(NULL));
     
-    /*
+    
     //occurs at i=48 ??
+    /*
     for (int i = 0; i < 10000000; i++) {
-        int nghbrIdx = (rand()%27);
+        auto allNeighbors = qb.getNeighbors();
+
+        //std::array<Cube, 18> selectNeighbors;
+        //std::copy(allNeighbors.begin(), allNeighbors.begin()+9, selectNeighbors.begin());
+        //std::copy(allNeighbors.begin()+18, allNeighbors.begin()+27, selectNeighbors.begin()+9);
+
+
+        uint32_t nghbrIdx = (rand()%27);
         qb = qb.getNeighbors()[nghbrIdx];
+
+        //std::cout << "neighbor index: " << nghbrIdx;
+        //std::cout << qb;
             
 
-        if (!(0 <= MiniCube(qb).getIdx() && MiniCube(qb).getIdx() < 3674160)) {
+        if (!qb.isValidColorDistribution()) {
             
+            std::cout << "\n\n\nError:" << std::endl;
             std::cout << "Loop index: " << i << std::endl;
             std::cout << "Neighbor index: " << nghbrIdx << std::endl;
             std::cerr << "Normal cube:\n" << qb;
@@ -91,19 +91,21 @@ int main() {
             std::cout << "Index: " << MiniCube(qb).getIdx() << std::endl;
             assert(false);
         }
-    }*/
+    }
 
 
-    /*
+
     std::cout << "Old cube: " << qb;
     
     int nghbrIdx = rand()%27;
     qb = qb.getNeighbors()[nghbrIdx];
+    MiniCube mini = MiniCube(qb);
+    uint32_t cubeIdx = mini.getIdx();
 
     std::cout << "Neighbor index: " << nghbrIdx << std::endl;
     std::cerr << "New cube:\n" << qb;
     std::cout << "\nMini cube:\n" << MiniCube(qb) << std::endl;
-    std::cout << "Index: " << MiniCube(qb).getIdx() << std::endl;*/
+    std::cout << "Index: " << cubeIdx<< std::endl;*/
 
 
     //for (int i = 0; i < )
@@ -162,17 +164,68 @@ int main() {
     
     //Cube qb;
     
+    //PDB cornerCubieDB(MiniCube(), 3674160);
+    
+    using Color::White;
+    using Color::Green;
+    using Color::Red;
+    using Color::Yellow;
+    using Color::Blue;
+    using Color::Orange;
+
+    Cube qb;
+
+    for (int i = 0; i < 20; i++) {
+        auto allNeighbors = qb.getNeighbors();
+
+        //std::array<Cube, 18> selectNeighbors;
+        //std::copy(allNeighbors.begin(), allNeighbors.begin()+9, selectNeighbors.begin());
+        //std::copy(allNeighbors.begin()+18, allNeighbors.begin()+27, selectNeighbors.begin()+9);
+
+
+        uint32_t nghbrIdx = (rand()%27);
+        qb = qb.getNeighbors()[nghbrIdx];
+
+    }
+    
+    qb.front = White<<24 | Blue<<21 | Orange<<18
+            | Yellow<<15 | Red<<12 | Orange<<9
+            | Orange<<6 | White<<3 | Blue;
+
+    qb.back = Orange<<24 | Green<<21 | Red<<18
+            | Green<<15 | Orange<<12 | Green<<9
+            | Red<<6 | Blue<<3 | Red;
+
+    qb.top = White<<24 | Red<<21 | Blue<<18
+            | Yellow<<15 | White<<12 | Red<<9
+            | Green<<6 | White<<3 | Green;
+
+    qb.bottom = White<<24 | Orange<<21 | Orange<<18
+                | White<<15 | Yellow<<12 | Blue<<9
+                | Green<<6 | Orange<<3 | Blue;
+
+    qb.left = Blue<<24 | Blue<<21 | Red<<18
+            | Yellow<<15 | Green<<12 | Red<<9
+            | Yellow<<6 | Green<<3 | Green;
+
+    qb.right = Yellow<<24 | Blue<<21 | Yellow<<18
+            | Yellow<<15 | Blue<<12 | Orange<<9
+            | White<<6 | Red<<3 | Yellow;
+
+
     /*
     qb = qb.rotVert(Column::Middle, Direction::Up);
-
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::Down);
-    qb = qb.rotHoriz(Row::Bottom, Direction::Right);*/
+    qb = qb.rotHoriz(Row::Bottom, Direction::Right);
+    qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
+    qb = qb.rotVert(Column::Right, Direction::_180);*/
 
 
 
+    std::cout << "Scrambled cube: " << qb;
     
-    std::cout << "Solving cube using IDDFS:" << std::endl;
+    std::cout << "Solving cube using IDA*:" << std::endl;
 
 
     auto sol = idaStar(qb);
