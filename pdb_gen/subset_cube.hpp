@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "../cube.hpp"
+#include "cube.hpp"
 #include <cstdint>
 #include <iostream>
 #include <cassert>
@@ -41,6 +41,8 @@ uint16_t top, bottom,
 	MiniCube(uint16_t top, uint16_t bottom,
 		uint16_t front, uint16_t back,
 		uint16_t left, uint16_t right);
+    
+    //union  {}
 	//Construct minicube from corner cubies
 	MiniCube(Cube const& largeCube);
 

@@ -1,5 +1,5 @@
 //#include "cube.hpp"
-#include "pdb_gen/subset_cube.hpp"
+#include "subset_cube.hpp"
 
 #include <iostream>
 #include <unordered_set>
@@ -11,6 +11,8 @@
 #include <bitset>
 #include "alg.hpp"
 #include "cube.hpp"
+
+//extern uint64_t nodesGenerated;
 
 
 int main() {
@@ -65,21 +67,22 @@ int main() {
     
     Cube qb;
     
-    /*
+    
     for (int i = 0; i < 1000000; i++) {
-        auto allNeighbors = qb.getNeighbors();
+        //auto allNeighbors = qb.getNeighbors();
 
         //std::array<Cube, 18> selectNeighbors;
         //std::copy(allNeighbors.begin(), allNeighbors.begin()+9, selectNeighbors.begin());
         //std::copy(allNeighbors.begin()+18, allNeighbors.begin()+27, selectNeighbors.begin()+9);
 
-        uint32_t nghbrIdx = (rand()%27);
-        qb = qb.getNeighbors()[nghbrIdx];
+        for (auto& neighbor : qb.getNeighbors()) {
+            uint32_t idx = MiniCube(qb).getIdx();
+        }
 
         //std::cout << "\nneighbor index: " << nghbrIdx;
         //std::cout << qb;
             
-
+        /*
         if (!(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution())) {
             
             std::cout << "\n\n\nError:" << std::endl;
@@ -89,8 +92,10 @@ int main() {
             std::cout << "\nMini cube:\n" << MiniCube(qb) << std::endl;
             std::cout << "Index: " << MiniCube(qb).getIdx() << std::endl;
             assert(false);
-        }
-    }*/
+        }*/
+    }
+    
+    return 0;
 
 
     /*
@@ -224,9 +229,9 @@ int main() {
     qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
     qb = qb.rotVert(Column::Right, Direction::_180);
     qb = qb.rotHoriz(Row::Bottom, Direction::Left);
-    qb = qb.rotXaxis(CrossSection::Front, Direction::_180);
-    qb = qb.rotVert(Column::Left, Direction::_180);
-    qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
+    //qb = qb.rotXaxis(CrossSection::Front, Direction::_180);
+    //qb = qb.rotVert(Column::Left, Direction::_180);
+    //qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
 
 
     assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());
@@ -238,10 +243,10 @@ int main() {
 
 
     auto sol = idaStar(qb);
+    std::cout << "Nodes generated: " << sol.second << std::endl;
+    std::cout << "Done! Found a " << (sol.first.size()-1) << " move solution:" << std::endl;
 
-    std::cout << "Done!" << std::endl;
-
-    for (auto cube : sol) {
+    for (auto cube : sol.first) {
         std::cout << cube << std::endl;
     }
 

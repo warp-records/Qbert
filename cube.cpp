@@ -1,6 +1,6 @@
 
 #include "cube.hpp"
-#include "pdb_gen/subset_cube.hpp"
+#include "subset_cube.hpp"
 #include <cassert>
 
 Cube::Cube() {
@@ -25,7 +25,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 	if (line == Row::Top) {
 		Direction opposite = dir==Direction::Left ? Direction::Right : Direction::Left;
 		opposite = dir==Direction::_180 ? Direction::_180 : dir;
-		return rotHoriz(Row::Middle, opposite).rotHoriz(Row::Bottom, opposite);
+        dir = opposite;
 	}
 
 	Cube newCube = *this;
@@ -35,8 +35,8 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 	
 	switch (line) {
 		case (Row::Top) : {
-			outwardFace = &newCube.top;
-			maskType =  Mask::Row::Top;
+			outwardFace = &newCube.bottom;
+			maskType =  Mask::Row::Top | Mask::Row::Middle;
 			break;
 		}
 
@@ -55,12 +55,12 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 	if (line != Row::Middle) {
 		switch (dir) {
 			case (Direction::Left) : {
-				*outwardFace = line==Row::Top ? rotFaceRight(*outwardFace) : rotFaceLeft(*outwardFace);
+				*outwardFace = rotFaceLeft(*outwardFace);
 				break;
 			}
 
 			case (Direction::Right) : {
-				*outwardFace = line==Row::Top ? rotFaceLeft(*outwardFace) : rotFaceRight(*outwardFace);
+				*outwardFace = rotFaceRight(*outwardFace);
 				break;
 			}
 
@@ -73,6 +73,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 
 	switch (dir) {
 		case (Direction::Left) : {
+            
 			newCube.front &= ~maskType;
 			newCube.front |= (right&maskType);
 
@@ -128,7 +129,8 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 	if (line == Column::Left) {
 		Direction opposite = dir==Direction::Up ? Direction::Down : Direction::Up;
 		opposite = dir==Direction::_180 ? Direction::_180 : dir;
-		return rotVert(Column::Middle, opposite).rotVert(Column::Right, opposite);
+        dir = opposite;
+		//return rotVert(Column::Middle, opposite).rotVert(Column::Right, opposite);
 	}
 
 
@@ -166,8 +168,8 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 		}
 
 		case (Column::Right): {
-			outwardFace = &newCube.right;
-			maskType =  Mask::Column::Right;
+			outwardFace = &newCube.left;
+			maskType =  Mask::Column::Right | Mask::Column::Middle;
 
 			break;
 		}
@@ -176,12 +178,12 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 	if (line != Column::Middle) {
 		switch (dir) {
 			case (Direction::Up) : {
-				*outwardFace = line==Column::Left ? rotFaceLeft(*outwardFace) : rotFaceRight(*outwardFace);
+				*outwardFace = rotFaceRight(*outwardFace);
 				break;
 			}
 
 			case (Direction::Down) : {
-				*outwardFace = line==Column::Left ? rotFaceRight(*outwardFace) : rotFaceLeft(*outwardFace);
+				*outwardFace = rotFaceLeft(*outwardFace);
 				break;
 			}
 
@@ -260,75 +262,84 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 }
 
 //Only coded to work with normalized cube rotations
+//Only coded to work with normalized cube rotations
 Cube Cube::rotXaxis(CrossSection line, Direction dir) const {
 
-	if (line == CrossSection::Front) {
-		Direction opposite = dir==Direction::Right ? Direction::Left : Direction::Right;
-		opposite = dir==Direction::_180 ? Direction::_180 : opposite;
-		return rotXaxis(CrossSection::Middle, opposite).rotXaxis(CrossSection::Back, opposite);
-	}
+    if (line == CrossSection::Front) {
+        Direction opposite = dir==Direction::Right ? Direction::Left : Direction::Right;
+        opposite = dir==Direction::_180 ? Direction::_180 : opposite;
+        
+        dir = opposite;
+    }
 
 
-	Cube newCube = *this;
+    Cube newCube = *this;
 
-	if (line == CrossSection::Back) {
-		switch (dir) {
-			case (Direction::Right) : {
-				newCube.back = rotFaceLeft(newCube.back);
-				break;
-			}
+    if (line != CrossSection::Middle) {
+        switch (dir) {
+            case (Direction::Right) : {
+                newCube.back = rotFaceLeft(newCube.back);
+                break;
+            }
 
-			case (Direction::Left) : {
-				newCube.back = rotFaceRight(newCube.back);
-				break;
-			}
+            case (Direction::Left) : {
+                newCube.back = rotFaceRight(newCube.back);
+                break;
+            }
 
-			case (Direction::_180) : {
-				newCube.back = rotFace180(newCube.back);
-				break;
-			}
-		}
-	}
+            case (Direction::_180) : {
+                newCube.back = rotFace180(newCube.back);
+                break;
+            }
+        }
+    }
 
-	uint32_t topMask = line==CrossSection::Back ? Mask::Row::Top : Mask::Row::Middle;
-	uint32_t leftMask = line==CrossSection::Back ? Mask::Column::Left : Mask::Column::Middle;
-	uint32_t bottomMask = line==CrossSection::Back ? Mask::Row::Bottom : Mask::Row::Middle;
-	uint32_t rightMask = line==CrossSection::Back ? Mask::Column::Right : Mask::Column::Middle;
+    uint32_t topMask = line==CrossSection::Back ? Mask::Row::Top : Mask::Row::Middle;
+    topMask = line==CrossSection::Front ? Mask::Row::Top | Mask::Row::Middle : topMask;
+    
+    uint32_t leftMask = line==CrossSection::Back ? Mask::Column::Left : Mask::Column::Middle;
+    leftMask = line==CrossSection::Front ? Mask::Column::Left | Mask::Column::Middle : leftMask;
+    
+    uint32_t bottomMask = line==CrossSection::Back ? Mask::Row::Bottom : Mask::Row::Middle;
+    bottomMask = line==CrossSection::Front ? Mask::Row::Bottom | Mask::Row::Middle : bottomMask;
+    
+    uint32_t rightMask = line==CrossSection::Back ? Mask::Column::Right : Mask::Column::Middle;
+    rightMask = line==CrossSection::Front ? Mask::Column::Right | Mask::Column::Middle : rightMask;
 
-	newCube.top &= ~topMask;
-	newCube.right &= ~rightMask;
-	newCube.bottom &= ~bottomMask;
-	newCube.left &= ~leftMask;
+    newCube.top &= ~topMask;
+    newCube.right &= ~rightMask;
+    newCube.bottom &= ~bottomMask;
+    newCube.left &= ~leftMask;
+    
+    //This is pretty clever
+    uint32_t all = ((left&leftMask) | (top&topMask) | (right&rightMask) | (bottom&bottomMask));
+        
+    //WRONG DIRECTIOBN
+    switch (dir) {
+        case (Direction::Right) : {
+            all = rotFaceRight(all);
+            break;
+        }
 
-	//WRONG DIRECTIOBN
-	switch (dir) {
-		case (Direction::Right) : {
-			newCube.top |= rotFaceRight(left&leftMask);			
-			newCube.right |= rotFaceRight(top&topMask);
-			newCube.bottom |= rotFaceRight(right&rightMask);
-			newCube.left |= rotFaceRight(bottom&bottomMask);
-			break;
-		}
+        case (Direction::Left) : {
+            all = rotFaceLeft(all);
+            break;
+        }
 
-		case (Direction::Left) : {
-			newCube.top |= rotFaceLeft(right&rightMask);			
-			newCube.left |= rotFaceLeft(top&topMask);
-			newCube.bottom |= rotFaceLeft(left&leftMask);
-			newCube.right |= rotFaceLeft(bottom&bottomMask);
-			break;
-		}
+        case (Direction::_180) : {
+            all = rotFace180(all);
+            break;
+        }
+    }
+    
+    newCube.top |= all&leftMask;
+    newCube.right |= all&topMask;
+    newCube.bottom |= all&rightMask;
+    newCube.left |= all&bottomMask;
 
-		case (Direction::_180) : {
-			newCube.top |= rotFace180(bottom&bottomMask);			
-			newCube.bottom |= rotFace180(top&topMask);
-			newCube.left |= rotFace180(right&rightMask);
-			newCube.right |= rotFace180(left&leftMask);
-			break;
-		}
-	}
-
-	return newCube;
+    return newCube;
 }
+
 
 
 uint32_t Cube::reflectFaceXaxis(uint32_t face) {

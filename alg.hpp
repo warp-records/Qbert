@@ -2,6 +2,7 @@
 #pragma once
 #include "cube.hpp"
 #include <vector>
+#include <utility>
 
 template<typename T> class PDB {
 	std::vector<uint8_t> const data;
@@ -14,6 +15,6 @@ public:
 };
 
 
-std::vector<Cube> idaStar(Cube start);
+std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start);
 
 #include "alg_impl.hpp"

@@ -7,7 +7,7 @@
 
 //class PDB;
 
-template<typename T> static std::vector<uint8_t> PDB<T>::genPdb(T start, int const permuts) {
+template<typename T> std::vector<uint8_t> PDB<T>::genPdb(T start, int const permuts) {
 
 	struct Node {
 		T elem;
