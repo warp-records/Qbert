@@ -28,6 +28,8 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 
 	for (int depthLim = heuristic(start); depthLim <= SKYDADDYS_NUMBER; depthLim++) {
 
+		std::cout << "Depth " << depthLim << std::endl;
+
 		std::function<std::vector<Cube>(Node)> idaStarInner;
 		idaStarInner = [&depthLim, &idaStarInner, &heuristic, &nodesGenerated](Node node) -> std::vector<Cube> {
 
@@ -48,12 +50,12 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 
 				return sol;
 			}
-
+            //Reduce branching factor
 			for (Cube const& neighbor : node.cube.getNeighbors()) {
 				//assert(node.depth+1 + heuristic(neighbor) <= SKYDADDYS_NUMBER);
-
+                nodesGenerated++;
+                
 				if (node.depth+1 + heuristic(neighbor) <= depthLim) {
-				 	nodesGenerated++;
 
 					auto result = idaStarInner(Node{neighbor, node.depth+1, &node});
 

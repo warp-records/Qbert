@@ -37,8 +37,6 @@ int main() {
     )" << std::endl;
 
     //std::cout << qb;
-    //std::cout << qb.rotXaxis(CrossSection::Back, )
-
     /*
     std::cout << "Cube: " << qb;
     std::cout << qb.changePerspective(Perspective::Left).changePerspective(Perspective::Left).changePerspective(Perspective::Left).changePerspective(Perspective::Left);
@@ -68,21 +66,20 @@ int main() {
     Cube qb;
     
     
-    for (int i = 0; i < 1000000; i++) {
+    for (int i = 0; i < 100000000; i++) {
         //auto allNeighbors = qb.getNeighbors();
 
         //std::array<Cube, 18> selectNeighbors;
         //std::copy(allNeighbors.begin(), allNeighbors.begin()+9, selectNeighbors.begin());
         //std::copy(allNeighbors.begin()+18, allNeighbors.begin()+27, selectNeighbors.begin()+9);
 
-        for (auto& neighbor : qb.getNeighbors()) {
-            uint32_t idx = MiniCube(qb).getIdx();
-        }
-
         //std::cout << "\nneighbor index: " << nghbrIdx;
         //std::cout << qb;
+
+        int nghbrIdx = rand()%27;
+        qb = qb.getNeighbors()[nghbrIdx];
             
-        /*
+        
         if (!(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution())) {
             
             std::cout << "\n\n\nError:" << std::endl;
@@ -92,7 +89,7 @@ int main() {
             std::cout << "\nMini cube:\n" << MiniCube(qb) << std::endl;
             std::cout << "Index: " << MiniCube(qb).getIdx() << std::endl;
             assert(false);
-        }*/
+        }
     }
     
     return 0;
@@ -220,8 +217,8 @@ int main() {
     if (!(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution())) {
         throw std::exception();
     }*/
-
     
+    /*
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::Down);
@@ -229,27 +226,40 @@ int main() {
     qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
     qb = qb.rotVert(Column::Right, Direction::_180);
     qb = qb.rotHoriz(Row::Bottom, Direction::Left);
-    //qb = qb.rotXaxis(CrossSection::Front, Direction::_180);
-    //qb = qb.rotVert(Column::Left, Direction::_180);
-    //qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
+    qb = qb.rotXaxis(CrossSection::Front, Direction::_180);
+    qb = qb.rotVert(Column::Left, Direction::_180);
+    qb = qb.rotXaxis(CrossSection::Front, Direction::Right);*/
+    //qb = qb.rotHoriz(Row::Top, Direction::Left);
 
 
     assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());
 
 
-    std::cout << "Scrambled cube: " << qb;
+    std::cout << "Scrambled cube:\n" << qb;
     
-    std::cout << "Solving cube using IDA*:" << std::endl;
+    std::cout << "\nSolving cube using IDA*:" << std::endl;
 
-
+    auto start = std::chrono::high_resolution_clock::now();
+    
     auto sol = idaStar(qb);
-    std::cout << "Nodes generated: " << sol.second << std::endl;
-    std::cout << "Done! Found a " << (sol.first.size()-1) << " move solution:" << std::endl;
+    
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
+    int len = sol.first.size()-1;
+    bool useAn = len==8 || len==11 || len==18;
+    
+    std::cout << "Done! Found " << (useAn ? "an " : "a ") <<
+        (sol.first.size()-1) << " move solution:" << std::endl;
+    std::cout << "Generated " << sol.second << " nodes in " << duration.count() << "ms" << std::endl;
+
+    
     for (auto cube : sol.first) {
         std::cout << cube << std::endl;
     }
 
     return 0;
 }
+
+//54 669 934
 

@@ -24,7 +24,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 	//Don't feel like properly coding normalization
 	if (line == Row::Top) {
 		Direction opposite = dir==Direction::Left ? Direction::Right : Direction::Left;
-		opposite = dir==Direction::_180 ? Direction::_180 : dir;
+		opposite = dir==Direction::_180 ? Direction::_180 : opposite;
         dir = opposite;
 	}
 
@@ -36,7 +36,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 	switch (line) {
 		case (Row::Top) : {
 			outwardFace = &newCube.bottom;
-			maskType =  Mask::Row::Top | Mask::Row::Middle;
+			maskType =  Mask::Row::Bottom | Mask::Row::Middle;
 			break;
 		}
 
@@ -128,7 +128,7 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 
 	if (line == Column::Left) {
 		Direction opposite = dir==Direction::Up ? Direction::Down : Direction::Up;
-		opposite = dir==Direction::_180 ? Direction::_180 : dir;
+		opposite = dir==Direction::_180 ? Direction::_180 : opposite;
         dir = opposite;
 		//return rotVert(Column::Middle, opposite).rotVert(Column::Right, opposite);
 	}
@@ -156,8 +156,8 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 		case (Column::Left) : {
 			//didn't know you couldn't use scoped enums as
 			//integers when I originally wrote this lol
-			outwardFace = &newCube.left;
-			maskType = Mask::Column::Left;
+			outwardFace = &newCube.right;
+			maskType = Mask::Column::Right | Mask::Column::Middle;
 
 			break;
 		}
@@ -168,8 +168,8 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 		}
 
 		case (Column::Right): {
-			outwardFace = &newCube.left;
-			maskType =  Mask::Column::Right | Mask::Column::Middle;
+			outwardFace = &newCube.right;
+			maskType =  Mask::Column::Right;
 
 			break;
 		}
@@ -268,7 +268,6 @@ Cube Cube::rotXaxis(CrossSection line, Direction dir) const {
     if (line == CrossSection::Front) {
         Direction opposite = dir==Direction::Right ? Direction::Left : Direction::Right;
         opposite = dir==Direction::_180 ? Direction::_180 : opposite;
-        
         dir = opposite;
     }
 
@@ -302,7 +301,7 @@ Cube Cube::rotXaxis(CrossSection line, Direction dir) const {
     
     uint32_t bottomMask = line==CrossSection::Back ? Mask::Row::Bottom : Mask::Row::Middle;
     bottomMask = line==CrossSection::Front ? Mask::Row::Bottom | Mask::Row::Middle : bottomMask;
-    
+    //problem
     uint32_t rightMask = line==CrossSection::Back ? Mask::Column::Right : Mask::Column::Middle;
     rightMask = line==CrossSection::Front ? Mask::Column::Right | Mask::Column::Middle : rightMask;
 
@@ -312,31 +311,34 @@ Cube Cube::rotXaxis(CrossSection line, Direction dir) const {
     newCube.left &= ~leftMask;
     
     //This is pretty clever
-    uint32_t all = ((left&leftMask) | (top&topMask) | (right&rightMask) | (bottom&bottomMask));
+    //uint32_t all = ((left&leftMask) | (top&topMask) | (right&rightMask) | (bottom&bottomMask));
         
     //WRONG DIRECTIOBN
     switch (dir) {
         case (Direction::Right) : {
-            all = rotFaceRight(all);
+            newCube.top |= rotFaceRight(left&leftMask);
+            newCube.right |= rotFaceRight(top&topMask);
+            newCube.bottom |= rotFaceRight(right&rightMask);
+            newCube.left |= rotFaceRight(bottom&bottomMask);
             break;
         }
 
         case (Direction::Left) : {
-            all = rotFaceLeft(all);
+            newCube.top |= rotFaceLeft(right&rightMask);
+            newCube.left |= rotFaceLeft(top&topMask);
+            newCube.bottom |= rotFaceLeft(left&leftMask);
+            newCube.right |= rotFaceLeft(bottom&bottomMask);
             break;
         }
 
         case (Direction::_180) : {
-            all = rotFace180(all);
+            newCube.top |= rotFace180(bottom&bottomMask);
+            newCube.bottom |= rotFace180(top&topMask);
+            newCube.left |= rotFace180(right&rightMask);
+            newCube.right |= rotFace180(left&leftMask);
             break;
         }
     }
-    
-    newCube.top |= all&leftMask;
-    newCube.right |= all&topMask;
-    newCube.bottom |= all&rightMask;
-    newCube.left |= all&bottomMask;
-
     return newCube;
 }
 
