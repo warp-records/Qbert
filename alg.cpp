@@ -1,7 +1,7 @@
 
 #include "alg.hpp"
 #include "cube.hpp"
-#include "subset_cube.hpp"
+#include "mini_cube.hpp"
 #include <stack>
 #include <vector>
 #include <functional>

@@ -1,6 +1,6 @@
 
 #include "cube.hpp"
-#include "subset_cube.hpp"
+#include "mini_cube.hpp"
 #include <cassert>
 
 Cube::Cube() {

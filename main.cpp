@@ -1,5 +1,5 @@
 //#include "cube.hpp"
-#include "subset_cube.hpp"
+#include "mini_cube.hpp"
 
 #include <iostream>
 #include <unordered_set>
@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <sstream>
 #include <bitset>
+#include <locale>
 #include "alg.hpp"
 #include "cube.hpp"
 
@@ -65,7 +66,7 @@ int main() {
     
     Cube qb;
     
-    
+    /*
     for (int i = 0; i < 100000000; i++) {
         //auto allNeighbors = qb.getNeighbors();
 
@@ -92,7 +93,7 @@ int main() {
         }
     }
     
-    return 0;
+    return 0;*/
 
 
     /*
@@ -218,7 +219,7 @@ int main() {
         throw std::exception();
     }*/
     
-    /*
+    
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::Down);
@@ -228,7 +229,7 @@ int main() {
     qb = qb.rotHoriz(Row::Bottom, Direction::Left);
     qb = qb.rotXaxis(CrossSection::Front, Direction::_180);
     qb = qb.rotVert(Column::Left, Direction::_180);
-    qb = qb.rotXaxis(CrossSection::Front, Direction::Right);*/
+    qb = qb.rotXaxis(CrossSection::Front, Direction::Right);
     //qb = qb.rotHoriz(Row::Top, Direction::Left);
 
 
@@ -249,9 +250,13 @@ int main() {
     int len = sol.first.size()-1;
     bool useAn = len==8 || len==11 || len==18;
     
+    std::locale::global(std::locale(""));
+    std::cout.imbue(std::locale());
+
     std::cout << "Done! Found " << (useAn ? "an " : "a ") <<
         (sol.first.size()-1) << " move solution:" << std::endl;
-    std::cout << "Generated " << sol.second << " nodes in " << duration.count() << "ms" << std::endl;
+    std::cout << "Generated " << sol.second << " nodes in " << duration.count() << "ms";
+    std::cout << " (" << (sol.second*1000/duration.count()) << " nodes/s)";
 
     
     for (auto cube : sol.first) {
