@@ -6,6 +6,8 @@
 #include <vector>
 #include <functional>
 #include <utility>
+#include <array>
+#include <array>
 
 std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 

@@ -9,6 +9,7 @@
 #include <cassert>
 #include <unordered_set>
 #include <algorithm>
+#include <array>
 
 namespace MiniMask {
 	namespace Column {
@@ -25,6 +26,7 @@ namespace MiniMask {
 
 struct EdgeCubies {
 
+	/*
 	enum SolvedFace {
 		WhiteFace =  0x000,
 		GreenFace =  0x249,
@@ -33,6 +35,7 @@ struct EdgeCubies {
 		BlueFace = 	 0x924,
 		OrangeFace = 0xB6D
 	};
+	*/
     
     //Top, bottom are 3 faces, left/right are 6, front/back are 2
     uint16_t top, bottom, left, right;
@@ -43,25 +46,26 @@ struct EdgeCubies {
 			uint32_t left, uint32_t right,
 			uint16_t front, uint16_t back);
 	    
-	EdgeCubies(Cube const& largeCube);
+	//EdgeCubies(Cube const& largeCube);
 
 	//Normalized so top left front cube is never moved
-	EdgeCubies rotHoriz(Row line, Direction dir) const;
-	EdgeCubies rotXAxis(Column line, Direction dir) const;
+	EdgeCubies rotHoriz(Row line) const;
+	EdgeCubies rotXAxis(CrossSection line) const;
 
 	EdgeCubies& operator=(const EdgeCubies& other) = default;
 
-	std::array<EdgeCubies, 4> getNeighbors() const;
+	std::array<EdgeCubies, 5> getNeighbors() const;
 
-	//Unique integer generated from cube used as an index into the PDB
-	//yields the same value for different orientations of the same cube
-	uint32_t getIdx() const;
+	//This is gonna be complicated...
+	//uint32_t getIdx() const;
 
+	/*
 	struct CubieInfo {
 		uint8_t id;
 		uint8_t orientation;
-	};
-	CubieInfo getCubieInfo(bool x, bool y, bool z) const;
+	};*/
+
+	//CubieInfo getCubieInfo(bool x, bool y, bool z) const;
 
 };
 

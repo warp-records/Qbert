@@ -10,6 +10,7 @@
 #include <sstream>
 #include <bitset>
 #include <locale>
+#include <array>
 #include "alg.hpp"
 #include "cube.hpp"
 
@@ -66,8 +67,8 @@ int main() {
     
     Cube qb;
     
-    /*
-    for (int i = 0; i < 100000000; i++) {
+    
+    for (int i = 0; i < 10000000; i++) {
         //auto allNeighbors = qb.getNeighbors();
 
         //std::array<Cube, 18> selectNeighbors;
@@ -77,10 +78,10 @@ int main() {
         //std::cout << "\nneighbor index: " << nghbrIdx;
         //std::cout << qb;
 
-        int nghbrIdx = rand()%27;
-        qb = qb.getNeighbors()[nghbrIdx];
+        //int nghbrIdx = rand()%27;
+        qb = qb.getNeighbors()[3];
             
-        
+        /*
         if (!(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution())) {
             
             std::cout << "\n\n\nError:" << std::endl;
@@ -90,10 +91,10 @@ int main() {
             std::cout << "\nMini cube:\n" << MiniCube(qb) << std::endl;
             std::cout << "Index: " << MiniCube(qb).getIdx() << std::endl;
             assert(false);
-        }
+        }*/
     }
-    
-    return 0;*/
+
+    return 0;
 
 
     /*
@@ -228,8 +229,8 @@ int main() {
     qb = qb.rotVert(Column::Right, Direction::_180);
     qb = qb.rotHoriz(Row::Bottom, Direction::Left);
     qb = qb.rotXaxis(CrossSection::Front, Direction::_180);
-    qb = qb.rotVert(Column::Left, Direction::_180);
-    qb = qb.rotXaxis(CrossSection::Front, Direction::Right);
+    //qb = qb.rotVert(Column::Left, Direction::_180);
+    //qb = qb.rotXaxis(CrossSection::Front, Direction::Right);
     //qb = qb.rotHoriz(Row::Top, Direction::Left);
 
 
@@ -250,8 +251,8 @@ int main() {
     int len = sol.first.size()-1;
     bool useAn = len==8 || len==11 || len==18;
     
-    std::locale::global(std::locale(""));
-    std::cout.imbue(std::locale());
+    //std::locale::global(std::locale(""));
+    //std::cout.imbue(std::locale());
 
     std::cout << "Done! Found " << (useAn ? "an " : "a ") <<
         (sol.first.size()-1) << " move solution:" << std::endl;

@@ -2,6 +2,7 @@
 #include "cube.hpp"
 #include "mini_cube.hpp"
 #include <cassert>
+#include <array>
 
 Cube::Cube() {
 	front =  WhiteFace;
