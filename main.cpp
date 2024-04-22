@@ -67,7 +67,7 @@ int main() {
     
     Cube qb;
     
-    
+    /*
     for (int i = 0; i < 10000000; i++) {
         //auto allNeighbors = qb.getNeighbors();
 
@@ -81,7 +81,7 @@ int main() {
         //int nghbrIdx = rand()%27;
         qb = qb.getNeighbors()[3];
             
-        /*
+        
         if (!(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution())) {
             
             std::cout << "\n\n\nError:" << std::endl;
@@ -91,10 +91,10 @@ int main() {
             std::cout << "\nMini cube:\n" << MiniCube(qb) << std::endl;
             std::cout << "Index: " << MiniCube(qb).getIdx() << std::endl;
             assert(false);
-        }*/
+        }
     }
 
-    return 0;
+    return 0;*/
 
 
     /*
@@ -251,8 +251,9 @@ int main() {
     int len = sol.first.size()-1;
     bool useAn = len==8 || len==11 || len==18;
     
-    //std::locale::global(std::locale(""));
-    //std::cout.imbue(std::locale());
+    //Remove if compiling with GCC
+    std::locale::global(std::locale(""));
+    std::cout.imbue(std::locale());
 
     std::cout << "Done! Found " << (useAn ? "an " : "a ") <<
         (sol.first.size()-1) << " move solution:" << std::endl;

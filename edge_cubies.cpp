@@ -2,7 +2,8 @@
 #include "edge_cubies.hpp"
 #include <array>
 
-EdgeCubies rotHoriz(Row line) const {
+//NOT DEBUGGED
+EdgeCubies EdgeCubies::rotHoriz(Row line) const {
 	EdgeCubies newCube(*this);
 
 	uint32_t xSwapMask = line==Row::Top ? 0b111<<9 : 0b111;
@@ -31,7 +32,7 @@ EdgeCubies rotHoriz(Row line) const {
 }
 
 
-EdgeCubies rotXAxis(CrossSection line) const {
+EdgeCubies EdgeCubies::rotXAxis(CrossSection line) const {
 	EdgeCubies newCube(*this);
 
 	uint32_t ySwapMask = line==CrossSection::Front ? 0x7 : 0x7<<6;
@@ -46,9 +47,9 @@ EdgeCubies rotXAxis(CrossSection line) const {
 
 
 	uint32_t xBottomTileMask = line==CrossSection::Front ? 0b111 : 0b111<<6;
-			 xBottomTileMask = line==CrossSection::Middle ? 0b111<<3 : xTileMask;
+			 xBottomTileMask = line==CrossSection::Middle ? 0b111<<3 : xBottomTileMask;
 
-	uint32_t xTopTileMask = xTileMask<<9;
+	uint32_t xTopTileMask = xBottomTileMask<<9;
 
 	newCube.left &= ~(xTopTileMask | xBottomTileMask);
 	newCube.left |= (right&xBottomTileMask)<<9;
@@ -62,17 +63,17 @@ EdgeCubies rotXAxis(CrossSection line) const {
 	return newCube;
 }
 
-std::array<EdgeCubies, 5> getNeighbors() const {
+std::array<EdgeCubies, 5> EdgeCubies::getNeighbors() const {
 	return std::array<EdgeCubies, 5> {{
 		rotHoriz(Row::Top), 
 		rotHoriz(Row::Bottom),
-		rotXaxis(CrossSection::Front), 
-		rotXaxis(CrossSection::Middle),
-		rotXaxis(CrossSection::Back),
+		rotXAxis(CrossSection::Front), 
+		rotXAxis(CrossSection::Middle),
+		rotXAxis(CrossSection::Back),
 	}};
 }
 
-EdgeCubies() {
+EdgeCubies::EdgeCubies() {
 	front = 0x00;
 	top = 0xE07;
 	left = 0x12492;

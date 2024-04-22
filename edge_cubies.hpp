@@ -25,21 +25,10 @@ namespace MiniMask {
 };
 
 struct EdgeCubies {
-
-	/*
-	enum SolvedFace {
-		WhiteFace =  0x000,
-		GreenFace =  0x249,
-		RedFace =   0x492,
-		YellowFace = 0x6DB,
-		BlueFace = 	 0x924,
-		OrangeFace = 0xB6D
-	};
-	*/
     
     //Top, bottom are 3 faces, left/right are 6, front/back are 2
-    uint16_t top, bottom, left, right;
-    uint32_t front, back;
+    uint16_t top, bottom, front, back;
+    uint32_t left, right;
 
  	EdgeCubies();
 	EdgeCubies(uint16_t top, uint16_t bottom, 
