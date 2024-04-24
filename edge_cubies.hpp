@@ -4,6 +4,7 @@
 #pragma once
 
 #include "cube.hpp"
+#include "mini_cube.hpp"
 #include <cstdint>
 #include <iostream>
 #include <cassert>
@@ -46,15 +47,15 @@ struct EdgeCubies {
 	std::array<EdgeCubies, 5> getNeighbors() const;
 
 	//This is gonna be complicated...
-	//uint32_t getIdx() const;
+	//Not normalized
+	uint32_t getIdx() const;
+	CubieInfo getCubieInfo(bool x, bool y, bool z) const;
 
 	/*
 	struct CubieInfo {
 		uint8_t id;
 		uint8_t orientation;
 	};*/
-
-	//CubieInfo getCubieInfo(bool x, bool y, bool z) const;
 
 };
 

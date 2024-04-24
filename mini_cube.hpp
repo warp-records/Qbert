@@ -8,6 +8,12 @@
 #include <unordered_set>
 #include <algorithm>
 
+//Not universal across different cube types
+struct CubieInfo {
+	uint8_t id;
+	uint8_t orientation;
+};
+
 namespace MiniMask {
 	namespace Column {
 		uint16_t constexpr Left =  0xE38;
@@ -62,10 +68,6 @@ struct MiniCube {
 	uint32_t getIdx() const;
 
 	//Only public for debugging
-	struct CubieInfo {
-		uint8_t id;
-		uint8_t orientation;
-	};
 	CubieInfo getCubieInfo(bool x, bool y, bool z) const;
 
 
