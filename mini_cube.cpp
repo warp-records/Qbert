@@ -16,6 +16,9 @@ MiniCube::MiniCube() {
 	right =  OrangeFace;
 }
 
+
+// uint16_t rotBBChead(unint16_t face);
+
 uint16_t rotFaceLeft(uint16_t face);
 uint16_t rotFaceRight(uint16_t face);
 uint16_t rotFace180(uint16_t face);
@@ -35,7 +38,7 @@ MiniCube MiniCube::rotHoriz(Row line, Direction dir) const {
 
 	uint16_t maskType;
 	uint16_t* outwardFace;
-	
+
 	switch (line) {
 		case (Row::Top) : {
 			outwardFace = &newCube.top;
@@ -136,7 +139,7 @@ MiniCube MiniCube::rotVert(Column line, Direction dir) const {
 
 	uint16_t* outwardFace;
 
-	
+
 	switch (line) {
 		case (Column::Left) : {
 			outwardFace = &newCube.left;
@@ -217,7 +220,7 @@ MiniCube MiniCube::rotVert(Column line, Direction dir) const {
 			newCube.back |= (front&maskType);
 			break;
 		}
-	}	
+	}
 
 	newCube.back = rotFace180(newCube.back);
 
@@ -260,7 +263,7 @@ uint16_t MiniCube::rotFace180(uint16_t face) {
 	return newFace;
 }
 
-MiniCube::CubieInfo MiniCube::getCubieInfo(bool x, bool y, bool z) const {
+CubieInfo MiniCube::getCubieInfo(bool x, bool y, bool z) const {
     uint16_t xFace = x==0 ? left : right;
     //checked
     xFace >>= (x^z)==0 ? 0*3 : 1*3;
@@ -346,7 +349,7 @@ std::array<MiniCube, 9> MiniCube::getNeighbors() const {
 	std::array<MiniCube, 3> zAxisRots {{
 		//rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::Right),
 		rotHoriz(Row::Bottom, Direction::Left), rotHoriz(Row::Bottom, Direction::Right),
-		/*rotHoriz(Row::Top, Direction::_180), */rotHoriz(Row::Bottom, Direction::_180), 
+		/*rotHoriz(Row::Top, Direction::_180), */rotHoriz(Row::Bottom, Direction::_180),
 	}};
 
 	std::array<MiniCube, 9> final;
@@ -360,17 +363,17 @@ std::array<MiniCube, 9> MiniCube::getNeighbors() const {
 
 
 MiniCube::MiniCube(Cube const& large) {
-	top = ((large.top&0x7000000)>>3*5) | ((large.top&0x1C0000)>>3*4) | ((large.top&0x1C0)>>3*1) | (large.top&0x7); 
+	top = ((large.top&0x7000000)>>3*5) | ((large.top&0x1C0000)>>3*4) | ((large.top&0x1C0)>>3*1) | (large.top&0x7);
 
 	bottom = ((large.bottom&0x7000000)>>3*5) | ((large.bottom&0x1C0000)>>3*4) | ((large.bottom&0x1C0)>>3*1) | (large.bottom&0x7);
-	
-	left = ((large.left&0x7000000)>>3*5) | ((large.left&0x1C0000)>>3*4) | ((large.left&0x1C0)>>3*1) | (large.left&0x7); 
-	
-	right = ((large.right&0x7000000)>>3*5) | ((large.right&0x1C0000)>>3*4) | ((large.right&0x1C0)>>3*1) | (large.right&0x7); 
-	
-	front = ((large.front&0x7000000)>>3*5) | ((large.front&0x1C0000)>>3*4) | ((large.front&0x1C0)>>3*1) | (large.front&0x7); 
-	
-	back = ((large.back&0x7000000)>>3*5) | ((large.back&0x1C0000)>>3*4) | ((large.back&0x1C0)>>3*1) | (large.back&0x7); 
+
+	left = ((large.left&0x7000000)>>3*5) | ((large.left&0x1C0000)>>3*4) | ((large.left&0x1C0)>>3*1) | (large.left&0x7);
+
+	right = ((large.right&0x7000000)>>3*5) | ((large.right&0x1C0000)>>3*4) | ((large.right&0x1C0)>>3*1) | (large.right&0x7);
+
+	front = ((large.front&0x7000000)>>3*5) | ((large.front&0x1C0000)>>3*4) | ((large.front&0x1C0)>>3*1) | (large.front&0x7);
+
+	back = ((large.back&0x7000000)>>3*5) | ((large.back&0x1C0000)>>3*4) | ((large.back&0x1C0)>>3*1) | (large.back&0x7);
 
 }
 
@@ -395,7 +398,7 @@ uint32_t MiniCube::getIdx() const {
 
 	constexpr int PADDING = 6;
 	alignas(uint64_t) uint8_t indices[8] = {
-		0+PADDING, 1+PADDING, 2+PADDING, 0+PADDING, 
+		0+PADDING, 1+PADDING, 2+PADDING, 0+PADDING,
 		3+PADDING, 4+PADDING, 5+PADDING, 6+PADDING
 	};
 
@@ -512,4 +515,3 @@ bool operator==(MiniCube const& lhs, MiniCube const& rhs) {
 bool operator!=(MiniCube const& lhs, MiniCube const& rhs) {
 	return !(lhs==rhs);
 }
-

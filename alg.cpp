@@ -20,12 +20,13 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 	PDB cornerCubieDB(MiniCube(), 3674160);
 
 	auto heuristic = [&cornerCubieDB](Cube const& cube) {
+	    //return 0;
 		MiniCube cornerCubies(cube);
 		return cornerCubieDB.getDist(cornerCubies.getIdx());
 	};
 
 	constexpr int SKYDADDYS_NUMBER = 20;
-    
+
     uint64_t nodesGenerated = 0;
 
 	for (int depthLim = heuristic(start); depthLim <= SKYDADDYS_NUMBER; depthLim++) {
@@ -35,7 +36,7 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 		std::function<std::vector<Cube>(Node)> idaStarInner;
 		idaStarInner = [&depthLim, &idaStarInner, &heuristic, &nodesGenerated](Node node) -> std::vector<Cube> {
 
-			
+
 			if (node.cube.isSolved()) {
 				//std::cout << "Solution found!" << std::endl;
 
@@ -56,7 +57,7 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 			for (Cube const& neighbor : node.cube.getNeighbors()) {
 				//assert(node.depth+1 + heuristic(neighbor) <= SKYDADDYS_NUMBER);
                 nodesGenerated++;
-                
+
 				if (node.depth+1 + heuristic(neighbor) <= depthLim) {
 
 					auto result = idaStarInner(Node{neighbor, node.depth+1, &node});
@@ -79,4 +80,3 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 
 	throw std::exception();
 }
-

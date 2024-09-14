@@ -7,10 +7,10 @@ project(Rubix)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Add the executable
 add_executable(Rubix main.cpp cube.cpp alg.cpp mini_cube.cpp edge_cubies.cpp)
 
-# Set optimization level to Os
-#  -fsanitize=address,undefined 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+#  -fsanitize=address,undefined
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wswitch -O3")

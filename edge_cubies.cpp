@@ -2,86 +2,6 @@
 #include "edge_cubies.hpp"
 #include <array>
 
-//NOT DEBUGGED
-EdgeCubies EdgeCubies::rotHoriz(Row line) const {
-	EdgeCubies newCube(*this);
-
-	uint32_t xSwapMask = line==Row::Top ? 0b111<<9 : 0b111;
-	uint32_t zSwapMask = line==Row::Top ? 0b111<<3 : 0b111;
-
-	//operator << has lowest precedence
-	newCube.left &= xSwapMask;
-	newCube.left |= (right&xSwapMask)<<6 | (right&xSwapMask)<<3 | (right&xSwapMask<<6)>>6;
-	
-	newCube.right &= xSwapMask;
-	newCube.right |= (left&xSwapMask)<<6 | (left&xSwapMask<<3) | (left&xSwapMask<<6)>>6;
-
-	newCube.front &= ~zSwapMask;
-	newCube.front |= back&zSwapMask;
-
-	newCube.back &= ~zSwapMask;
-	newCube.back |= front&zSwapMask;
-
-	if (line == Row::Top) {
-		newCube.top = (top&0b111)<<6 | (top&0b111<<3) | (top&0b111<<6)>>6;
-	} else {
-		newCube.bottom = (bottom&0b111)<<6 | (bottom&0b111<<3) | (bottom&0b111<<6)>>6;
-	}
-
-	return newCube;
-}
-
-
-EdgeCubies EdgeCubies::rotXAxis(CrossSection line) const {
-	EdgeCubies newCube(*this);
-
-	uint32_t ySwapMask = line==CrossSection::Front ? 0x7 : 0x7<<6;
-			 ySwapMask = line==CrossSection::Middle ? 0x7<<3 : ySwapMask;
-
-	newCube.top &= ySwapMask;
-	newCube.top |= bottom&ySwapMask;
-
-	newCube.bottom &= ySwapMask;
-	newCube.bottom |= top&ySwapMask;
-
-
-
-	uint32_t xBottomTileMask = line==CrossSection::Front ? 0b111 : 0b111<<6;
-			 xBottomTileMask = line==CrossSection::Middle ? 0b111<<3 : xBottomTileMask;
-
-	uint32_t xTopTileMask = xBottomTileMask<<9;
-
-	newCube.left &= ~(xTopTileMask | xBottomTileMask);
-	newCube.left |= (right&xBottomTileMask)<<9;
-	newCube.left |= (right&xTopTileMask)>>9;
-
-	newCube.right &= ~(xTopTileMask | xBottomTileMask);
-	newCube.left |= (left&xBottomTileMask)<<9;
-	newCube.left |= (left&xTopTileMask)>>9;
-
-
-	return newCube;
-}
-
-std::array<EdgeCubies, 5> EdgeCubies::getNeighbors() const {
-	return std::array<EdgeCubies, 5> {{
-		rotHoriz(Row::Top), 
-		rotHoriz(Row::Bottom),
-		rotXAxis(CrossSection::Front), 
-		rotXAxis(CrossSection::Middle),
-		rotXAxis(CrossSection::Back),
-	}};
-}
-
-EdgeCubies::EdgeCubies() {
-	front = 0x00;
-	top = 0xE07;
-	left = 0x12492;
-
-	back = 0x1B;
-	bottom = 0x124;
-	right = 0x2DB6D;
-}
 
 /*
 000 101 = White Orange -
@@ -101,15 +21,20 @@ EdgeCubies::EdgeCubies() {
 
 //missing 001 010
 
-uint32_t EdgeCubies::getIdx() const {
+ uint32_t EdgeCubies::getIdx() const {
 
-		//bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+	//bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
 	//7!*3^5 ... 2!*3^1
 
 	//HELPFHDSAFADSHNFSDK
 
+
 	//Maybe try a simpler implementation
-	//(x+6)!/6!
+	//When "N"" is number of cubies in set
+	//Num of permutations: 12!/(12-N)!
+	//In this case, 12!/6!
+
+	//factorialSet[i] = (i+6)!/6!
 	uint32_t const factorialSet[7] {
 		1, 7, 56, 504, 5040, 55440, 665280
 	};
@@ -124,8 +49,6 @@ uint32_t EdgeCubies::getIdx() const {
 		PADDING, PADDING, PADDING, PADDING, PADDING, PADDING, PADDING, PADDING,
 		PADDING, PADDING, PADDING, PADDING, PADDING, PADDING, PADDING, PADDING
 	};
-
-	for (int i = 6; i < 0; i++)
 
 	uint32_t idx = 0;
 
@@ -143,7 +66,7 @@ uint32_t EdgeCubies::getIdx() const {
 		uint64_t subtractConst = (0x0101010101010101ULL << (info.id*8));
 		packed -= subtractConst;
 		*reinterpret_cast<uint64_t*>(indices) = packed;*/
-		
+
 		for (int j = info.id; j < 12; j++) {
 			indices[j]--;
 		}
@@ -153,12 +76,56 @@ uint32_t EdgeCubies::getIdx() const {
 
 }
 
-CubieInfo EdgeCubies::getCubieInfo(int idx) const {
+EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 
-	uint16_t yFace = idx < 2 ? top : bottom;
-	yFace &= (0b111 << (idx < 2 ? idx : idx-3)) >> (idx < 2 ? idx : idx-3);
+    uint16_t face1;
+    uint16_t face2;
+    //to understand this, visualize the code
+    //if you're bad at visualizing things, good fucking luck understanding LOL
 
-	uint16_t zFace = idx < 2 ? top : bottom;
+    /*
+   Front face:
+   | |2| |
+   |1| |3|
+   | |0| |
+
+   Right face:
+   | |4| |
+   | | | |
+   | |5| |
+    */
+
+    switch (idx) {
+        case 0: {
+            face1 = front&(0b111<<3*1)>>3*1;
+            face2 = bottom&(0b111<<3*7)>>3*7;
+        }
+
+        case 1: {
+            face1 = front&(0b111<<3*5)>>3*5;
+            face2 = left&(0b111<<3*3)>>3*3;
+        }
+
+        case 2: {
+            face1 = front&(0b111<<3*7)>>3*7;
+            face2 = top&(0b111<<3*1)>>3*1;
+        }
+
+        case 3: {
+            face1 = front&(0b111<<3*3)>>3*3;
+            face2 = right&(0b111<<3*5)>>3*5;
+        }
+
+        case 4: {
+            face1 = right&(0b111<<3*7)>>3*7;
+            face2 = top&(0b111<<3*3)>>3*3;
+        }
+
+        case 5: {
+            face1 = right&(0b111<<3*1)>>3*1;
+            face2 = bottom&(0b111<<3*3)>>3*3;
+        }
+    }
 
 	std::array<uint8_t, 64> cubieIDMap;
 	cubieIDMap[0b000101] = 0;
@@ -190,7 +157,7 @@ CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 
 	cubieIDMap[0b011010] = 9;
 	cubieIDMap[0b010011] = 9;
-	
+
 	cubieIDMap[0b011001] = 10;
 	cubieIDMap[0b001011] = 10;
 
@@ -199,11 +166,45 @@ CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 
 	CubieInfo info;
 
-	info.id = cubieIDMap[idx];
-	info.orientation = yFace > xFace ? 1 : 0;
+	info.id = cubieIDMap[face1<<3 || face2];
+	info.orientation = face1 > face2 ? 1 : 0;
 
 	return info;
 }
 
+/*
+0b000111000
+//Front four edge cubes
+if (idx < 4) {
+    face1 = front;
+    switch (idx) {
+        case 0:
+            face2 = bottom;
+            break;
+        case 1:
+            face2 = left;
+            break;
+        case 2:
+            face2 = top;
+            break;
+        case 3:
+            face2 = right;
+            break;
+    }
+//Two top and bottom cubies on right face
+} else {
+    face1 = right;
+    if (idx == 4) {
+        face2 = top;
+    } else {
+        face2 = bottom;
+    }
+}
 
-
+switch (idx) {
+    case 0:
+    case 5: {
+        face1 &=
+    }
+}
+*/

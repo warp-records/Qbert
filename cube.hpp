@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "edge_cubies.hpp"
 #include <cstdint>
 #include <variant>
 #include <iostream>
@@ -48,7 +49,7 @@ namespace Mask {
 		uint32_t constexpr Top = 	 0b111111111 << 6*3;
 		uint32_t constexpr Middle = 0b111111111 << 3*3;
 		uint32_t constexpr Bottom = 0b111111111;
-	}; 
+	};
 };
 
 struct Cube {
@@ -81,9 +82,9 @@ uint32_t top, bottom,
 
 	bool isSolved() const {
 
-		uint16_t constexpr SOLVED_HASH = 
-							(uint16_t) (WhiteFace ^ GreenFace ^ 
-							BlueFace ^ OrangeFace ^ 
+		uint16_t constexpr SOLVED_HASH =
+							(uint16_t) (WhiteFace ^ GreenFace ^
+							BlueFace ^ OrangeFace ^
 							RedFace ^ YellowFace);
 
 		//With this hash functon, collisions occur 0.8% of the time
@@ -120,7 +121,6 @@ private:
 	static uint32_t rotFaceRight(uint32_t face);
 	static uint32_t rotFace180(uint32_t face);
 	static uint32_t reflectFaceXaxis(uint32_t face);
-
 
 };
 

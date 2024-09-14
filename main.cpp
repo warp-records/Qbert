@@ -1,7 +1,9 @@
 //#include "cube.hpp"
+#include "edge_cubies.hpp"
 #include "mini_cube.hpp"
 
 #include <iostream>
+#include <iterator>
 #include <unordered_set>
 #include <unordered_map>
 #include <chrono>
@@ -16,12 +18,14 @@
 
 //extern uint64_t nodesGenerated;
 
+int benchRotations(int rotations);
+
 
 int main() {
 
     //The most optimal algorithm to solve a Rubiks cube
     //is just to peel the stickers
-    
+
     std::cout << R"(
         Rubix
 
@@ -46,7 +50,7 @@ int main() {
     std::cout << "Left perspective: " << qb.changePerspective(Perspective::Left);
 
     std::cout << MiniCube(qb) << "\n";*/
-    
+
     /*
     std::cout << "Original: " << qb << "\n\n\n";
 
@@ -64,9 +68,9 @@ int main() {
     }*/
 
     //srand(time(NULL));
-    
+
     Cube qb;
-    
+
     /*
     for (int i = 0; i < 10000000; i++) {
         //auto allNeighbors = qb.getNeighbors();
@@ -80,10 +84,10 @@ int main() {
 
         //int nghbrIdx = rand()%27;
         qb = qb.getNeighbors()[3];
-            
-        
+
+
         if (!(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution())) {
-            
+
             std::cout << "\n\n\nError:" << std::endl;
             std::cout << "Loop index: " << i << std::endl;
             std::cout << "Neighbor index: " << nghbrIdx << std::endl;
@@ -99,7 +103,7 @@ int main() {
 
     /*
     std::cout << "Old cube: " << qb;
-    
+
     int nghbrIdx = rand()%27;
     qb = qb.getNeighbors()[nghbrIdx];
     MiniCube mini = MiniCube(qb);
@@ -113,7 +117,7 @@ int main() {
 
     //for (int i = 0; i < )
 
-    
+
     //PDB database(MiniCube(), 3674160);
     /*
     MiniCube qb;
@@ -161,14 +165,14 @@ int main() {
     std::cout << "Cube: " << qb << std::endl;
     std::cout << "Minicube:\n" << MiniCube(qb) << std::endl;*/
 
-    
+
     //return 0;
 
-    
+
     //Cube qb;
-    
+
     //PDB cornerCubieDB(MiniCube(), 3674160);
-    
+
     using Color::White;
     using Color::Green;
     using Color::Red;
@@ -189,7 +193,7 @@ int main() {
         qb = qb.getNeighbors()[nghbrIdx];
 
     }*/
-    
+
     //Apparently I input this wrong
     /*
     qb.front = White<<24 | Blue<<21 | Orange<<18
@@ -219,8 +223,9 @@ int main() {
     if (!(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution())) {
         throw std::exception();
     }*/
-    
-    
+
+    PDB cornerCubieDB(EdgeCubies(), 665280);
+    /*
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::Down);
@@ -233,24 +238,23 @@ int main() {
     //qb = qb.rotXaxis(CrossSection::Front, Direction::Right);
     //qb = qb.rotHoriz(Row::Top, Direction::Left);
 
-
     assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());
 
 
     std::cout << "Scrambled cube:\n" << qb;
-    
+
     std::cout << "\nSolving cube using IDA*:" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
-    
+
     auto sol = idaStar(qb);
-    
+
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 
     int len = sol.first.size()-1;
     bool useAn = len==8 || len==11 || len==18;
-    
+
     //Remove if compiling with GCC
     std::locale::global(std::locale(""));
     std::cout.imbue(std::locale());
@@ -260,13 +264,29 @@ int main() {
     std::cout << "Generated " << sol.second << " nodes in " << duration.count() << "ms";
     std::cout << " (" << (sol.second*1000/duration.count()) << " nodes/s)";
 
-    
+
     for (auto cube : sol.first) {
         std::cout << cube << std::endl;
     }
+    */
+
+    //std::cout << "Rotations per second: " << benchRotations(1000000000) << std::endl;
 
     return 0;
 }
 
 //54 669 934
+int benchRotations(int rotations) {
+    Cube qb;
+    auto start = std::chrono::high_resolution_clock::now();
 
+    for (int i = 0; i < rotations/27; i++) {
+        qb = qb.getNeighbors()[rand()%27];
+    }
+
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+
+    int rotationRate = rotations / duration.count() * 1000;
+    return rotationRate;
+}
