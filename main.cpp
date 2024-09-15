@@ -1,4 +1,4 @@
-//#include "cube.hpp"
+#include "cube.hpp"
 #include "edge_cubies.hpp"
 #include "mini_cube.hpp"
 
@@ -18,8 +18,22 @@
 
 //extern uint64_t nodesGenerated;
 
-int benchRotations(int rotations);
+constexpr std::string_view VERSION = "0.1.0";
 
+int benchRotations(int rotations) {
+    Cube qb;
+    auto start = std::chrono::high_resolution_clock::now();
+
+    for (int i = 0; i < rotations/27; i++) {
+        qb = qb.getNeighbors()[rand()%27];
+    }
+
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+
+    int rotationRate = rotations / duration.count() * 1000;
+    return rotationRate;
+}
 
 int main() {
 
@@ -27,7 +41,17 @@ int main() {
     //is just to peel the stickers
 
     std::cout << R"(
-        Rubix
+
+            ██████    █████                         █████
+          ███░░░░███ ░░███                         ░░███
+         ███    ░░███ ░███████   ██████  ████████  ███████
+        ░███     ░███ ░███░░███ ███░░███░░███░░███░░░███░
+        ░███   ██░███ ░███ ░███░███████  ░███ ░░░   ░███
+        ░░███ ░░████  ░███ ░███░███░░░   ░███       ░███ ███
+         ░░░██████░██ ████████ ░░██████  █████      ░░█████
+           ░░░░░░ ░░ ░░░░░░░░   ░░░░░░  ░░░░░        ░░░░░
+
+)" << "Version " << VERSION << R"(
 
          ___ ___ ___
        /___/___/___/|
@@ -224,8 +248,9 @@ int main() {
         throw std::exception();
     }*/
 
-    PDB cornerCubieDB(EdgeCubies(), 665280);
-    /*
+    PDB edgeCubieDB(EdgeCubies(), 665280);
+    std::cout << edgeCubieDB.data.size() << std::endl;
+
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::Down);
@@ -268,7 +293,7 @@ int main() {
     for (auto cube : sol.first) {
         std::cout << cube << std::endl;
     }
-    */
+
 
     //std::cout << "Rotations per second: " << benchRotations(1000000000) << std::endl;
 
@@ -276,17 +301,3 @@ int main() {
 }
 
 //54 669 934
-int benchRotations(int rotations) {
-    Cube qb;
-    auto start = std::chrono::high_resolution_clock::now();
-
-    for (int i = 0; i < rotations/27; i++) {
-        qb = qb.getNeighbors()[rand()%27];
-    }
-
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-
-    int rotationRate = rotations / duration.count() * 1000;
-    return rotationRate;
-}

@@ -4,7 +4,7 @@
 #pragma once
 
 #include "cube.hpp"
- #include <cstdint>
+#include <cstdint>
 #include <iostream>
 #include <cassert>
 #include <unordered_set>
@@ -13,6 +13,8 @@
 
 //Set of 6
 struct EdgeCubies : Cube {
+    uint32_t top, bottom, left, right, front, back;
+
     struct CubieInfo {
 		uint8_t id;
 		uint8_t orientation;
@@ -21,8 +23,15 @@ struct EdgeCubies : Cube {
 
     uint32_t getIdx() const;
     CubieInfo getCubieInfo(int idx) const;
-};
 
+    std::array<EdgeCubies, 27> getNeighbors() const;
+
+    using Cube::Cube;
+    EdgeCubies(const Cube& largeCube) : top{largeCube.top}, bottom{largeCube.bottom},
+          left{largeCube.left}, right{largeCube.right},
+          front{largeCube.front}, back{largeCube.back} {}
+
+};
 /*
 namespace MiniMask {
 	namespace Column {
@@ -35,9 +44,10 @@ namespace MiniMask {
 		uint16_t constexpr Bottom = 0x03F;
 	};
 
-};*/
-
-/*struct EdgeCubies {
+};
+*/
+/*
+struct EdgeCubies : Cube {
 
     //that ended up being dead wrong lol
     //Top, bottom are 3 faces, left/right are 6, front/back are 2

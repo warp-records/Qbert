@@ -5,11 +5,13 @@
 #include <utility>
 
 template<typename T> class PDB {
+//only public for debugging
+public:
 	std::vector<uint8_t> const data;
 
 	static std::vector<uint8_t> genPdb(T start, int const permuts);
 
-public:
+//public:
 	PDB(T start, int const permuts) : data{genPdb(start, permuts)} {};
 	int getDist(int idx) const;
 };

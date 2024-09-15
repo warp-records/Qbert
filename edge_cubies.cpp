@@ -36,7 +36,7 @@
 
 	//factorialSet[i] = (i+6)!/6!
 	uint32_t const factorialSet[7] {
-		1, 7, 56, 504, 5040, 55440, 665280
+		7, 56, 504, 5040, 55440, 665280
 	};
 
 
@@ -46,8 +46,8 @@
 	constexpr int PADDING = 6;
 	//Only 12 are used
 	alignas(uint64_t) uint8_t indices[16] = {
-		PADDING, PADDING, PADDING, PADDING, PADDING, PADDING, PADDING, PADDING,
-		PADDING, PADDING, PADDING, PADDING, PADDING, PADDING, PADDING, PADDING
+		PADDING+0, PADDING+1, PADDING+2, PADDING+3, PADDING+4, PADDING+5, PADDING+6, PADDING+7,
+		PADDING+8, PADDING+9, PADDING+10, PADDING+11, 0, 0, 0, 0
 	};
 
 	uint32_t idx = 0;
@@ -172,6 +172,19 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 	return info;
 }
 
+#include "edge_cubies.hpp"
+
+// Implement EdgeCubies::getNeighbors
+std::array<EdgeCubies, 27> EdgeCubies::getNeighbors() const {
+    std::array<Cube, 27> neighborCubes = Cube::getNeighbors();
+    std::array<EdgeCubies, 27> edgeCubiesNeighbors;
+
+    for (int i = 0; i < neighborCubes.size(); ++i) {
+        edgeCubiesNeighbors[i] = EdgeCubies(neighborCubes[i]);
+    }
+
+    return edgeCubiesNeighbors;
+}
 /*
 0b000111000
 //Front four edge cubes
