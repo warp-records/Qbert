@@ -12,8 +12,8 @@
 #include <array>
 
 //Set of 6
-struct EdgeCubies : Cube {
-    uint32_t top, bottom, left, right, front, back;
+struct EdgeCubies : public Cube {
+
 
     struct CubieInfo {
 		uint8_t id;
@@ -26,11 +26,16 @@ struct EdgeCubies : Cube {
 
     std::array<EdgeCubies, 27> getNeighbors() const;
 
-    using Cube::Cube;
-    EdgeCubies(const Cube& largeCube) : top{largeCube.top}, bottom{largeCube.bottom},
-          left{largeCube.left}, right{largeCube.right},
-          front{largeCube.front}, back{largeCube.back} {}
+    EdgeCubies();
 
+    EdgeCubies(uint32_t top, uint32_t bottom,
+		uint32_t front, uint32_t back,
+		uint32_t left, uint32_t right);
+
+    EdgeCubies(const Cube& largeCube) : Cube(largeCube) {};
+
+    //used for debugging
+    operator Cube() const { return Cube(top, bottom, front, back, left, right); }
 };
 /*
 namespace MiniMask {

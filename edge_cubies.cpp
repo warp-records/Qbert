@@ -1,7 +1,7 @@
 
 #include "edge_cubies.hpp"
 #include <array>
-
+#include <optional>
 
 /*
 000 101 = White Orange -
@@ -21,6 +21,54 @@
 
 //missing 001 010
 
+EdgeCubies::EdgeCubies() {
+    uint32_t constexpr BlankFace = 0xFFFFFFFF;
+    front = WhiteFace | (BlankFace&0x718E38);
+	top =   GreenFace | (BlankFace&0xE38);
+	left =  RedFace  | (BlankFace&0xE00);
+
+	back =   BlankFace;
+	bottom = BlueFace |  (BlankFace&0xE00E00);
+	right =  OrangeFace | (BlankFace&0xE00038);
+}
+
+/*
+front:
+000 111 000
+111 000 111
+000 111 000
+
+top:
+000 000 000
+000 000 111
+000 111 000
+
+left:
+000 000 000
+000 000 111
+000 000 000
+
+right:
+000 111 000
+000 000 000
+000 111 000
+
+bottom:
+000 111 000
+000 000 111
+000 000 000
+
+*/
+
+/*enum Color {
+	White =  0b000,
+	Green =  0b001,
+	Red =   0b010,
+	Yellow = 0b011,
+	Blue = 	 0b100,
+	Orange = 0b101
+};*/
+
  uint32_t EdgeCubies::getIdx() const {
 
 	//bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -36,8 +84,12 @@
 
 	//factorialSet[i] = (i+6)!/6!
 	uint32_t const factorialSet[7] {
-		7, 56, 504, 5040, 55440, 665280
+		1, 7, 56, 504, 5040, 55440, 665280
 	};
+	uint32_t const pow2[7] {
+		1, 2, 4, 8, 16, 32, 64
+	};
+
 
 
 	//Index of all cubibes that HAVEN'T been visited
@@ -45,20 +97,28 @@
 
 	constexpr int PADDING = 6;
 	//Only 12 are used
-	alignas(uint64_t) uint8_t indices[16] = {
-		PADDING+0, PADDING+1, PADDING+2, PADDING+3, PADDING+4, PADDING+5, PADDING+6, PADDING+7,
-		PADDING+8, PADDING+9, PADDING+10, PADDING+11, 0, 0, 0, 0
+	alignas(uint64_t) uint8_t indices[8] = {
+		PADDING+0, PADDING+1, PADDING+2, PADDING+3, PADDING+4, PADDING+5, 0, 0
 	};
 
 	uint32_t idx = 0;
 
 	//PLEASE PLEASE PLEASE FUCKINGGG WORK
 	//12!/6!*2^6
-	for (int i = 6; i > 0; i--) {
-		//For this to work, each Cubie ID must max out to the number left
-		auto info = getCubieInfo(i-1);
 
-		idx += factorialSet[i-1]*indices[info.id-PADDING]+factorialSet[i]*info.orientation;
+	for (int i = 0; i < 6; i++) {
+		//For this to work, each Cubie ID must max out to the number left
+		//std::optional<EdgeCubies::CubieInfo> 
+		CubieInfo info = getCubieInfo(i);
+
+		//idx += factorialSet[(6-numFound)-1]*(indices[info->id]-PADDING)+factorialSet[(6-numFound)]*info->orientation;
+		//psuedo code: 
+		//idx += 12!/(id+12-6)! * 2^(6-id) +
+		//	12!/(id+12-6 + 1)! * 2^(6-id-1)
+		
+		idx += factorialSet[i]*pow2[6-i]*info.id + factorialSet[i+1]*pow2[6-(i+1)]*info.orientation;
+	
+		//i = 0;
 
 		//I'm a genius for this
 		/*
@@ -66,10 +126,10 @@
 		uint64_t subtractConst = (0x0101010101010101ULL << (info.id*8));
 		packed -= subtractConst;
 		*reinterpret_cast<uint64_t*>(indices) = packed;*/
-
-		for (int j = info.id; j < 12; j++) {
+		/*
+		for (int j = info->id; j < 6; j++) {
 			indices[j]--;
-		}
+		}*/
 	}
 
 	return idx;
@@ -127,25 +187,37 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
         }
     }
 
+    //Encountered a blank cubie
+    //if (face1 == 0b111 && face2 == 0b111) {
+        //return std::nullopt;
+    //}
+
 	std::array<uint8_t, 64> cubieIDMap;
+	//orange white
 	cubieIDMap[0b000101] = 0;
 	cubieIDMap[0b101000] = 0;
 
+	//green white
 	cubieIDMap[0b000001] = 1;
 	cubieIDMap[0b001000] = 1;
 
+	//red white
 	cubieIDMap[0b000010] = 2;
 	cubieIDMap[0b010000] = 2;
 
+	//blue white
 	cubieIDMap[0b000100] = 3;
 	cubieIDMap[0b100000] = 3;
 
+	//blue orange
 	cubieIDMap[0b100101] = 4;
 	cubieIDMap[0b101100] = 4;
 
+	//orange green
 	cubieIDMap[0b101001] = 5;
 	cubieIDMap[0b001101] = 5;
 
+	
 	cubieIDMap[0b010100] = 6;
 	cubieIDMap[0b100010] = 6;
 
@@ -164,6 +236,7 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 	cubieIDMap[0b001010] = 11;
 	cubieIDMap[0b010001] = 11;
 
+
 	CubieInfo info;
 
 	info.id = cubieIDMap[face1<<3 || face2];
@@ -172,14 +245,12 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 	return info;
 }
 
-#include "edge_cubies.hpp"
-
 // Implement EdgeCubies::getNeighbors
 std::array<EdgeCubies, 27> EdgeCubies::getNeighbors() const {
     std::array<Cube, 27> neighborCubes = Cube::getNeighbors();
     std::array<EdgeCubies, 27> edgeCubiesNeighbors;
 
-    for (int i = 0; i < neighborCubes.size(); ++i) {
+    for (int i = 0; i < neighborCubes.size(); i++) {
         edgeCubiesNeighbors[i] = EdgeCubies(neighborCubes[i]);
     }
 

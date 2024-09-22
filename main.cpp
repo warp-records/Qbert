@@ -250,6 +250,34 @@ int main() {
 
     PDB edgeCubieDB(EdgeCubies(), 665280);
     std::cout << edgeCubieDB.data.size() << std::endl;
+    //89 distinct values so far
+    //std::vector<uint8_t> database = edgeCubieDB.data;
+    //std::sort(database.begin(), database.end());
+
+    //int uniqueCount = std::unique(edgeCubieDB.data.begin(), edgeCubieDB.data.end());
+
+    //std::cout << "Non-zero values in edgeCubieDB: " << nonZeroCount << std::endl;
+
+
+    /*EdgeCubies edgeCubies;
+    std::array<EdgeCubies, 27> neighbors = edgeCubies.getNeighbors();
+
+    std::cout << "Neighbors of the default EdgeCubies:\n";
+    for (const auto& neighbor : neighbors) {
+        std::cout << neighbor << std::endl;
+    }*/
+
+    EdgeCubies edgeCubies;
+    for (int i = 0; i < 20; i++) {
+        int nghbrIdx = rand() % 27;
+        edgeCubies = edgeCubies.getNeighbors()[nghbrIdx];
+    }
+    std::cout << "Random neighbor after 20 twists:\n" << edgeCubies << std::endl;
+
+    //assert(edgeCubies.hasProperCorners() && MiniCube(edgeCubies).getIdx() <= 3674160 && edgeCubies.isValidColorDistribution());
+
+
+    return 0;
 
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
@@ -263,7 +291,7 @@ int main() {
     //qb = qb.rotXaxis(CrossSection::Front, Direction::Right);
     //qb = qb.rotHoriz(Row::Top, Direction::Left);
 
-    assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());
+    //assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());
 
 
     std::cout << "Scrambled cube:\n" << qb;

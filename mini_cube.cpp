@@ -15,8 +15,6 @@ MiniCube::MiniCube() {
 	bottom = BlueFace;
 	right =  OrangeFace;
 }
-
-
 // uint16_t rotBBChead(unint16_t face);
 
 uint16_t rotFaceLeft(uint16_t face);
