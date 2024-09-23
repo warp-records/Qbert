@@ -82,10 +82,11 @@ bottom:
 	//Num of permutations: 12!/(12-N)!
 	//In this case, 12!/6!
 
-	//factorialSet[i] = (i+6)!/6!
-	uint32_t const factorialSet[7] {
-		1, 7, 56, 504, 5040, 55440, 665280
+	//factorialSet[i] = 12!/(i+7)!
+	uint32_t const factorialSet[6] {
+		95040, 11800, 1320, 132, 12, 1
 	};
+	//you're a dumbass if you can't figure this one out
 	uint32_t const pow2[7] {
 		1, 2, 4, 8, 16, 32, 64
 	};
@@ -97,28 +98,33 @@ bottom:
 
 	constexpr int PADDING = 6;
 	//Only 12 are used
-	alignas(uint64_t) uint8_t indices[8] = {
-		PADDING+0, PADDING+1, PADDING+2, PADDING+3, PADDING+4, PADDING+5, 0, 0
+	alignas(uint64_t) uint8_t indices[6] = {
+		PADDING+0, PADDING+1, PADDING+2, PADDING+3, PADDING+4, PADDING+5
+		//PADDING+6, PADDING+7, PADDING+8, PADDING+9, PADDING+10, PADDING+11,
 	};
 
-	uint32_t idx = 0;
+	//cubes edge sets index into the pattern database
+	uint32_t pdbIdx = 0;
+	//idx is how many cubes we've found *before*
+	int idx = 0;
+	//i is index of edge cubie in cube
+	for (int i = 0; i < 12; i++) {
+		EdgeCubies::CubieInfo info = getCubieInfo(i);
 
-	//PLEASE PLEASE PLEASE FUCKINGGG WORK
-	//12!/6!*2^6
+		//our current edge cubie pdb contains 6
+		//edge cubies for now
+		if (info.id > 5) {
+		    continue;
+		}
 
-	for (int i = 0; i < 6; i++) {
-		//For this to work, each Cubie ID must max out to the number left
-		//std::optional<EdgeCubies::CubieInfo> 
-		CubieInfo info = getCubieInfo(i);
+		//psueod code:
+		//idx += 12!/(idx+7)! * 2^(6-idx) * info.id +
+		//	12!/(idx+1+7)! * 2^(6-(idx+1)) * info.orientation
 
-		//idx += factorialSet[(6-numFound)-1]*(indices[info->id]-PADDING)+factorialSet[(6-numFound)]*info->orientation;
-		//psuedo code: 
-		//idx += 12!/(id+12-6)! * 2^(6-id) +
-		//	12!/(id+12-6 + 1)! * 2^(6-id-1)
-		
-		idx += factorialSet[i]*pow2[6-i]*info.id + factorialSet[i+1]*pow2[6-(i+1)]*info.orientation;
-	
-		//i = 0;
+		//this better fucking work this time around because
+		//if it doesn't I truly have no fucking clue what will
+		pdbIdx += pow2[6-idx]*factorialSet[idx]*(indices[info.id]-PADDING) + pow2[6-(idx+1)]*factorialSet[idx+1]*info.orientation;
+		idx++;
 
 		//I'm a genius for this
 		/*
@@ -126,10 +132,10 @@ bottom:
 		uint64_t subtractConst = (0x0101010101010101ULL << (info.id*8));
 		packed -= subtractConst;
 		*reinterpret_cast<uint64_t*>(indices) = packed;*/
-		/*
-		for (int j = info->id; j < 6; j++) {
+
+		for (int j = info.id; j < 6; j++) {
 			indices[j]--;
-		}*/
+		}
 	}
 
 	return idx;
@@ -187,7 +193,7 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
         }
     }
 
-    //Encountered a blank cubie
+    //Encountered a blanbk cubie
     //if (face1 == 0b111 && face2 == 0b111) {
         //return std::nullopt;
     //}
