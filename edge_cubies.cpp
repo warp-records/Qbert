@@ -21,15 +21,16 @@
 
 //missing 001 010
 
+//set for using 6 edge cubies
 EdgeCubies::EdgeCubies() {
     uint32_t constexpr BlankFace = 0xFFFFFFFF;
-    front = WhiteFace | (BlankFace&0x718E38);
-	top =   GreenFace | (BlankFace&0xE38);
-	left =  RedFace  | (BlankFace&0xE00);
+    front = WhiteFace | (BlankFace^0xE38E38);
+	top =   GreenFace | (BlankFace^0xE38);
+	left =  RedFace  | (BlankFace^0xE00);
 
 	back =   BlankFace;
-	bottom = BlueFace |  (BlankFace&0xE00E00);
-	right =  OrangeFace | (BlankFace&0xE00038);
+	bottom = BlueFace |  (BlankFace^0xE00E00);
+	right =  OrangeFace | (BlankFace^0xE00038);
 }
 
 /*
@@ -144,8 +145,14 @@ bottom:
 
 EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 
+    //consider changing to uint8_t
     uint16_t face1;
     uint16_t face2;
+
+    auto bottomTile = [](uint32_t face) -> uint32_t { return (face&(0b111<<3*1))>>3*1; };
+    auto rightTile =  [](uint32_t face) -> uint32_t { return (face&(0b111<<3*3))>>3*3; };
+    auto leftTile =   [](uint32_t face) -> uint32_t { return (face&(0b111<<3*5))>>3*5; };
+    auto topTile =    [](uint32_t face) -> uint32_t { return (face&(0b111<<3*7))>>3*7; };
     //to understand this, visualize the code
     //if you're bad at visualizing things, good fucking luck understanding LOL
 
@@ -157,39 +164,99 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 
    Right face:
    | |4| |
-   | | | |
-   | |5| |
+   | | |5|
+   | |6| |
+
+   Left face:
+   | |7| |
+   |9| | |
+   | |8| |
+
+   Back face:
+   | |10| |
+   | |  | |
+   | |11| |
     */
 
+
+
+
+    //MUST implement for all cases!
     switch (idx) {
         case 0: {
-            face1 = front&(0b111<<3*1)>>3*1;
-            face2 = bottom&(0b111<<3*7)>>3*7;
+            face1 = bottomTile(front);
+            face2 = topTile(bottom);
+            break;
         }
 
         case 1: {
-            face1 = front&(0b111<<3*5)>>3*5;
-            face2 = left&(0b111<<3*3)>>3*3;
+            face1 = leftTile(front);
+            face2 = rightTile(left);
+            break;
         }
 
         case 2: {
-            face1 = front&(0b111<<3*7)>>3*7;
-            face2 = top&(0b111<<3*1)>>3*1;
+            face1 = topTile(front);
+            face2 = bottomTile(top);
+            break;
         }
 
         case 3: {
-            face1 = front&(0b111<<3*3)>>3*3;
-            face2 = right&(0b111<<3*5)>>3*5;
+            face1 = rightTile(front);
+            face2 = leftTile(right);
+            break;
         }
 
         case 4: {
-            face1 = right&(0b111<<3*7)>>3*7;
-            face2 = top&(0b111<<3*3)>>3*3;
+            face1 = topTile(right);
+            face2 = rightTile(top);
+            break;
         }
 
         case 5: {
-            face1 = right&(0b111<<3*1)>>3*1;
-            face2 = bottom&(0b111<<3*3)>>3*3;
+            face1 = rightTile(right);
+            face2 = leftTile(back);
+            break;
+        }
+
+        case 6: {
+            face1 = bottomTile(right);
+            face2 = rightTile(bottom);
+            break;
+        }
+
+        case 7: {
+            face1 = topTile(left);
+            face2 = leftTile(top);
+            break;
+        }
+
+        case 8: {
+            face1 = bottomTile(left);
+            face2 = leftTile(bottom);
+            break;
+        }
+
+        case 9: {
+            face1 = leftTile(left);
+            face2 = rightTile(back);
+            break;
+        }
+
+        case 10: {
+            face1 = topTile(back);
+            face2 = topTile(top);
+            break;
+        }
+
+        case 11: {
+            face1 = bottomTile(back);
+            face2 = bottomTile(bottom);
+            break;
+        }
+
+    	default: {
+            throw std::exception();
         }
     }
 
@@ -223,7 +290,7 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 	cubieIDMap[0b101001] = 5;
 	cubieIDMap[0b001101] = 5;
 
-	
+
 	cubieIDMap[0b010100] = 6;
 	cubieIDMap[0b100010] = 6;
 

@@ -33,7 +33,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 
 	uint32_t maskType;
 	uint32_t* outwardFace;
-	
+
 	switch (line) {
 		case (Row::Top) : {
 			outwardFace = &newCube.bottom;
@@ -74,7 +74,7 @@ Cube Cube::rotHoriz(Row line, Direction dir) const {
 
 	switch (dir) {
 		case (Direction::Left) : {
-            
+
 			newCube.front &= ~maskType;
 			newCube.front |= (right&maskType);
 
@@ -152,7 +152,7 @@ Cube Cube::rotVert(Column line, Direction dir) const {
 
 	uint32_t* outwardFace;
 
-	
+
 	switch (line) {
 		case (Column::Left) : {
 			//didn't know you couldn't use scoped enums as
@@ -296,10 +296,10 @@ Cube Cube::rotXaxis(CrossSection line, Direction dir) const {
 
     uint32_t topMask = line==CrossSection::Back ? Mask::Row::Top : Mask::Row::Middle;
     topMask = line==CrossSection::Front ? Mask::Row::Top | Mask::Row::Middle : topMask;
-    
+
     uint32_t leftMask = line==CrossSection::Back ? Mask::Column::Left : Mask::Column::Middle;
     leftMask = line==CrossSection::Front ? Mask::Column::Left | Mask::Column::Middle : leftMask;
-    
+
     uint32_t bottomMask = line==CrossSection::Back ? Mask::Row::Bottom : Mask::Row::Middle;
     bottomMask = line==CrossSection::Front ? Mask::Row::Bottom | Mask::Row::Middle : bottomMask;
     //problem
@@ -310,10 +310,10 @@ Cube Cube::rotXaxis(CrossSection line, Direction dir) const {
     newCube.right &= ~rightMask;
     newCube.bottom &= ~bottomMask;
     newCube.left &= ~leftMask;
-    
+
     //This is pretty clever
     //uint32_t all = ((left&leftMask) | (top&topMask) | (right&rightMask) | (bottom&bottomMask));
-        
+
     //WRONG DIRECTIOBN
     switch (dir) {
         case (Direction::Right) : {
@@ -400,7 +400,7 @@ std::array<Cube, 27> Cube::getNeighbors() const {
 
 
 	std::array<Cube, 9> yAxisRots {{
-		rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down), rotVert(Column::Right, Direction::_180), 
+		rotVert(Column::Right, Direction::Up), rotVert(Column::Right, Direction::Down), rotVert(Column::Right, Direction::_180),
 		rotVert(Column::Middle, Direction::Up), rotVert(Column::Middle, Direction::Down), rotVert(Column::Middle, Direction::_180),
 		rotVert(Column::Left, Direction::Up), rotVert(Column::Left, Direction::Down), rotVert(Column::Left, Direction::_180)
 	}};
@@ -408,7 +408,7 @@ std::array<Cube, 27> Cube::getNeighbors() const {
 
 	std::array<Cube, 9> zAxisRots {{
 		rotHoriz(Row::Bottom, Direction::Left), rotHoriz(Row::Bottom, Direction::Right), rotHoriz(Row::Bottom, Direction::_180),
-		rotHoriz(Row::Middle, Direction::Right), rotHoriz(Row::Middle, Direction::Left), rotHoriz(Row::Middle, Direction::_180), 
+		rotHoriz(Row::Middle, Direction::Right), rotHoriz(Row::Middle, Direction::Left), rotHoriz(Row::Middle, Direction::_180),
 		rotHoriz(Row::Top, Direction::Right), rotHoriz(Row::Top, Direction::Left), rotHoriz(Row::Top, Direction::_180)
 
 	}};
@@ -562,13 +562,15 @@ bool Cube::isValidColorDistribution() const {
 
 //terminal output written by ChatGPT 4
 std::ostream& operator<<(std::ostream& os, const Cube& cube) {
-    std::array<char, 6> const colors {{
+    std::array<char, 8> const colors {{
         'W',
         'G',
         'R',
-        'Y', 
+        'Y',
         'B',
-        'O'
+        'O',
+        '?',
+        'X',
     }};
 
     // Lambda to extract the color character from a face value
@@ -614,4 +616,3 @@ std::ostream& operator<<(std::ostream& os, const Cube& cube) {
 
     return os;
 }
-

@@ -428,9 +428,6 @@ uint32_t MiniCube::getIdx() const {
 }
 
 
-
-
-
 //terminal output written by ChatGPT 4
 std::ostream& operator<<(std::ostream& os, const MiniCube& cube) {
     std::array<char, 6> const colors {{

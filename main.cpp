@@ -1,9 +1,11 @@
+#include <cassert>
 #include "cube.hpp"
 #include "edge_cubies.hpp"
 #include "mini_cube.hpp"
 
 #include <iostream>
 #include <iterator>
+#include <sys/_types/_off_t.h>
 #include <unordered_set>
 #include <unordered_map>
 #include <chrono>
@@ -267,7 +269,12 @@ int main() {
         std::cout << neighbor << std::endl;
     }*/
 
+    std::cout << "Default 3x3x3: " << Cube() << "\n\n" << std::endl;
+    Cube converted = EdgeCubies();
+
     EdgeCubies edgeCubies;
+    std::cout << "Initial edge cubies: " << converted << std::endl;
+
     for (int i = 0; i < 20; i++) {
         int nghbrIdx = rand() % 27;
         edgeCubies = edgeCubies.getNeighbors()[nghbrIdx];
