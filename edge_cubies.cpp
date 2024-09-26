@@ -30,7 +30,7 @@ EdgeCubies::EdgeCubies() {
 
 	back =   BlankFace;
 	bottom = BlueFace |  (BlankFace^0xE00E00);
-	right =  OrangeFace | (BlankFace^0xE00038);
+	right =  OrangeFace | (BlankFace^0xE38038);
 }
 
 /*
@@ -51,7 +51,7 @@ left:
 
 right:
 000 111 000
-000 000 000
+111 000 000
 000 111 000
 
 bottom:
@@ -70,7 +70,7 @@ bottom:
 	Orange = 0b101
 };*/
 
- uint32_t EdgeCubies::getIdx() const {
+uint32_t EdgeCubies::getIdx() const {
 
 	//bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
 	//7!*3^5 ... 2!*3^1
@@ -110,8 +110,13 @@ bottom:
 	int idx = 0;
 	//i is index of edge cubie in cube
 	for (int i = 0; i < 12; i++) {
-		EdgeCubies::CubieInfo info = getCubieInfo(i);
+		auto result = getCubieInfo(i);
+		if (result == std::nullopt) {
+	    	    continue;
+		}
 
+		//Rust did it better honestly
+		CubieInfo info = result.value();
 		//our current edge cubie pdb contains 6
 		//edge cubies for now
 		if (info.id > 5) {
@@ -143,7 +148,7 @@ bottom:
 
 }
 
-EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
+std::optional<EdgeCubies::CubieInfo> EdgeCubies::getCubieInfo(int idx) const {
 
     //consider changing to uint8_t
     uint16_t face1;
@@ -261,9 +266,9 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
     }
 
     //Encountered a blanbk cubie
-    //if (face1 == 0b111 && face2 == 0b111) {
-        //return std::nullopt;
-    //}
+    if (face1 == 0b111 && face2 == 0b111) {
+        return std::nullopt;
+    }
 
 	std::array<uint8_t, 64> cubieIDMap;
 	//orange white
@@ -308,7 +313,6 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 
 	cubieIDMap[0b001010] = 11;
 	cubieIDMap[0b010001] = 11;
-
 
 	CubieInfo info;
 

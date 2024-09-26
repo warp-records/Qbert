@@ -12,6 +12,7 @@
 struct EdgeCubies : public Cube {
 
 
+
     struct CubieInfo {
 		uint8_t id;
 		uint8_t orientation;
@@ -19,7 +20,7 @@ struct EdgeCubies : public Cube {
 
 
     uint32_t getIdx() const;
-    EdgeCubies::CubieInfo getCubieInfo(int idx) const;
+    std::optional<EdgeCubies::CubieInfo> getCubieInfo(int idx) const;
 
     std::array<EdgeCubies, 27> getNeighbors() const;
 

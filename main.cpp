@@ -1,3 +1,4 @@
+#include <time.h>
 #include <cassert>
 #include "cube.hpp"
 #include "edge_cubies.hpp"
@@ -250,8 +251,12 @@ int main() {
         throw std::exception();
     }*/
 
-    PDB edgeCubieDB(EdgeCubies(), 665280);
-    std::cout << edgeCubieDB.data.size() << std::endl;
+
+
+
+    //PDB edgeCubieDB(EdgeCubies(), 665280);
+    //std::cout << edgeCubieDB.data.size() << std::endl;
+
     //89 distinct values so far
     //std::vector<uint8_t> database = edgeCubieDB.data;
     //std::sort(database.begin(), database.end());
@@ -269,17 +274,17 @@ int main() {
         std::cout << neighbor << std::endl;
     }*/
 
-    std::cout << "Default 3x3x3: " << Cube() << "\n\n" << std::endl;
-    Cube converted = EdgeCubies();
-
     EdgeCubies edgeCubies;
-    std::cout << "Initial edge cubies: " << converted << std::endl;
+    std::cout << "Starting state: \n" << edgeCubies << std::endl;
 
+    srand(time(NULL));
     for (int i = 0; i < 20; i++) {
         int nghbrIdx = rand() % 27;
         edgeCubies = edgeCubies.getNeighbors()[nghbrIdx];
     }
     std::cout << "Random neighbor after 20 twists:\n" << edgeCubies << std::endl;
+
+    std::cout << edgeCubies.getIdx() << std::endl;
 
     //assert(edgeCubies.hasProperCorners() && MiniCube(edgeCubies).getIdx() <= 3674160 && edgeCubies.isValidColorDistribution());
 
