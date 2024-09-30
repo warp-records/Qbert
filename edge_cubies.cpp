@@ -16,7 +16,7 @@
 011 100 = Yelow Blue
 011 010 = Yellow Red -
 011 001 = Yellow Green -
-
+i
 */
 
 //missing 001 010
@@ -83,9 +83,9 @@ uint32_t EdgeCubies::getIdx() const {
 	//Num of permutations: 12!/(12-N)!
 	//In this case, 12!/6!
 
-	//factorialSet[i] = 12!/(i+7)!
-	uint32_t const factorialSet[6] {
-		95040, 11800, 1320, 132, 12, 1
+	//factorialSet[i] = 11!/(i+6)!
+	uint32_t const factorialSet[7] {
+		55440, 7920, 990, 110, 11, 1
 	};
 	//you're a dumbass if you can't figure this one out
 	uint32_t const pow2[7] {
@@ -106,7 +106,7 @@ uint32_t EdgeCubies::getIdx() const {
 
 	//cubes edge sets index into the pattern database
 	uint32_t pdbIdx = 0;
-	//idx is how many cubes we've found *before*
+	//idx is how many cubes we've found
 	int idx = 0;
 	//i is index of edge cubie in cube
 	for (int i = 0; i < 12; i++) {
@@ -123,14 +123,16 @@ uint32_t EdgeCubies::getIdx() const {
 		    continue;
 		}
 
-		//psueod code:
+		//(old) psueod code:
 		//idx += 12!/(idx+7)! * 2^(6-idx) * info.id +
 		//	12!/(idx+1+7)! * 2^(6-(idx+1)) * info.orientation
 
 		//this better fucking work this time around because
 		//if it doesn't I truly have no fucking clue what will
-		pdbIdx += pow2[6-idx]*factorialSet[idx]*(indices[info.id]-PADDING) + pow2[6-(idx+1)]*factorialSet[idx+1]*info.orientation;
+		//assert(idx < 6);
+		pdbIdx += pow2[6-idx-1]*factorialSet[idx] * ((indices[info.id]-PADDING)*2 + info.orientation);
 		idx++;
+		//assert(pdbIdx < 42577920);
 
 		//I'm a genius for this
 		/*
@@ -144,7 +146,7 @@ uint32_t EdgeCubies::getIdx() const {
 		}
 	}
 
-	return idx;
+	return pdbIdx;
 
 }
 
@@ -316,7 +318,7 @@ std::optional<EdgeCubies::CubieInfo> EdgeCubies::getCubieInfo(int idx) const {
 
 	CubieInfo info;
 
-	info.id = cubieIDMap[face1<<3 || face2];
+	info.id = cubieIDMap[face1<<3 | face2];
 	info.orientation = face1 > face2 ? 1 : 0;
 
 	return info;

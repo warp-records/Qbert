@@ -254,7 +254,7 @@ int main() {
 
 
 
-    //PDB edgeCubieDB(EdgeCubies(), 665280);
+    PDB edgeCubieDB(EdgeCubies(), 21288960);
     //std::cout << edgeCubieDB.data.size() << std::endl;
 
     //89 distinct values so far
@@ -276,8 +276,20 @@ int main() {
 
     EdgeCubies edgeCubies;
     std::cout << "Starting state: \n" << edgeCubies << std::endl;
+    std::cout << "Starting idx: " << edgeCubies.getIdx() << std::endl;
+
+    std::vector<bool> foundIndices(42577920);
 
     srand(time(NULL));
+
+    for (int i = 0; i < 10000000; i++) {
+        int nghbrIdx = rand() % 27;
+        edgeCubies = edgeCubies.getNeighbors()[nghbrIdx];
+        foundIndices[edgeCubies.getIdx()] = true;
+    }
+
+    std::cout << "Number of found indices: " << std::count(foundIndices.begin(), foundIndices.end(), true) << std::endl;
+    /*
     for (int i = 0; i < 20; i++) {
         int nghbrIdx = rand() % 27;
         edgeCubies = edgeCubies.getNeighbors()[nghbrIdx];
@@ -285,7 +297,7 @@ int main() {
     std::cout << "Random neighbor after 20 twists:\n" << edgeCubies << std::endl;
 
     std::cout << edgeCubies.getIdx() << std::endl;
-
+ */
     //assert(edgeCubies.hasProperCorners() && MiniCube(edgeCubies).getIdx() <= 3674160 && edgeCubies.isValidColorDistribution());
 
 

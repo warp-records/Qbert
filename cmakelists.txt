@@ -8,8 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_COMPILER "clang++")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_FLAGS "-Wno-switch-enum -g -Wswitch")
-
+set(CMAKE_CXX_FLAGS "-fsanitize=address,undefined -g -O3 -Wno-switch-enum -Wswitch")
+#
 # Add the executable
 add_executable(Rubix main.cpp cube.cpp alg.cpp mini_cube.cpp edge_cubies.cpp)
-#  -fsanitize=address,undefined
