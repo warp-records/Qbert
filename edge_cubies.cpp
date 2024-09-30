@@ -23,15 +23,17 @@ i
 
 //set for using 6 edge cubies
 EdgeCubies::EdgeCubies() {
-    uint32_t constexpr BlankFace = 0xFFFFFFFF;
-    front = WhiteFace | (BlankFace^0xE38E38);
-	top =   GreenFace | (BlankFace^0xE38);
-	left =  RedFace  | (BlankFace^0xE00);
+    //0x71C71C7
+    front = WhiteFace & 0x71C71C7;
+	top =   GreenFace & 0x71C71C7;
+	left =  RedFace & 0x71C71C7;
 
-	back =   BlankFace;
-	bottom = BlueFace |  (BlankFace^0xE00E00);
-	right =  OrangeFace | (BlankFace^0xE38038);
+	back =   YellowFace & 0x71C71C7;
+	bottom = BlueFace & 0x71C71C7;
+	right =  OrangeFace & 0x71C71C7;
 }
+
+
 
 /*
 front:
@@ -97,19 +99,17 @@ uint32_t EdgeCubies::getIdx() const {
 	//Index of all cubibes that HAVEN'T been visited
 	//First order of business is fixing this shit
 
-	constexpr int PADDING = 6;
+	constexpr int PADDING = 12;
 	//Only 12 are used
-	alignas(uint64_t) uint8_t indices[6] = {
-		PADDING+0, PADDING+1, PADDING+2, PADDING+3, PADDING+4, PADDING+5
-		//PADDING+6, PADDING+7, PADDING+8, PADDING+9, PADDING+10, PADDING+11,
+	alignas(uint64_t) uint8_t indices[12] = {
+		PADDING+0, PADDING+1, PADDING+2, PADDING+3, PADDING+4, PADDING+5,
+		PADDING+6, PADDING+7, PADDING+8, PADDING+9, PADDING+10, PADDING+11,
 	};
 
 	//cubes edge sets index into the pattern database
 	uint32_t pdbIdx = 0;
-	//idx is how many cubes we've found
-	int idx = 0;
 	//i is index of edge cubie in cube
-	for (int i = 0; i < 12; i++) {
+	for (int i = 0; i < 6; i++) {
 		auto result = getCubieInfo(i);
 		if (result == std::nullopt) {
 	    	    continue;
@@ -117,11 +117,6 @@ uint32_t EdgeCubies::getIdx() const {
 
 		//Rust did it better honestly
 		CubieInfo info = result.value();
-		//our current edge cubie pdb contains 6
-		//edge cubies for now
-		if (info.id > 5) {
-		    continue;
-		}
 
 		//(old) psueod code:
 		//idx += 12!/(idx+7)! * 2^(6-idx) * info.id +
@@ -130,8 +125,7 @@ uint32_t EdgeCubies::getIdx() const {
 		//this better fucking work this time around because
 		//if it doesn't I truly have no fucking clue what will
 		//assert(idx < 6);
-		pdbIdx += pow2[6-idx-1]*factorialSet[idx] * ((indices[info.id]-PADDING)*2 + info.orientation);
-		idx++;
+		pdbIdx += pow2[6-i-1]*factorialSet[i] * ((indices[info.id]-PADDING)*2 + info.orientation);
 		//assert(pdbIdx < 42577920);
 
 		//I'm a genius for this
