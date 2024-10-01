@@ -20,7 +20,7 @@ struct EdgeCubies : public Cube {
 
 
     uint32_t getIdx() const;
-    std::optional<EdgeCubies::CubieInfo> getCubieInfo(int idx) const;
+    EdgeCubies::CubieInfo getCubieInfo(int idx) const;
 
     std::array<EdgeCubies, 27> getNeighbors() const;
 

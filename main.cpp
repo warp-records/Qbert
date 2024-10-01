@@ -254,7 +254,7 @@ int main() {
 
 
 
-    PDB edgeCubieDB(EdgeCubies(), 21288960);
+    PDB edgeCubieDB(EdgeCubies(), 42577920);
     //std::cout << edgeCubieDB.data.size() << std::endl;
 
     //89 distinct values so far

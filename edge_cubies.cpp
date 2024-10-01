@@ -2,6 +2,7 @@
 #include "edge_cubies.hpp"
 #include <array>
 #include <optional>
+#include <type_traits>
 
 /*
 000 101 = White Orange -
@@ -24,13 +25,13 @@ i
 //set for using 6 edge cubies
 EdgeCubies::EdgeCubies() {
     //0x71C71C7
-    front = WhiteFace & 0x71C71C7;
-	top =   GreenFace & 0x71C71C7;
-	left =  RedFace & 0x71C71C7;
+    front = WhiteFace | 0x71C71C7;
+	top =   GreenFace | 0x71C71C7;
+	left =  RedFace | 0x71C71C7;
 
-	back =   YellowFace & 0x71C71C7;
-	bottom = BlueFace & 0x71C71C7;
-	right =  OrangeFace & 0x71C71C7;
+	back =   YellowFace | 0x71C71C7;
+	bottom = BlueFace | 0x71C71C7;
+	right =  OrangeFace | 0x71C71C7;
 }
 
 
@@ -73,8 +74,25 @@ bottom:
 };*/
 
 uint32_t EdgeCubies::getIdx() const {
+    //static int callCount = 0;
+    //callCount++;
 
-	//bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+    //only for debugging
+    auto integrityCheck = [&]() -> bool {
+        std::array<bool, 12> seenIds = { false };
+        for (int idx = 0; idx < 12; ++idx) {
+            CubieInfo info = getCubieInfo(idx);
+            if (info.id < 0 || info.id >= 12) return false;
+            seenIds[info.id] = true;
+        }
+        for (bool seen : seenIds) {
+            if (!seen) return false;
+        }
+
+        return true;
+    };
+
+    //bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
 	//7!*3^5 ... 2!*3^1
 
 	//HELPFHDSAFADSHNFSDK
@@ -87,7 +105,7 @@ uint32_t EdgeCubies::getIdx() const {
 
 	//factorialSet[i] = 11!/(i+6)!
 	uint32_t const factorialSet[7] {
-		55440, 7920, 990, 110, 11, 1
+		55440, 5040, 504, 56, 8, 1
 	};
 	//you're a dumbass if you can't figure this one out
 	uint32_t const pow2[7] {
@@ -110,13 +128,10 @@ uint32_t EdgeCubies::getIdx() const {
 	uint32_t pdbIdx = 0;
 	//i is index of edge cubie in cube
 	for (int i = 0; i < 6; i++) {
-		auto result = getCubieInfo(i);
-		if (result == std::nullopt) {
-	    	    continue;
-		}
+	    //returning 0 every time...
 
 		//Rust did it better honestly
-		CubieInfo info = result.value();
+		CubieInfo info = getCubieInfo(i);
 
 		//(old) psueod code:
 		//idx += 12!/(idx+7)! * 2^(6-idx) * info.id +
@@ -126,7 +141,14 @@ uint32_t EdgeCubies::getIdx() const {
 		//if it doesn't I truly have no fucking clue what will
 		//assert(idx < 6);
 		pdbIdx += pow2[6-i-1]*factorialSet[i] * ((indices[info.id]-PADDING)*2 + info.orientation);
-		//assert(pdbIdx < 42577920);
+		//pdbIdx += pow2[6-i-1]*factorialSet[i] * ((indices[info.id]-PADDING)*2 + info.orientation);
+
+		//wokrs flawlessly every time
+		//assert(integrityCheck());
+		//if (pdbIdx >= 42577920) {
+		//    std::cout << "number of calls: " << callCount << std::endl;
+		//	throw std::exception();
+		//}
 
 		//I'm a genius for this
 		/*
@@ -144,7 +166,7 @@ uint32_t EdgeCubies::getIdx() const {
 
 }
 
-std::optional<EdgeCubies::CubieInfo> EdgeCubies::getCubieInfo(int idx) const {
+EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
 
     //consider changing to uint8_t
     uint16_t face1;
@@ -262,9 +284,7 @@ std::optional<EdgeCubies::CubieInfo> EdgeCubies::getCubieInfo(int idx) const {
     }
 
     //Encountered a blanbk cubie
-    if (face1 == 0b111 && face2 == 0b111) {
-        return std::nullopt;
-    }
+    assert(face1 <= 0b101 && face2 <= 0b101);
 
 	std::array<uint8_t, 64> cubieIDMap;
 	//orange white
@@ -291,12 +311,11 @@ std::optional<EdgeCubies::CubieInfo> EdgeCubies::getCubieInfo(int idx) const {
 	cubieIDMap[0b101001] = 5;
 	cubieIDMap[0b001101] = 5;
 
-
 	cubieIDMap[0b010100] = 6;
 	cubieIDMap[0b100010] = 6;
 
 	cubieIDMap[0b011101] = 7;
-	cubieIDMap[0b101110] = 7;
+	cubieIDMap[0b101011] = 7;
 
 	cubieIDMap[0b011100] = 8;
 	cubieIDMap[0b100011] = 8;
@@ -313,6 +332,7 @@ std::optional<EdgeCubies::CubieInfo> EdgeCubies::getCubieInfo(int idx) const {
 	CubieInfo info;
 
 	info.id = cubieIDMap[face1<<3 | face2];
+	assert(0 <= info.id && info.id <= 11);
 	info.orientation = face1 > face2 ? 1 : 0;
 
 	return info;
@@ -329,6 +349,7 @@ std::array<EdgeCubies, 27> EdgeCubies::getNeighbors() const {
 
     return edgeCubiesNeighbors;
 }
+
 /*
 0b000111000
 //Front four edge cubes
