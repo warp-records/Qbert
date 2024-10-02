@@ -16,7 +16,6 @@ template<typename T> std::vector<uint8_t> PDB<T>::genPdb(T start, int const perm
 
     std::queue<Node> q;
 
-	int numNodes = 0;
 	//this single line is literally the entirety of korf's fabled pdb lmao
 	std::vector<uint8_t> pdb(permuts/2);
 
@@ -29,19 +28,16 @@ template<typename T> std::vector<uint8_t> PDB<T>::genPdb(T start, int const perm
 
 		for (T neighbor : current.elem.getNeighbors()) {
 			uint32_t idx = neighbor.getIdx();
-			//std::cout << "idx" << idx << std::endl;
 
 			if (!(pdb[idx/2] & ((idx%2) ? 0xf0 : 0x0f))) {
 				q.push(Node{neighbor, static_cast<uint8_t>(current.depth + 1)});
 
-				numNodes++;
 				pdb[idx/2] |= (static_cast<uint8_t>(current.depth+1) << ((idx%2) ? 4 : 0));
 			}
 		}
 	}
 
 	pdb[start.getIdx()/2] &= ~((0b1111 << (start.getIdx()%2 ? 4 : 0)));
-	std::cout << "Number of nodes: " << numNodes << std::endl;
 
 	return pdb;
 }

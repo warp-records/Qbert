@@ -254,7 +254,7 @@ int main() {
 
 
 
-    PDB edgeCubieDB(EdgeCubies(), 42577920);
+    //PDB edgeCubieDB(EdgeCubies(), 42577920);
     //std::cout << edgeCubieDB.data.size() << std::endl;
 
     //89 distinct values so far
@@ -274,21 +274,23 @@ int main() {
         std::cout << neighbor << std::endl;
     }*/
 
+    /*
     EdgeCubies edgeCubies;
     std::cout << "Starting state: \n" << edgeCubies << std::endl;
     std::cout << "Starting idx: " << edgeCubies.getIdx() << std::endl;
 
-    std::vector<bool> foundIndices(42577920);
+    //std::vector<bool> foundIndices(42577920);
 
-    srand(time(NULL));
+    srand(time(NULL)); */
 
+    /*
     for (int i = 0; i < 10000000; i++) {
         int nghbrIdx = rand() % 27;
         edgeCubies = edgeCubies.getNeighbors()[nghbrIdx];
         foundIndices[edgeCubies.getIdx()] = true;
     }
 
-    std::cout << "Number of found indices: " << std::count(foundIndices.begin(), foundIndices.end(), true) << std::endl;
+    std::cout << "Number of found indices: " << std::count(foundIndices.begin(), foundIndices.end(), true) << std::endl; */
     /*
     for (int i = 0; i < 20; i++) {
         int nghbrIdx = rand() % 27;
@@ -301,7 +303,7 @@ int main() {
     //assert(edgeCubies.hasProperCorners() && MiniCube(edgeCubies).getIdx() <= 3674160 && edgeCubies.isValidColorDistribution());
 
 
-    return 0;
+    //return 0;
 
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
@@ -311,8 +313,8 @@ int main() {
     qb = qb.rotVert(Column::Right, Direction::_180);
     qb = qb.rotHoriz(Row::Bottom, Direction::Left);
     qb = qb.rotXaxis(CrossSection::Front, Direction::_180);
-    //qb = qb.rotVert(Column::Left, Direction::_180);
-    //qb = qb.rotXaxis(CrossSection::Front, Direction::Right);
+    qb = qb.rotVert(Column::Left, Direction::_180);
+    qb = qb.rotXaxis(CrossSection::Front, Direction::Right);
     //qb = qb.rotHoriz(Row::Top, Direction::Left);
 
     //assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());

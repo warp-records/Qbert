@@ -4,7 +4,6 @@
 #include <cassert>
 #include <bit>
 #include <iostream>
-#include <array>
 
 MiniCube::MiniCube() {
 	front =  WhiteFace;
@@ -15,7 +14,6 @@ MiniCube::MiniCube() {
 	bottom = BlueFace;
 	right =  OrangeFace;
 }
-// uint16_t rotBBChead(unint16_t face);
 
 uint16_t rotFaceLeft(uint16_t face);
 uint16_t rotFaceRight(uint16_t face);
@@ -383,8 +381,8 @@ uint32_t MiniCube::getIdx() const {
 	//HELPFHDSAFADSHNFSDK
 
 	//Maybe try a simpler implementation
-	uint32_t const factorial3[8] {
-		1, 1*3, 2*3, 6*3, 24*3, 120*3, 720*3, 5040*3
+	uint32_t const factorial[8] {
+		1, 1, 2, 6, 24, 120, 720, 5040
 	};
 
 	uint32_t const powerOf3[7] {
@@ -411,7 +409,8 @@ uint32_t MiniCube::getIdx() const {
 		//For this to work, each Cubie ID must max out to the number left
 		auto info = getCubieInfo(i&0b001, (i&0b010)>>1, (i&0b100)>>2);
 
-		idx += factorial3[i]*(indices[info.id]-PADDING+info.orientation*3);
+		idx += factorial[i]*(indices[info.id]-PADDING)*powerOf3[i] +
+				factorial[i]*powerOf3[i-1]*info.orientation;
 
 		//I'm a genius for this
 		uint64_t packed = *reinterpret_cast<uint64_t*>(indices);
@@ -426,6 +425,9 @@ uint32_t MiniCube::getIdx() const {
 
 	return idx;
 }
+
+
+
 
 
 //terminal output written by ChatGPT 4
