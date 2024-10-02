@@ -199,6 +199,8 @@ int main() {
     //Cube qb;
 
     //PDB cornerCubieDB(MiniCube(), 3674160);
+    //PDB edgCubieDB(EdgeCubies(), 42577920);
+    //return 0;
 
     using Color::White;
     using Color::Green;
@@ -254,7 +256,7 @@ int main() {
 
 
 
-    //PDB edgeCubieDB(EdgeCubies(), 42577920);
+
     //std::cout << edgeCubieDB.data.size() << std::endl;
 
     //89 distinct values so far
@@ -303,7 +305,8 @@ int main() {
     //assert(edgeCubies.hasProperCorners() && MiniCube(edgeCubies).getIdx() <= 3674160 && edgeCubies.isValidColorDistribution());
 
 
-    //return 0;
+    //std::cout << qb;
+    //std::cout << qb.getNeighbors()[6];
 
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
@@ -315,7 +318,13 @@ int main() {
     qb = qb.rotXaxis(CrossSection::Front, Direction::_180);
     qb = qb.rotVert(Column::Left, Direction::_180);
     qb = qb.rotXaxis(CrossSection::Front, Direction::Right);
-    //qb = qb.rotHoriz(Row::Top, Direction::Left);
+    qb = qb.rotHoriz(Row::Top, Direction::Left);
+    qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
+    qb = qb.rotVert(Column::Right, Direction::_180);
+    qb = qb.rotHoriz(Row::Bottom, Direction::_180);
+    qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
+    qb = qb.rotHoriz(Row::Bottom, Direction::Right);
+
 
     //assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());
 
@@ -339,9 +348,9 @@ int main() {
     std::cout.imbue(std::locale());
 
     std::cout << "Done! Found " << (useAn ? "an " : "a ") <<
-        (sol.first.size()-1) << " move solution:" << std::endl;
-    std::cout << "Generated " << sol.second << " nodes in " << duration.count() << "ms";
-    std::cout << " (" << (sol.second*1000/duration.count()) << " nodes/s)";
+        (sol.first.size()-1) << " move solution in " << duration.count() << "ms :" << std::endl;
+    //std::cout << "Generated " << sol.second << " nodes in " << duration.count() << "ms";
+    //std::cout << " (" << (sol.second*1000/duration.count()) << " nodes/s)";
 
 
     for (auto cube : sol.first) {

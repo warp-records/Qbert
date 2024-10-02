@@ -2,6 +2,7 @@
 #include "alg.hpp"
 #include "cube.hpp"
 #include "mini_cube.hpp"
+#include "edge_cubies.hpp"
 #include <stack>
 #include <vector>
 #include <functional>
@@ -17,12 +18,18 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 		Node* prev;
 	};
 
+	std::cout << "Generating pattern databases:" << std::endl;
 	PDB cornerCubieDB(MiniCube(), 3674160);
+	//only generates up to 15737060 nodes atm for some reason...
+	PDB edgeCubieDB(EdgeCubies(), 42577920);
 
-	auto heuristic = [&cornerCubieDB](Cube const& cube) {
+	std::cout << "Solving cube:" << std::endl;
+
+	auto heuristic = [&cornerCubieDB, &edgeCubieDB](Cube const& cube) {
 	    //return 0;
 		MiniCube cornerCubies(cube);
-		return cornerCubieDB.getDist(cornerCubies.getIdx());
+		EdgeCubies edgeCubies(cube);
+		return std::max(cornerCubieDB.getDist(cornerCubies.getIdx()), edgeCubieDB.getDist(edgeCubies.getIdx()));
 	};
 
 	constexpr int SKYDADDYS_NUMBER = 20;

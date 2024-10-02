@@ -103,9 +103,9 @@ uint32_t EdgeCubies::getIdx() const {
 	//Num of permutations: 12!/(12-N)!
 	//In this case, 12!/6!
 
-	//factorialSet[i] = 11!/(i+6)!
+	//factorialSet[i] = (11-i)!/(6)!
 	uint32_t const factorialSet[7] {
-		55440, 5040, 504, 56, 8, 1
+		55440, 5040, 504, 56, 7, 1
 	};
 	//you're a dumbass if you can't figure this one out
 	uint32_t const pow2[7] {
@@ -130,8 +130,9 @@ uint32_t EdgeCubies::getIdx() const {
 	for (int i = 0; i < 6; i++) {
 	    //returning 0 every time...
 
-		//Rust did it better honestly
-		CubieInfo info = getCubieInfo(i);
+		//skip first cubie since it will always be the same
+		//due to 3x3x3 normalization
+		CubieInfo info = getCubieInfo(i+1);
 
 		//(old) psueod code:
 		//idx += 12!/(idx+7)! * 2^(6-idx) * info.id +
@@ -140,12 +141,16 @@ uint32_t EdgeCubies::getIdx() const {
 		//this better fucking work this time around because
 		//if it doesn't I truly have no fucking clue what will
 		//assert(idx < 6);
-		pdbIdx += pow2[6-i-1]*factorialSet[i] * ((indices[info.id]-PADDING)*2 + info.orientation);
+		pdbIdx += pow2[6-i]*factorialSet[i] * (indices[info.id]-PADDING);
+		pdbIdx += pow2[6-i-1]*factorialSet[i] * (info.orientation);
 		//pdbIdx += pow2[6-i-1]*factorialSet[i] * ((indices[info.id]-PADDING)*2 + info.orientation);
 
 		//wokrs flawlessly every time
 		//assert(integrityCheck());
+		//assert(pdbIdx <= 42577920);
 		//if (pdbIdx >= 42577920) {
+		//  std::cout << pdbIdx << std::endl;
+		//}
 		//    std::cout << "number of calls: " << callCount << std::endl;
 		//	throw std::exception();
 		//}
