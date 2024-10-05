@@ -148,7 +148,7 @@ uint32_t EdgeCubies::getIdx() const {
 
 		//CAN'T skip an index since the first index is a corner
 		//cubie, NOT an edge cubie
-		CubieInfo info = getCubieInfo(i);
+		CubieInfo info = getCubieInfo(secondSet ? i+6 : i);
 
 		//this better fucking work this time around because
 		//if it doesn't I truly have no fucking clue what will

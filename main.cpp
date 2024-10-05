@@ -376,8 +376,8 @@ int main() {
     qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::_180);
     qb = qb.rotHoriz(Row::Bottom, Direction::_180);
-    //qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
-    //qb = qb.rotHoriz(Row::Bottom, Direction::Right);
+    qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
+    qb = qb.rotHoriz(Row::Bottom, Direction::Right);
 
 
     //assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());

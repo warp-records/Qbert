@@ -19,16 +19,18 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 	};
 
 	std::cout << "Generating pattern databases:" << std::endl;
-	PDB edgeCubieDB(EdgeCubies(), 42577920);
+	PDB firstEdgeCubieDB(EdgeCubies(), 42577920);
+	PDB secondEdgeCubieDB(EdgeCubies(true), 42577920);
 	PDB cornerCubieDB(MiniCube(), 3674160);
 
 	std::cout << "Solving cube:" << std::endl;
 
-	auto heuristic = [&cornerCubieDB, &edgeCubieDB](Cube const& cube) {
+	auto heuristic = [&cornerCubieDB, &firstEdgeCubieDB, &secondEdgeCubieDB](Cube const& cube) {
 	    //return 0;
 		MiniCube cornerCubies(cube);
 		EdgeCubies edgeCubies(cube);
-		return std::max(cornerCubieDB.getDist(cornerCubies.getIdx()), edgeCubieDB.getDist(edgeCubies.getIdx()));
+		return std::max(std::max(cornerCubieDB.getDist(cornerCubies.getIdx()),
+		      firstEdgeCubieDB.getDist(edgeCubies.getIdx())), secondEdgeCubieDB.getDist(edgeCubies.getIdx()));
 	};
 
 	constexpr int SKYDADDYS_NUMBER = 20;

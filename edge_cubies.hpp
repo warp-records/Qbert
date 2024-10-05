@@ -23,11 +23,15 @@ struct EdgeCubies : public Cube {
 
     EdgeCubies();
 
+    EdgeCubies(bool ss) : secondSet{ss} {};
+
     EdgeCubies(uint32_t top, uint32_t bottom,
 		uint32_t front, uint32_t back,
 		uint32_t left, uint32_t right);
 
     EdgeCubies(const Cube& largeCube) : Cube(largeCube) {};
+
+    bool secondSet = false;
 
     //used for debugging
     operator Cube() const { return Cube(top, bottom, front, back, left, right); }
