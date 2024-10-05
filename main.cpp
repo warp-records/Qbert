@@ -21,7 +21,7 @@
 
 //extern uint64_t nodesGenerated;
 
-constexpr std::string_view VERSION = "0.2.0";
+constexpr std::string_view VERSION = "0.2.1";
 
 int benchRotations(int rotations) {
     Cube qb;
