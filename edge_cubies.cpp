@@ -2,6 +2,7 @@
 #include "edge_cubies.hpp"
 #include <array>
 #include <optional>
+#include <algorithm>
 #include <type_traits>
 
 /*
@@ -119,11 +120,25 @@ uint32_t EdgeCubies::getIdx() const {
 
 	//constexpr int NUM_CUBIES = 6;
 	constexpr int PADDING = 12;
-	//Only 12 are used
+	//Only 12 are used, last 4 are for a genius optimization
+	//discovered by yours truly
+	//must store each number in a nibble due to 64 bit registers
 	alignas(uint64_t) uint8_t indices[12] = {
-		PADDING+0, PADDING+1, PADDING+2, PADDING+3, PADDING+4, PADDING+5,
-		PADDING+6, PADDING+7, PADDING+8, PADDING+9, PADDING+10, PADDING+11,
+		PADDING+0, PADDING+1, PADDING+2, PADDING+3,
+		PADDING+4, PADDING+5, PADDING+6, PADDING+7,
+		PADDING+8, PADDING+9, PADDING+10, PADDING+11,
 	};
+	/*
+	alignas(uint64_t) uint8_t indices1[8] = {
+    	PADDING+8, PADDING+9, PADDING+10, PADDING+11,
+    	PADDING, PADDING, PADDING, PADDING
+	};
+	 */
+	/*
+	alignas(uint64_t) uint8_t indices1[8] = {
+			PADDING+8, PADDING+9, PADDING+10, PADDING+11,
+			PADDING, PADDING, PADDING, PADDING
+		}; */
 
 	//cubes edge sets index into the pattern database
 	uint32_t pdbIdx = 0;
@@ -143,15 +158,22 @@ uint32_t EdgeCubies::getIdx() const {
 		//assert(integrityCheck());
 		//assert(pdbIdx <= 42577920);
 
-		//I'm a genius for this
 		/*
-		uint64_t packed = *reinterpret_cast<uint64_t*>(indices);
-		uint64_t subtractConst = (0x0101010101010101ULL << (info.id*8));
-		packed -= subtractConst;
-		*reinterpret_cast<uint64_t*>(indices) = packed;*/
+		//I'm a genius for this
+        uint64_t packed = *reinterpret_cast<uint64_t*>(indices0);
+        uint64_t subtractConst = (0x0101010101010101ULL << (info.id*8));
+        //weird UB fuckery
+        subtractConst = i <= 7 ? subtractConst : 0;
+        packed -= subtractConst;
+        *reinterpret_cast<uint64_t*>(indices0) = packed;
 
+    	packed = *reinterpret_cast<uint64_t*>(indices1);
+    	subtractConst = (0x0000000001010101ULL << (std::max((int) info.id-8, 0))*8);
+    	packed -= subtractConst;
+    	*reinterpret_cast<uint64_t*>(indices1) = packed;
+        */
 		for (int j = info.id; j < 12; j++) {
-			indices[j]--;
+		    indices[j]--;
 		}
 	}
 

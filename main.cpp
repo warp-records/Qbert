@@ -314,7 +314,52 @@ int main() {
 
     //std::cout << qb;
     //std::cout << qb.getNeighbors()[6];
+    /*constexpr int PADDING = 12;
+    alignas(uint64_t) uint8_t indices[8] = {
+		PADDING+0, PADDING+1, PADDING+2, PADDING+3,
+		PADDING+4, PADDING+5, PADDING+6, PADDING+7//,
+		//PADDING+8, PADDING+9, PADDING+10, PADDING+11,
+		//PADDING, PADDING, PADDING, PADDING
+	};*/
 
+	/*
+	constexpr int PADDING = 12;
+
+	alignas(uint64_t) uint8_t indices0[8] = {
+		0+PADDING, 1+PADDING, 2+PADDING, 3+PADDING,
+		4+PADDING, 5+PADDING, 6+PADDING, 7+PADDING
+	};
+
+	alignas(uint64_t) uint8_t indices1[8] = {
+	   8+PADDING, 9+PADDING, 10+PADDING, 11+PADDING,
+	   PADDING, PADDING, PADDING, PADDING
+	};
+
+
+    for (uint8_t i = 4; i < 12; i++) {
+        std::cout << "\n\ni = " << (int) i << std::endl;
+
+        //I'm a genius for this
+        uint64_t packed = *reinterpret_cast<uint64_t*>(indices0);
+		uint64_t subtractConst = (0x0101010101010101ULL << (i*8));
+		subtractConst = i <= 7 ? subtractConst : 0;
+		packed -= subtractConst;
+		*reinterpret_cast<uint64_t*>(indices0) = packed;
+
+
+    	//I'm a genius for this
+    	packed = *reinterpret_cast<uint64_t*>(indices1);
+    	subtractConst = (0x0000000001010101ULL << (std::max((int) i-8, 0))*8);
+    	packed -= subtractConst;
+    	*reinterpret_cast<uint64_t*>(indices1) = packed;
+
+        for (int j = 0; j < 12; j++) {
+         			std::cout << "indices["<<j<<"]:\t" << (int) (j <= 7 ? indices0[j] : indices1[j-8])-PADDING << std::endl;
+  		}
+    }
+
+    return 0;
+ */
     //lets see if I can run depth 16 overnight!
     //it can do up to 15!
     qb = qb.rotVert(Column::Middle, Direction::Up);

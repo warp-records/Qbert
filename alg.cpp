@@ -19,9 +19,8 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 	};
 
 	std::cout << "Generating pattern databases:" << std::endl;
-	PDB cornerCubieDB(MiniCube(), 3674160);
-	//only generates up to 15737060 nodes atm for some reason...
 	PDB edgeCubieDB(EdgeCubies(), 42577920);
+	PDB cornerCubieDB(MiniCube(), 3674160);
 
 	std::cout << "Solving cube:" << std::endl;
 
