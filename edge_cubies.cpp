@@ -78,6 +78,7 @@ uint32_t EdgeCubies::getIdx() const {
     //callCount++;
 
     //only for debugging
+    /*
     auto integrityCheck = [&]() -> bool {
         std::array<bool, 12> seenIds = { false };
         for (int idx = 0; idx < 12; ++idx) {
@@ -90,13 +91,12 @@ uint32_t EdgeCubies::getIdx() const {
         }
 
         return true;
-    };
+    }; */
 
     //bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
 	//7!*3^5 ... 2!*3^1
 
 	//HELPFHDSAFADSHNFSDK
-
 
 	//Maybe try a simpler implementation
 	//When "N"" is number of cubies in set
@@ -108,7 +108,7 @@ uint32_t EdgeCubies::getIdx() const {
 		55440, 5040, 504, 56, 7, 1
 	};
 	//you're a dumbass if you can't figure this one out
-	uint32_t const pow2[7] {
+	uint32_t const pow2[8] {
 		1, 2, 4, 8, 16, 32, 64
 	};
 
@@ -117,6 +117,7 @@ uint32_t EdgeCubies::getIdx() const {
 	//Index of all cubibes that HAVEN'T been visited
 	//First order of business is fixing this shit
 
+	//constexpr int NUM_CUBIES = 6;
 	constexpr int PADDING = 12;
 	//Only 12 are used
 	alignas(uint64_t) uint8_t indices[12] = {
@@ -130,30 +131,17 @@ uint32_t EdgeCubies::getIdx() const {
 	for (int i = 0; i < 6; i++) {
 	    //returning 0 every time...
 
-		//skip first cubie since it will always be the same
-		//due to 3x3x3 normalization
-		CubieInfo info = getCubieInfo(i+1);
-
-		//(old) psueod code:
-		//idx += 12!/(idx+7)! * 2^(6-idx) * info.id +
-		//	12!/(idx+1+7)! * 2^(6-(idx+1)) * info.orientation
+		//CAN'T skip an index since the first index is a corner
+		//cubie, NOT an edge cubie
+		CubieInfo info = getCubieInfo(i);
 
 		//this better fucking work this time around because
 		//if it doesn't I truly have no fucking clue what will
-		//assert(idx < 6);
 		pdbIdx += pow2[6-i]*factorialSet[i] * (indices[info.id]-PADDING);
 		pdbIdx += pow2[6-i-1]*factorialSet[i] * (info.orientation);
-		//pdbIdx += pow2[6-i-1]*factorialSet[i] * ((indices[info.id]-PADDING)*2 + info.orientation);
 
-		//wokrs flawlessly every time
 		//assert(integrityCheck());
 		//assert(pdbIdx <= 42577920);
-		//if (pdbIdx >= 42577920) {
-		//  std::cout << pdbIdx << std::endl;
-		//}
-		//    std::cout << "number of calls: " << callCount << std::endl;
-		//	throw std::exception();
-		//}
 
 		//I'm a genius for this
 		/*
@@ -162,7 +150,7 @@ uint32_t EdgeCubies::getIdx() const {
 		packed -= subtractConst;
 		*reinterpret_cast<uint64_t*>(indices) = packed;*/
 
-		for (int j = info.id; j < 6; j++) {
+		for (int j = info.id; j < 12; j++) {
 			indices[j]--;
 		}
 	}

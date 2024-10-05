@@ -22,25 +22,50 @@ template<typename T> std::vector<uint8_t> PDB<T>::genPdb(T start, int const perm
 	std::vector<uint8_t> pdb(permuts/2);
 
 	q.push(Node{start, 0});
-	//uint32_t nodeCount = 0;
+	uint32_t nodeCount = 0;
+	//int iterCount = 0;
+	//std::array<uint32_t, 27> invalidRots;
 
 	while (!q.empty()) {
 
 		Node current = q.front();
 		q.pop();
 
+		//int rotIdx = 0;
+
+
 		for (T neighbor : current.elem.getNeighbors()) {
 		    uint32_t idx = neighbor.getIdx();
-			//assert(current.elem.getIdx() != idx);
+			/* if (current.elem.getIdx() == idx) {
+			    std::cout << "Original cube:\n" << current.elem << std::endl;
+				std::cout << "Rotated cube (rot idx " << rotIdx << "):\n" << std::endl <<
+				    neighbor << std::endl;
+
+				current.elem.getIdx();
+				neighbor.getIdx();
+
+				assert(false);
+				invalidRots[rotIdx]++;
+			} */
+
+			//rotIdx++;
 
 			if (!(pdb[idx/2] & ((idx%2) ? 0xf0 : 0x0f))) {
 				q.push(Node{neighbor, static_cast<uint8_t>(current.depth + 1)});
-				//nodeCount++;
+				nodeCount++;
 
 				pdb[idx/2] |= (static_cast<uint8_t>(current.depth+1) << ((idx%2) ? 4 : 0));
 			}
 		}
+
+		//iterCount++;
 	}
+
+	//for (int i = 0; i < 27; i++) {
+	//   std::cout << "RotID " << i << ":\t" << invalidRots[i] << std::endl;
+	//}
+
+	std::cout << "Node count: " << nodeCount << std::endl;
 
 	pdb[start.getIdx()/2] &= ~((0b1111 << (start.getIdx()%2 ? 4 : 0)));
 

@@ -5,7 +5,6 @@
 #include <variant>
 #include <iostream>
 
-
 enum class Row {
 	Top = 0, Middle = 2, Bottom = 1
 };

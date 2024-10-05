@@ -21,7 +21,7 @@
 
 //extern uint64_t nodesGenerated;
 
-constexpr std::string_view VERSION = "0.1.0";
+constexpr std::string_view VERSION = "0.2.0";
 
 int benchRotations(int rotations) {
     Cube qb;
@@ -198,6 +198,13 @@ int main() {
 
     //Cube qb;
 
+    /*
+    EdgeCubies testEdges();
+    std::cout << testEdges << std::endl;
+    uint32_t testIdx = testEdges.getIdx();
+
+    return 0;
+     */
     //PDB cornerCubieDB(MiniCube(), 3674160);
     //PDB edgCubieDB(EdgeCubies(), 42577920);
     //return 0;
@@ -308,6 +315,8 @@ int main() {
     //std::cout << qb;
     //std::cout << qb.getNeighbors()[6];
 
+    //lets see if I can run depth 16 overnight!
+    //it can do up to 15!
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::Down);
@@ -322,8 +331,8 @@ int main() {
     qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::_180);
     qb = qb.rotHoriz(Row::Bottom, Direction::_180);
-    qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
-    qb = qb.rotHoriz(Row::Bottom, Direction::Right);
+    //qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
+    //qb = qb.rotHoriz(Row::Bottom, Direction::Right);
 
 
     //assert(qb.hasProperCorners() && MiniCube(qb).getIdx() <= 3674160 && qb.isValidColorDistribution());
