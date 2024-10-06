@@ -75,27 +75,6 @@ bottom:
 };*/
 
 uint32_t EdgeCubies::getIdx() const {
-    //static int callCount = 0;
-    //callCount++;
-
-    //only for debugging
-    /*
-    auto integrityCheck = [&]() -> bool {
-        std::array<bool, 12> seenIds = { false };
-        for (int idx = 0; idx < 12; ++idx) {
-            CubieInfo info = getCubieInfo(idx);
-            if (info.id < 0 || info.id >= 12) return false;
-            seenIds[info.id] = true;
-        }
-        for (bool seen : seenIds) {
-            if (!seen) return false;
-        }
-
-        return true;
-    }; */
-
-    //bool usedIds[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
-	//7!*3^5 ... 2!*3^1
 
 	//HELPFHDSAFADSHNFSDK
 
@@ -123,22 +102,21 @@ uint32_t EdgeCubies::getIdx() const {
 	//Only 12 are used, last 4 are for a genius optimization
 	//discovered by yours truly
 	//must store each number in a nibble due to 64 bit registers
-	alignas(uint64_t) uint8_t indices[12] = {
+	/*
+	alignas(uint64_t) uint8_t indicesArr0[8] = {
 		PADDING+0, PADDING+1, PADDING+2, PADDING+3,
 		PADDING+4, PADDING+5, PADDING+6, PADDING+7,
-		PADDING+8, PADDING+9, PADDING+10, PADDING+11,
 	};
-	/*
-	alignas(uint64_t) uint8_t indices1[8] = {
+	alignas(uint64_t) uint8_t indicesArr1[8] = {
     	PADDING+8, PADDING+9, PADDING+10, PADDING+11,
     	PADDING, PADDING, PADDING, PADDING
 	};
-	 */
-	/*
-	alignas(uint64_t) uint8_t indices1[8] = {
-			PADDING+8, PADDING+9, PADDING+10, PADDING+11,
-			PADDING, PADDING, PADDING, PADDING
-		}; */
+	*/
+	//store array indices in uint64_ts so we can
+	//use the bitshift and subtract hack here
+	//holds PADDING+0, PADDING+1, ... PADDING+11, PADDING...
+	uint64_t indices0 = 0x131211100f0e0d0c;
+	uint64_t indices1 = 0x0c0c0c0c17161514;
 
 	//cubes edge sets index into the pattern database
 	uint32_t pdbIdx = 0;
@@ -152,29 +130,28 @@ uint32_t EdgeCubies::getIdx() const {
 
 		//this better fucking work this time around because
 		//if it doesn't I truly have no fucking clue what will
-		pdbIdx += pow2[6-i]*factorialSet[i] * (indices[info.id]-PADDING);
+		uint32_t offset = (info.id <= 7 ? (indices0 & 0xff<<info.id*8)>>info.id*8 :
+		                    (indices1 & 0xff<<(info.id-8)*8)>>(info.id-8)*8) - PADDING;
+		pdbIdx += pow2[6-i]*factorialSet[i] * offset;
 		pdbIdx += pow2[6-i-1]*factorialSet[i] * (info.orientation);
 
 		//assert(integrityCheck());
 		//assert(pdbIdx <= 42577920);
 
-		/*
-		//I'm a genius for this
-        uint64_t packed = *reinterpret_cast<uint64_t*>(indices0);
-        uint64_t subtractConst = (0x0101010101010101ULL << (info.id*8));
-        //weird UB fuckery
+		//For some reason when you bitshift 64 or more it uses
+        //the origianl value
+        uint64_t subtractConst = (0x0101010101010101ULL << i*8);
         subtractConst = i <= 7 ? subtractConst : 0;
-        packed -= subtractConst;
-        *reinterpret_cast<uint64_t*>(indices0) = packed;
+        indices0 -= subtractConst;
 
-    	packed = *reinterpret_cast<uint64_t*>(indices1);
-    	subtractConst = (0x0000000001010101ULL << (std::max((int) info.id-8, 0))*8);
-    	packed -= subtractConst;
-    	*reinterpret_cast<uint64_t*>(indices1) = packed;
-        */
-		for (int j = info.id; j < 12; j++) {
-		    indices[j]--;
-		}
+        subtractConst = (0x0101010101010101ULL << std::max((i-8), 0)*8);
+        subtractConst = i-8 <= 7 ? subtractConst : 0;
+        indices1 -= subtractConst;
+
+        //maybe try intrinsics
+		//for (int j = info.id; j < 12; j++) {
+		//    indices[j]--;
+		//}
 	}
 
 	return pdbIdx;
@@ -182,6 +159,10 @@ uint32_t EdgeCubies::getIdx() const {
 }
 
 EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
+    //static int id = 11;
+    //CubieInfo retVal { static_cast<uint8_t>(id), 0 };
+    //id--;
+    //return retVal;
 
     //consider changing to uint8_t
     uint16_t face1;
@@ -215,8 +196,6 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
    | |  | |
    | |11| |
     */
-
-
 
 
     //MUST implement for all cases!
@@ -293,13 +272,10 @@ EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {
             break;
         }
 
-    	default: {
-            throw std::exception();
-        }
     }
 
     //Encountered a blanbk cubie
-    assert(face1 <= 0b101 && face2 <= 0b101);
+    //assert(face1 <= 0b101 && face2 <= 0b101);
 
 	std::array<uint8_t, 64> cubieIDMap;
 	//orange white

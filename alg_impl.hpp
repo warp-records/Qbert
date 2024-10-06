@@ -36,19 +36,6 @@ template<typename T> std::vector<uint8_t> PDB<T>::genPdb(T start, int const perm
 
 		for (T neighbor : current.elem.getNeighbors()) {
 		    uint32_t idx = neighbor.getIdx();
-			/* if (current.elem.getIdx() == idx) {
-			    std::cout << "Original cube:\n" << current.elem << std::endl;
-				std::cout << "Rotated cube (rot idx " << rotIdx << "):\n" << std::endl <<
-				    neighbor << std::endl;
-
-				current.elem.getIdx();
-				neighbor.getIdx();
-
-				assert(false);
-				invalidRots[rotIdx]++;
-			} */
-
-			//rotIdx++;
 
 			if (!(pdb[idx/2] & ((idx%2) ? 0xf0 : 0x0f))) {
 				q.push(Node{neighbor, static_cast<uint8_t>(current.depth + 1)});
@@ -61,9 +48,6 @@ template<typename T> std::vector<uint8_t> PDB<T>::genPdb(T start, int const perm
 		//iterCount++;
 	}
 
-	//for (int i = 0; i < 27; i++) {
-	//   std::cout << "RotID " << i << ":\t" << invalidRots[i] << std::endl;
-	//}
 
 	std::cout << "Node count: " << nodeCount << std::endl;
 

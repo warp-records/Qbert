@@ -1,5 +1,6 @@
 
 #include "alg.hpp"
+#include <ostream>
 #include "cube.hpp"
 #include "mini_cube.hpp"
 #include "edge_cubies.hpp"
@@ -29,8 +30,11 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 	    //return 0;
 		MiniCube cornerCubies(cube);
 		EdgeCubies edgeCubies(cube);
-		return std::max(std::max(cornerCubieDB.getDist(cornerCubies.getIdx()),
-		      firstEdgeCubieDB.getDist(edgeCubies.getIdx())), secondEdgeCubieDB.getDist(edgeCubies.getIdx()));
+		uint32_t edgesIdx = edgeCubies.getIdx();
+		return std::max({cornerCubieDB.getDist(cornerCubies.getIdx()),
+		                firstEdgeCubieDB.getDist(edgesIdx),
+		                secondEdgeCubieDB.getDist(edgesIdx) });
+
 	};
 
 	constexpr int SKYDADDYS_NUMBER = 20;
@@ -64,7 +68,7 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
             //Reduce branching factor
 			for (Cube const& neighbor : node.cube.getNeighbors()) {
 				//assert(node.depth+1 + heuristic(neighbor) <= SKYDADDYS_NUMBER);
-                nodesGenerated++;
+                //nodesGenerated++;
 
 				if (node.depth+1 + heuristic(neighbor) <= depthLim) {
 
@@ -86,5 +90,13 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 		}
 	}
 
-	throw std::exception();
+	//throw std::exception();
+}
+
+template<typename T> std::ostream& operator<<(std::ostream os, PDB<T> const& pdb) {
+    uint64_t len = pdb.data.size();
+    os << len;
+    for (uint8_t byte : pdb.data) {
+        os << byte;
+    }
 }
