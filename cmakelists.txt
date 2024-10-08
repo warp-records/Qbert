@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Set the project name and version
-project(Rubix VERSION 0.2.1)
+project(Rubix VERSION 0.2.2)
 
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 20)

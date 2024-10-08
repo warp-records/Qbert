@@ -21,7 +21,7 @@
 
 //extern uint64_t nodesGenerated;
 
-constexpr std::string_view VERSION = "0.2.1";
+constexpr std::string_view VERSION = "0.2.2";
 
 int benchRotations(int rotations) {
     Cube qb;
@@ -322,12 +322,12 @@ int main() {
 		//PADDING, PADDING, PADDING, PADDING
 	};*/
 
-	PDB firstEdgeCubieDB(EdgeCubies(), 42577920);
-	return 0;
 
+	//PDB firstEdgeCubieDB(EdgeCubies(), 42577920);
+	//return 0;
 
+/*
 	constexpr int PADDING = 12;
-
 	alignas(uint64_t) uint8_t indices0[16] = {
 		0+PADDING, 1+PADDING, 2+PADDING, 3+PADDING,
 		4+PADDING, 5+PADDING, 6+PADDING, 7+PADDING,
@@ -340,15 +340,16 @@ int main() {
 	   8+PADDING, 9+PADDING, 10+PADDING, 11+PADDING,
 	   PADDING, PADDING, PADDING, PADDING
 	};
+ */
+	//std::cout << std::hex << *reinterpret_cast<uint64_t*>(indices0) << std::endl;
+	//std::cout << std::hex << *reinterpret_cast<uint64_t*>(indices1) << std::endl;
+	//return 0;
 
-	std::cout << std::hex << *reinterpret_cast<uint64_t*>(indices0) << std::endl;
-	std::cout << std::hex << *reinterpret_cast<uint64_t*>(indices1) << std::endl;
-	return 0;
-
+	/*
 	alignas(uint64_t) uint8_t indices2[8] = {
 	   0, 1, 2, 3, 4, 5, 6, 7
 	};
-
+ */
 
 
 	/*
@@ -356,44 +357,39 @@ int main() {
 	std::cout << (&indices2[7] - &indices2[0]) << std::endl;
 	return 0;
  */
+ /*
+    uint64_t indices0 = 0x131211100f0e0d0c;
+    uint64_t indices1 = 0x0c0c0c0c17161514;
+
+    indices0 += 0x0101010101010101ULL;
+    indices1 += 0x0101010101010101ULL;
+
     for (uint8_t i = 0; i < 12; i++) {
         std::cout << "\n\ni = " << (int) i << std::endl;
 
-        //I'm a genius for this
-        uint64_t packed = *reinterpret_cast<uint64_t*>(indices0);
-        std::cout << (int) std::min(i, (uint8_t) 8) << std::endl;
-		uint64_t subtractConst = (0x0101010101010101ULL << (i*8));
-		subtractConst = i <= 7 ? subtractConst : 0;
-		//std::cout << std::hex << subtractConst << std::endl;
-		//subtractConst = i <= 7 ? subtractConst : 0;
-		packed -= subtractConst;
-		*reinterpret_cast<uint64_t*>(indices0) = packed;
 
+        for (int j = 0; j <= 12; j++) {
 
-		packed = *reinterpret_cast<uint64_t*>(&indices0[8]);
-		std::cout << std::hex << packed << std::endl << std::dec;
-		subtractConst = (0x0101010101010101ULL << (std::max(i - 8, 0)*8));
-		subtractConst = i-8 <= 7 ? subtractConst : 0;
-		packed -= subtractConst;
-		*reinterpret_cast<uint64_t*>(indices0) = packed;
+            uint64_t constexpr FULL_BYTE = 0xff;
 
+            uint64_t index = (j <= 7 ? (indices0 & FULL_BYTE<<j*8)>>j*8 :
+		                    (indices1 & FULL_BYTE<<(j-8)*8)>>(j-8)*8) - PADDING;
 
-
-
-    	//I'm a genius for this
-        /*
-    	packed = *reinterpret_cast<uint64_t*>(indices1);
-    	subtractConst = (0x0000000001010101ULL << (std::max((int) i-8, 0))*8);
-    	packed -= subtractConst;
-    	*reinterpret_cast<uint64_t*>(indices1) = packed;
- */
-        for (int j = 0; j < 12; j++) {
-            std::cout << std::dec << "indices["<<j<<"]:\t" << (unsigned int) indices0[j]-PADDING << std::endl;
+            std::cout << std::dec << "indices["<<j<<"]:\t" << index << std::endl;
   		}
+
+        uint64_t subtractConst = (0x0101010101010101ULL << i*8);
+        subtractConst = i <= 7 ? subtractConst : 0;
+        indices0 -= subtractConst;
+
+        subtractConst = (0x0101010101010101ULL << std::max((i-8), 0)*8);
+        subtractConst = i-8 <= 7 ? subtractConst : 0;
+        indices1 -= subtractConst;
+
     }
 
     return 0;
-
+ */
     //EdgeCubies edgeCubies;
     //std::cout << edgeCubies.getIdx() << std::endl;
     //return 0;

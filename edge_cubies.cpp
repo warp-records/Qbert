@@ -102,16 +102,12 @@ uint32_t EdgeCubies::getIdx() const {
 	//Only 12 are used, last 4 are for a genius optimization
 	//discovered by yours truly
 	//must store each number in a nibble due to 64 bit registers
-	/*
-	alignas(uint64_t) uint8_t indicesArr0[8] = {
+
+	/*alignas(uint64_t) uint8_t indices[12] = {
 		PADDING+0, PADDING+1, PADDING+2, PADDING+3,
 		PADDING+4, PADDING+5, PADDING+6, PADDING+7,
-	};
-	alignas(uint64_t) uint8_t indicesArr1[8] = {
-    	PADDING+8, PADDING+9, PADDING+10, PADDING+11,
-    	PADDING, PADDING, PADDING, PADDING
-	};
-	*/
+		PADDING+8, PADDING+9, PADDING+10, PADDING+11,
+	};*/
 	//store array indices in uint64_ts so we can
 	//use the bitshift and subtract hack here
 	//holds PADDING+0, PADDING+1, ... PADDING+11, PADDING...
@@ -130,22 +126,33 @@ uint32_t EdgeCubies::getIdx() const {
 
 		//this better fucking work this time around because
 		//if it doesn't I truly have no fucking clue what will
-		uint32_t offset = (info.id <= 7 ? (indices0 & 0xff<<info.id*8)>>info.id*8 :
-		                    (indices1 & 0xff<<(info.id-8)*8)>>(info.id-8)*8) - PADDING;
+
+		//Must specify the size to be used while shifting
+		uint64_t constexpr FULL_BYTE = 0xff;
+
+		uint64_t offset = (info.id <= 7 ? (indices0 & FULL_BYTE<<info.id*8)>>info.id*8 :
+		                    (indices1 & FULL_BYTE<<(info.id-8)*8)>>(info.id-8)*8) - PADDING;
+
 		pdbIdx += pow2[6-i]*factorialSet[i] * offset;
 		pdbIdx += pow2[6-i-1]*factorialSet[i] * (info.orientation);
 
 		//assert(integrityCheck());
 		//assert(pdbIdx <= 42577920);
-
+		//assert(offset == indices[info.id]);
+		/*
+		if (offset != indices[info.id] - PADDING) {
+		    assert(true);
+			std::cout << "Mismatch";
+		}
+ */
 		//For some reason when you bitshift 64 or more it uses
         //the origianl value
-        uint64_t subtractConst = (0x0101010101010101ULL << i*8);
-        subtractConst = i <= 7 ? subtractConst : 0;
+        uint64_t subtractConst = (0x0101010101010101ULL << info.id*8);
+        subtractConst = info.id <= 7 ? subtractConst : 0;
         indices0 -= subtractConst;
 
-        subtractConst = (0x0101010101010101ULL << std::max((i-8), 0)*8);
-        subtractConst = i-8 <= 7 ? subtractConst : 0;
+        subtractConst = (0x0101010101010101ULL << std::max((info.id-8), 0)*8);
+        subtractConst = info.id-8 <= 7 ? subtractConst : 0;
         indices1 -= subtractConst;
 
         //maybe try intrinsics

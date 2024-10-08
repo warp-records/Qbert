@@ -33,7 +33,7 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 		uint32_t edgesIdx = edgeCubies.getIdx();
 		return std::max({cornerCubieDB.getDist(cornerCubies.getIdx()),
 		                firstEdgeCubieDB.getDist(edgesIdx),
-		                secondEdgeCubieDB.getDist(edgesIdx) });
+		                secondEdgeCubieDB.getDist(edgesIdx)  });
 
 	};
 
@@ -68,7 +68,7 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
             //Reduce branching factor
 			for (Cube const& neighbor : node.cube.getNeighbors()) {
 				//assert(node.depth+1 + heuristic(neighbor) <= SKYDADDYS_NUMBER);
-                //nodesGenerated++;
+                nodesGenerated++;
 
 				if (node.depth+1 + heuristic(neighbor) <= depthLim) {
 
