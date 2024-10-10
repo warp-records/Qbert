@@ -1,11 +1,16 @@
 #pragma once
 
+#include <iterator>
 #include <cassert>
+#include <iterator>
 #include <queue>
 #include <type_traits>
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 //class PDB;
 
@@ -56,6 +61,6 @@ template<typename T> std::vector<uint8_t> PDB<T>::genPdb(T start, int const perm
 	return pdb;
 }
 
-template<typename T> int PDB<T>::getDist(int idx) const {
+template<typename T> uint8_t PDB<T>::getDist(int idx) const {
 	return (data[idx/2] >> ((idx%2) ? 4 : 0))&0b1111;
 }

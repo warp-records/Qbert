@@ -21,7 +21,6 @@ uint32_t rotFace180(uint32_t face);
 
 Cube Cube::rotHoriz(Row line, Direction dir) const {
 
-
 	//Don't feel like properly coding normalization
 	if (line == Row::Top) {
 		Direction opposite = dir==Direction::Left ? Direction::Right : Direction::Left;
