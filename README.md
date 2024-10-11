@@ -5,4 +5,5 @@ Originally called "Rubix", because for fucking years I thought that's how Rubick
 
 Major WIP
 
+LOOOK AT HIM GOOOOO
 ![wobbly qbert](wobbly_qbert.gif)

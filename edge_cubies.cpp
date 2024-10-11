@@ -5,10 +5,9 @@
 #include <algorithm>
 #include <type_traits>
 
-//set for using 6 edge cubies
 EdgeCubies::EdgeCubies(bool ss) {
     secondSet = ss;
-    //0x71C71C7
+
     front = WhiteFace | 0x71C71C7;
 	top =   GreenFace | 0x71C71C7;
 	left =  RedFace | 0x71C71C7;
@@ -18,21 +17,35 @@ EdgeCubies::EdgeCubies(bool ss) {
 	right =  OrangeFace | 0x71C71C7;
 }
 
+constexpr std::array<uint32_t, 12> genFactorialSet(const int numCubies) {
+
+    std::array<uint32_t, 12> factorial {{
+        1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800
+    }};
+
+    std::array<uint32_t, 12> factorialSet{{}};
+    for (int i = 0; i < numCubies; i++) {
+        factorialSet[i] = factorial[11-i]/factorial[12-numCubies];
+    }
+
+    return factorialSet;
+}
+
 uint32_t EdgeCubies::getIdx() const {
 
-    //factorialSet[i] = (11-i)!/(6)!
-	uint32_t const factorialSet[7] {
-		55440, 5040, 504, 56, 7, 1
-	};
+
+	constexpr int NUM_CUBIES = 7;
+
+	//factorialSet[i] = (11-i)!/(NUM_CUBIES)!
+	constexpr auto factorialSet = genFactorialSet(NUM_CUBIES);
+
 	//you're a dumbass if you can't figure this one out
-	uint32_t const pow2[8] {
-		1, 2, 4, 8, 16, 32, 64
-	};
+	std::array<uint32_t, 12> const pow2 {{
+		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048
+	}};
 
 	//Index of all cubibes that HAVEN'T been visited
 	//First order of business is fixing this shit
-
-	//constexpr int NUM_CUBIES = 6;
 	constexpr int PADDING = 12;
 
 	//store array indices in uint64_ts so we can
@@ -44,12 +57,16 @@ uint32_t EdgeCubies::getIdx() const {
 	//cubes edge sets index into the pattern database
 	uint32_t pdbIdx = 0;
 	//i is index of edge cubie in cube
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < NUM_CUBIES; i++) {
 	    //returning 0 every time...
 
 		//CAN'T skip an index since the first index is a corner
 		//cubie, NOT an edge cubie
-		CubieInfo info = getCubieInfo(secondSet ? i+6 : i);
+
+		//disable second set for bnow
+		//CubieInfo info = getCubieInfo(secondSet ? i+6 : i);
+		CubieInfo info = getCubieInfo(i);
+
 
 		//this better fucking work this time around because
 		//if it doesn't I truly have no fucking clue what will
@@ -60,8 +77,8 @@ uint32_t EdgeCubies::getIdx() const {
 		uint64_t offset = (info.id <= 7 ? (indices0 & FULL_BYTE<<info.id*8)>>info.id*8 :
 		                    (indices1 & FULL_BYTE<<(info.id-8)*8)>>(info.id-8)*8) - PADDING;
 
-		pdbIdx += pow2[6-i]*factorialSet[i] * offset;
-		pdbIdx += pow2[6-i-1]*factorialSet[i] * (info.orientation);
+		pdbIdx += pow2[NUM_CUBIES-i]*factorialSet[i] * offset;
+		pdbIdx += pow2[NUM_CUBIES-i-1]*factorialSet[i] * (info.orientation);
 
 		//For some reason when you bitshift 64 or more it uses
         //the original value
@@ -128,6 +145,8 @@ constexpr std::array<uint8_t, 64> createCubieIDMap() {
 
     return cubieIDMap;
 }
+
+
 
 
 EdgeCubies::CubieInfo EdgeCubies::getCubieInfo(int idx) const {

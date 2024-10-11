@@ -19,8 +19,8 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 		Node* prev;
 	};
 
-	PDB<EdgeCubies> firstEdgeCubieDB(deserializePdb("pdb/edge_cubies_first.pdb"));
-	PDB<EdgeCubies> secondEdgeCubieDB(deserializePdb("pdb/edge_cubies_second.pdb"));
+	PDB<EdgeCubies> firstEdgeCubieDB(deserializePdb("pdb/7_edge_cubies_first.pdb"));
+	//PDB<EdgeCubies> secondEdgeCubieDB(deserializePdb("pdb/edge_cubies_second.pdb"));
 	PDB<MiniCube> cornerCubieDB(deserializePdb("pdb/corner_cubies.pdb"));
 
 	std::cout << "Solving cube:" << std::endl;
@@ -32,8 +32,8 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 
 		return std::max({
 		    cornerCubieDB.getDist(cornerCubies.getIdx()),
-			firstEdgeCubieDB.getDist(firstEdgeSet.getIdx()),
-		    secondEdgeCubieDB.getDist(secondEdgeSet.getIdx())
+			firstEdgeCubieDB.getDist(firstEdgeSet.getIdx())
+		    //secondEdgeCubieDB.getDist(secondEdgeSet.getIdx())
 		});
 	};
 

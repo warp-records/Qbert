@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <iterator>
+//I don't even remember including this
 #include <sys/_types/_off_t.h>
 #include <unordered_set>
 #include <unordered_map>
@@ -55,6 +56,10 @@ int main() {
 
     Cube qb;
 
+
+    //serializePdb(PDB(EdgeCubies(), 510935040).data, "pdb/7_edge_cubies_first.pdb");
+    //return 0;
+
     //it can do up to 15!
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
@@ -69,10 +74,9 @@ int main() {
     qb = qb.rotHoriz(Row::Top, Direction::Left);
     qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::_180);
-    //qb = qb.rotHoriz(Row::Bottom, Direction::_180);
+    qb = qb.rotHoriz(Row::Bottom, Direction::_180);
     //qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
     //qb = qb.rotHoriz(Row::Bottom, Direction::Right);
-
     //Check if pattern databases exist, and generate them
     //if they don't
     std::ifstream pdbCheck;
@@ -82,11 +86,11 @@ int main() {
     if (!pdbCheck.good()) { serializePdb(PDB(MiniCube(), 3674160).data, "pdb/corner_cubies.pdb"); }
     pdbCheck.close();
     pdbCheck.open("pdb/edge_cubies_first.pdb");
-    if (!pdbCheck.good()) { serializePdb(PDB(EdgeCubies(), 42577920).data, "pdb/edge_cubies_first.pdb"); }
+    if (!pdbCheck.good()) { serializePdb(PDB(EdgeCubies(), 510935040).data, "pdb/7_edge_cubies_first.pdb"); }
     pdbCheck.close();
-    pdbCheck.open("pdb/edge_cubies_second.pdb");
-    if (!pdbCheck.good()) { serializePdb(PDB(EdgeCubies(true), 42577920).data, "pdb/edge_cubies_second.pdb"); }
-    pdbCheck.close();
+    //pdbCheck.open("pdb/edge_cubies_second.pdb");
+    //if (!pdbCheck.good()) { serializePdb(PDB(EdgeCubies(true), 42577920).data, "pdb/edge_cubies_second.pdb"); }
+    //pdbCheck.close();
 
     std::cout << "Scrambled cube:\n" << qb;
     std::cout << "\nSolving cube using IDA*:" << std::endl;
