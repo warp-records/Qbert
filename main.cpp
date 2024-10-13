@@ -23,6 +23,28 @@
 
 constexpr std::string_view VERSION = "0.3.0";
 
+
+/*
+void countNibbleFrequency(const std::vector<uint8_t>& data) {
+    std::array<uint64_t, 16> counts = {0};
+    size_t totalCount = 0;
+
+    for (uint8_t byte : data) {
+        for (int i = 0; i < 2; ++i) {
+            uint8_t nibble = (byte >> (i * 4)) & 0x0F;
+            counts[nibble]++;
+            totalCount++;
+        }
+    }
+
+    std::cout << "Nibble Frequency:\n";
+    for (int i = 0; i < 16; ++i) {
+        double percentage = (counts[i] / static_cast<double>(totalCount)) * 100.0;
+        std::cout << "Nibble " << i << ": " << percentage << "%" << std::endl;
+    }
+}
+ */
+
 int main() {
 
     //The most optimal algorithm to solve a Rubiks cube
@@ -60,6 +82,9 @@ int main() {
     //serializePdb(PDB(EdgeCubies(), 510935040).data, "pdb/7_edge_cubies_first.pdb");
     //return 0;
 
+    //serializePdb(PDB(EdgeCubies(), 5109350400).data, "pdb/8_edge_cubies_first.pdb");
+    //return 0;
+
     //it can do up to 15!
     qb = qb.rotVert(Column::Middle, Direction::Up);
     qb = qb.rotHoriz(Row::Middle, Direction::_180);
@@ -74,7 +99,7 @@ int main() {
     qb = qb.rotHoriz(Row::Top, Direction::Left);
     qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::_180);
-    qb = qb.rotHoriz(Row::Bottom, Direction::_180);
+    //qb = qb.rotHoriz(Row::Bottom, Direction::_180);
     //qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
     //qb = qb.rotHoriz(Row::Bottom, Direction::Right);
     //Check if pattern databases exist, and generate them
@@ -83,11 +108,14 @@ int main() {
 
     pdbCheck.open("pdb/corner_cubies.pdb");
     //actually insane that this generates in half a second on my mac
-    if (!pdbCheck.good()) { serializePdb(PDB(MiniCube(), 3674160).data, "pdb/corner_cubies.pdb"); }
+    if (!pdbCheck.good()) { serializePdb(PDB(MiniCube(), 3674160).data, "pdb/8_corner_cubies.pdb"); }
     pdbCheck.close();
     pdbCheck.open("pdb/edge_cubies_first.pdb");
-    if (!pdbCheck.good()) { serializePdb(PDB(EdgeCubies(), 510935040).data, "pdb/7_edge_cubies_first.pdb"); }
+    if (!pdbCheck.good()) { serializePdb(PDB(EdgeCubies(), 42577920).data, "pdb/edge_cubies_first.pdb"); }
     pdbCheck.close();
+
+
+    //countNibbleFrequency(deserializePdb("pdb/8_edge_cubies_first.pdb"));
     //pdbCheck.open("pdb/edge_cubies_second.pdb");
     //if (!pdbCheck.good()) { serializePdb(PDB(EdgeCubies(true), 42577920).data, "pdb/edge_cubies_second.pdb"); }
     //pdbCheck.close();

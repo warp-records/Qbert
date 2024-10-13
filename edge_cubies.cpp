@@ -34,8 +34,6 @@ constexpr std::array<uint32_t, 12> genFactorialSet(const int numCubies) {
 uint32_t EdgeCubies::getIdx() const {
 
 
-	constexpr int NUM_CUBIES = 7;
-
 	//factorialSet[i] = (11-i)!/(NUM_CUBIES)!
 	constexpr auto factorialSet = genFactorialSet(NUM_CUBIES);
 
@@ -55,7 +53,7 @@ uint32_t EdgeCubies::getIdx() const {
 	uint64_t indices1 = 0x0c0c0c0c17161514;
 
 	//cubes edge sets index into the pattern database
-	uint32_t pdbIdx = 0;
+	uint64_t pdbIdx = 0;
 	//i is index of edge cubie in cube
 	for (int i = 0; i < NUM_CUBIES; i++) {
 	    //returning 0 every time...
@@ -99,6 +97,73 @@ uint32_t EdgeCubies::getIdx() const {
 
 }
 
+/*
+Cube getCube(uint64_t idx) const {
+    using EdgeCubies::NUM_CUBIES;
+
+	//factorialSet[i] = (11-i)!/(NUM_CUBIES)!
+	constexpr auto factorialSet = genFactorialSet(NUM_CUBIES);
+
+	//you're a dumbass if you can't figure this one out
+	std::array<uint32_t, 12> const pow2 {{
+		1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048
+	}};
+
+	//Index of all cubibes that HAVEN'T been visited
+	//First order of business is fixing this shit
+	constexpr int PADDING = 12;
+
+	//store array indices in uint64_ts so we can
+	//use the bitshift and subtract hack here
+	//holds PADDING+0, PADDING+1, ... PADDING+11, PADDING...
+	uint64_t indices0 = 0x131211100f0e0d0c;
+	uint64_t indices1 = 0x0c0c0c0c17161514;
+
+	//cubes edge sets index into the pattern database
+	uint64_t pdbIdx = 0;
+	//i is index of edge cubie in cube
+	for (int i = 0; i < NUM_CUBIES; i++) {
+	    //returning 0 every time...
+
+		//CAN'T skip an index since the first index is a corner
+		//cubie, NOT an edge cubie
+
+		//disable second set for bnow
+		//CubieInfo info = getCubieInfo(secondSet ? i+6 : i);
+		CubieInfo info = getCubieInfo(i);
+
+
+		//this better fucking work this time around because
+		//if it doesn't I truly have no fucking clue what will
+
+		//Must specify the size to be used while shifting
+		uint64_t constexpr FULL_BYTE = 0xff;
+
+		uint64_t offset = (info.id <= 7 ? (indices0 & FULL_BYTE<<info.id*8)>>info.id*8 :
+		                    (indices1 & FULL_BYTE<<(info.id-8)*8)>>(info.id-8)*8) - PADDING;
+
+		pdbIdx += pow2[NUM_CUBIES-i]*factorialSet[i] * offset;
+		pdbIdx += pow2[NUM_CUBIES-i-1]*factorialSet[i] * (info.orientation);
+
+		//For some reason when you bitshift 64 or more it uses
+            //the original value
+            uint64_t subtractConst = (0x0101010101010101ULL << info.id*8);
+            subtractConst = info.id <= 7 ? subtractConst : 0;
+            indices0 -= subtractConst;
+
+            subtractConst = (0x0101010101010101ULL << std::max((info.id-8), 0)*8);
+            subtractConst = info.id-8 <= 7 ? subtractConst : 0;
+            indices1 -= subtractConst;
+
+		//for (int j = info.id; j < 12; j++) {
+		//    indices[j]--;
+		//}
+	}
+
+	return pdbIdx;
+
+}
+*/
 constexpr std::array<uint8_t, 64> createCubieIDMap() {
     std::array<uint8_t, 64> cubieIDMap = {};
     //orange white

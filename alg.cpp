@@ -10,6 +10,7 @@
 #include <utility>
 #include <array>
 #include <array>
+#include <filesystem>
 
 std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 
@@ -94,11 +95,16 @@ std::vector<uint8_t> deserializePdb(std::string filename) {
     std::ifstream is(filename, std::ios::binary);
     if (!is.good()) { throw std::runtime_error("Cannot open file for reading"); }
 
-    uint32_t size;
-    is.read(reinterpret_cast<char*>(&size), sizeof(size));
+    //No longer used anymore
+    uint32_t oldSizeHeader;
+    is.read(reinterpret_cast<char*>(&oldSizeHeader), sizeof(oldSizeHeader));
     if (!is.good()) { throw std::runtime_error("Error reading size"); }
 
+    std::filesystem::path file(filename);
+    uint64_t size = std::filesystem::file_size(file) - 4;
     std::vector<uint8_t> bytes(size);
+    std::cout << "size: " << size;
+
     is.read(reinterpret_cast<char*>(bytes.data()), size);
     if (!is.good()) { throw std::runtime_error("Error reading bytes"); }
 

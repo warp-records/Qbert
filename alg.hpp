@@ -13,17 +13,17 @@ template<typename T> class PDB {
 public:
 	std::vector<uint8_t> const data;
 
-	static std::vector<uint8_t> genPdb(T start, int const permuts);
+	static std::vector<uint8_t> genPdb(T start, uint64_t const permuts);
 
 	PDB(std::vector<uint8_t> data) : data{data} {};
 
 	friend std::ostream& operator<<(std::ofstream os, PDB<T> const& pdb);
 
 //public:
-	PDB(T start, int const permuts) : data{genPdb(start, permuts)} {};
+	PDB(T start, uint64_t const permuts) : data{genPdb(start, permuts)} {};
 	//good enough lol
 	PDB(std::string filename);
-	uint8_t getDist(int idx) const;
+	uint8_t getDist(uint64_t idx) const;
 
 };
 

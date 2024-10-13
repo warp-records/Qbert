@@ -10,6 +10,7 @@
 
 //Set of 6
 struct EdgeCubies : public Cube {
+    static constexpr int NUM_CUBIES = 7;
 
     struct CubieInfo {
 		uint8_t id;
