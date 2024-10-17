@@ -5,8 +5,9 @@
 #include <algorithm>
 #include <type_traits>
 
-EdgeCubies::EdgeCubies(bool ss) {
+EdgeCubies::EdgeCubies(bool ss, bool noOrnt) {
     secondSet = ss;
+    noOrient = noOrnt;
 
     front = WhiteFace | 0x71C71C7;
 	top =   GreenFace | 0x71C71C7;
@@ -31,7 +32,8 @@ constexpr std::array<uint32_t, 12> genFactorialSet(const int numCubies) {
     return factorialSet;
 }
 
-uint32_t EdgeCubies::getIdx() const {
+uint64_t EdgeCubies::getIdx() const {
+    //remember to turn off
 
 
 	//factorialSet[i] = (11-i)!/(NUM_CUBIES)!
@@ -75,8 +77,9 @@ uint32_t EdgeCubies::getIdx() const {
 		uint64_t offset = (info.id <= 7 ? (indices0 & FULL_BYTE<<info.id*8)>>info.id*8 :
 		                    (indices1 & FULL_BYTE<<(info.id-8)*8)>>(info.id-8)*8) - PADDING;
 
-		pdbIdx += pow2[NUM_CUBIES-i]*factorialSet[i] * offset;
-		pdbIdx += pow2[NUM_CUBIES-i-1]*factorialSet[i] * (info.orientation);
+		//uint32_t orientFactor = noOrient ? 1 : pow2[NUM_CUBIES-i];
+		pdbIdx += factorialSet[i] * offset;
+		//pdbIdx += noOrient ? 0 : (pow2[NUM_CUBIES-i-1]*factorialSet[i] * (info.orientation));
 
 		//For some reason when you bitshift 64 or more it uses
         //the original value

@@ -79,8 +79,11 @@ int main() {
     Cube qb;
 
 
-    //serializePdb(PDB(EdgeCubies(), 510935040).data, "pdb/7_edge_cubies_first.pdb");
-    //return 0;
+    EdgeCubies edgeCubies{};
+    edgeCubies.noOrient = true;
+
+    serializePdb(PDB(EdgeCubies(), 479001600).data, "pdb/edge_cubies_no_orient.pdb");
+    return 0;
 
     //serializePdb(PDB(EdgeCubies(), 5109350400).data, "pdb/8_edge_cubies_first.pdb");
     //return 0;
