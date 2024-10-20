@@ -1,5 +1,6 @@
 
 #include "alg.hpp"
+#include "alg_impl.hpp"
 #include <ostream>
 #include "cube.hpp"
 #include "mini_cube.hpp"
@@ -20,21 +21,26 @@ std::pair<std::vector<Cube>, uint64_t> idaStar(Cube start) {
 		Node* prev;
 	};
 
-	PDB<EdgeCubies> firstEdgeCubieDB(deserializePdb("pdb/7_edge_cubies_first.pdb"));
+	//PDB<EdgeCubies> firstEdgeCubieDB(deserializePdb("pdb/7_edge_cubies_first.pdb"));
+	PDB<EdgeCubies<12>> edgeCubie12DB(deserializePdb("../pdb/edge_cubies_no_orient.pdb"));
 	//PDB<EdgeCubies> secondEdgeCubieDB(deserializePdb("pdb/edge_cubies_second.pdb"));
-	PDB<MiniCube> cornerCubieDB(deserializePdb("pdb/corner_cubies.pdb"));
+	PDB<EdgeCubies<7>> firstEdgeCubieDB(deserializePdb("../pdb/7_edge_cubies_first.pdb"));
+	//PDB<EdgeCubies<6>> secondEdgeCubieDB(deserializePdb("../pdb/edge_cubies_second.pdb"));
+	PDB<MiniCube> cornerCubieDB(deserializePdb("../pdb/corner_cubies.pdb"));
 
 	std::cout << "Solving cube:" << std::endl;
 
 	auto heuristic = [&](Cube const& cube) {
 		MiniCube cornerCubies(cube);
-		EdgeCubies firstEdgeSet = EdgeCubies(cube);
-		EdgeCubies secondEdgeSet = EdgeCubies(cube, true);
+		EdgeCubies edgeCubies12 = EdgeCubies<12>(cube, false, true);
+		EdgeCubies firstEdgeSet = EdgeCubies<7>(cube);
+		//EdgeCubies secondEdgeSet = EdgeCubies<6>(cube, true, false);
 
 		return std::max({
 		    cornerCubieDB.getDist(cornerCubies.getIdx()),
-			firstEdgeCubieDB.getDist(firstEdgeSet.getIdx())
-		    //secondEdgeCubieDB.getDist(secondEdgeSet.getIdx())
+			edgeCubie12DB.getDist(edgeCubies12.getIdx()),
+			firstEdgeCubieDB.getDist(firstEdgeSet.getIdx()),
+		    //secondEdgeCubieDB.getDist(secondEdgeSet.getIdx()),
 		});
 	};
 
@@ -103,7 +109,7 @@ std::vector<uint8_t> deserializePdb(std::string filename) {
     std::filesystem::path file(filename);
     uint64_t size = std::filesystem::file_size(file) - 4;
     std::vector<uint8_t> bytes(size);
-    std::cout << "size: " << size;
+    //std::cout << "size: " << size;
 
     is.read(reinterpret_cast<char*>(bytes.data()), size);
     if (!is.good()) { throw std::runtime_error("Error reading bytes"); }

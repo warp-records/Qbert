@@ -28,7 +28,7 @@ template<typename T> std::vector<uint8_t> PDB<T>::genPdb(T start, uint64_t const
 
 	q.push(Node{start, 0});
 	uint64_t nodeCount = 0;
-	int percentDone = 0;
+	//int percentDone = 0;
 	//int iterCount = 0;
 	//std::array<uint32_t, 27> invalidRots;
 
@@ -44,10 +44,10 @@ template<typename T> std::vector<uint8_t> PDB<T>::genPdb(T start, uint64_t const
 				q.push(Node{neighbor, static_cast<uint8_t>(current.depth + 1)});
 				nodeCount++;
 
-				if (nodeCount % 47900160 == 0) {
-				    percentDone++;
-				    std::cout << percentDone << "%" << std::endl;
-				}
+				//if (nodeCount % 47900160 == 0) {
+				   // percentDone++;
+				    //std::cout << percentDone << "%" << std::endl;
+				//}
 
 				pdb[idx/2] |= (static_cast<uint8_t>(current.depth+1) << ((idx%2) ? 4 : 0));
 			}

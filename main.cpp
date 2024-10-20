@@ -7,7 +7,6 @@
 #include <iostream>
 #include <iterator>
 //I don't even remember including this
-#include <sys/_types/_off_t.h>
 #include <unordered_set>
 #include <unordered_map>
 #include <chrono>
@@ -79,11 +78,11 @@ int main() {
     Cube qb;
 
 
-    EdgeCubies edgeCubies{};
-    edgeCubies.noOrient = true;
+    //EdgeCubies edgeCubies{};
+    //edgeCubies.noOrient = true;
 
-    serializePdb(PDB(EdgeCubies(), 479001600).data, "pdb/edge_cubies_no_orient.pdb");
-    return 0;
+    //serializePdb(PDB(EdgeCubies<5>(true, false), 3041280).data, "../pdb/5_edge_cubies_second.pdb");
+    //return 0;
 
     //serializePdb(PDB(EdgeCubies(), 5109350400).data, "pdb/8_edge_cubies_first.pdb");
     //return 0;
@@ -102,7 +101,7 @@ int main() {
     qb = qb.rotHoriz(Row::Top, Direction::Left);
     qb = qb.rotXaxis(CrossSection::Back, Direction::_180);
     qb = qb.rotVert(Column::Right, Direction::_180);
-    //qb = qb.rotHoriz(Row::Bottom, Direction::_180);
+    qb = qb.rotHoriz(Row::Bottom, Direction::_180);
     //qb = qb.rotXaxis(CrossSection::Middle, Direction::Right);
     //qb = qb.rotHoriz(Row::Bottom, Direction::Right);
     //Check if pattern databases exist, and generate them
@@ -114,7 +113,7 @@ int main() {
     if (!pdbCheck.good()) { serializePdb(PDB(MiniCube(), 3674160).data, "pdb/8_corner_cubies.pdb"); }
     pdbCheck.close();
     pdbCheck.open("pdb/edge_cubies_first.pdb");
-    if (!pdbCheck.good()) { serializePdb(PDB(EdgeCubies(), 42577920).data, "pdb/edge_cubies_first.pdb"); }
+    if (!pdbCheck.good()) { serializePdb(PDB(EdgeCubies<6>(), 42577920).data, "pdb/edge_cubies_first.pdb"); }
     pdbCheck.close();
 
 
